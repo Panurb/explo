@@ -59,13 +59,14 @@ class Bullet(animatedsprite.AnimatedSprite):
 
         enemy_collisions = pygame.sprite.spritecollide(self, room.enemies, False)
 
+        enemy_collisions = [c for c in enemy_collisions if c.alive]
+
         for c in enemy_collisions:
             if self.dx > 0:
                 self.rect.right = c.rect.left
             if self.dx < 0:
                 self.rect.left = c.rect.right
-            if c.alive:
-                c.damage(helpers.SCALE * 1, helpers.SCALE * -2)
+            c.damage(0, 0)
 
         if collisions or enemy_collisions:
             self.destroy()

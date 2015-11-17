@@ -17,6 +17,8 @@ class Enemy(animatedsprite.AnimatedSprite, physicsobject.PhysicsObject):
         self.gibs = animatedsprite.Group()
         self.projectiles = animatedsprite.Group()
         self.play('idle')
+        self.max_health = 1
+        self.health = self.max_health
 
     def reset(self):
         self.rect.x = self.spawn_x
@@ -25,9 +27,16 @@ class Enemy(animatedsprite.AnimatedSprite, physicsobject.PhysicsObject):
         self.gibs.empty()
         self.frame = 0
         self.projectiles.empty()
+        self.health = self.max_health
 
     def damage(self, dx, dy):
-        pass
+        self.dx = dx
+        self.dy = dy
+
+        self.health -= 1
+
+        if self.health <= 0:
+            self.die()
 
     def die(self):
         self.alive = False
@@ -57,9 +66,8 @@ class Enemy(animatedsprite.AnimatedSprite, physicsobject.PhysicsObject):
         physicsobject.PhysicsObject.update(self, room)
 
         if self.alive:
-            for spike in room.spikes:
-                if self.rect.colliderect(spike.rect):
-                    self.damage(-self.dx, -self.dy)
+            if pygame.sprite.spritecollide(self, room.spikes, False):
+                self.damage(-self.dx, -self.dy)
 
         self.gibs.update(room)
         self.projectiles.update(room)
@@ -78,6 +86,8 @@ class Crawler(Enemy):
 
         self.speed = 0.25 * helpers.SCALE
 
+        self.max_health = self.health = 5
+
     def update(self, room):
         if self.alive:
             self.dx = self.speed
@@ -90,9 +100,6 @@ class Crawler(Enemy):
             self.play('idle')
         else:
             self.play_once('die')
-
-    def damage(self, dx, dy):
-        self.die()
 
     def die(self):
         Enemy.die(self)
