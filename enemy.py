@@ -14,19 +14,17 @@ class Enemy(animatedsprite.AnimatedSprite, physicsobject.PhysicsObject):
         self.spawn_x = x
         self.spawn_y = y
         self.alive = True
-        self.gibs = pygame.sprite.Group()
-        self.projectiles = pygame.sprite.Group()
+        self.gibs = animatedsprite.Group()
+        self.projectiles = animatedsprite.Group()
         self.play('idle')
 
     def reset(self):
         self.rect.x = self.spawn_x
         self.rect.y = self.spawn_y
         self.alive = True
-        for gib in self.gibs:
-            gib.kill()
+        self.gibs.empty()
         self.frame = 0
-        for p in self.projectiles:
-            p.kill()
+        self.projectiles.empty()
 
     def damage(self, dx, dy):
         pass
@@ -63,21 +61,15 @@ class Enemy(animatedsprite.AnimatedSprite, physicsobject.PhysicsObject):
                 if self.rect.colliderect(spike.rect):
                     self.damage(-self.dx, -self.dy)
 
-        for gib in self.gibs:
-            gib.update(room)
-        for p in self.projectiles:
-            p.update(room)
-            if not p.alive:
-                p.kill()
+        self.gibs.update(room)
+        self.projectiles.update(room)
 
         self.animate()
 
     def draw(self, screen, img_hand):
         animatedsprite.AnimatedSprite.draw(self, screen, img_hand)
-        for gib in self.gibs:
-            gib.draw(screen, img_hand)
-        for p in self.projectiles:
-            p.draw(screen, img_hand)
+        self.gibs.draw(screen, img_hand)
+        self.projectiles.draw(screen, img_hand)
 
 
 class Crawler(Enemy):
@@ -131,12 +123,11 @@ class Shrapnel(physicsobject.Gib):
         self.dx = dx
         self.dy = dy
         self.bounce = 0
-        self.alive = True
 
     def update(self, room):
         physicsobject.Gib.update(self, room)
         if self.grounded:
-            self.alive = False
+            self.kill()
 
 
 class Zombie(Enemy):
