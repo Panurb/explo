@@ -1,0 +1,22 @@
+from gameloop import *
+import imagehandler
+
+
+class Main:
+    def __init__(self, width=160, height=120):
+        pygame.init()
+        size = (width, height)
+        self.screen = pygame.display.set_mode(size)
+        self.img_hand = imagehandler.ImageHandler()
+        self.gameloop = GameLoop(self.screen, self.img_hand)
+        self.clock = pygame.time.Clock()
+        self.fps = 60
+
+    def main_loop(self):
+        while True:
+            self.gameloop.update()
+            self.clock.tick(self.fps)
+
+if __name__ == '__main__':
+    main_window = Main(160 * helpers.SCALE, 120 * helpers.SCALE)
+    main_window.main_loop()
