@@ -64,7 +64,7 @@ class Player:
 
         self.attack_buffer = True
         self.bullet_speed = 4
-        self.spread = 0
+        self.spread = 0.5
         self.cooldown = 0
 
         self.bullets = animatedsprite.Group()
@@ -126,7 +126,9 @@ class Player:
                 if self.dy > self.speed['water']:
                     self.dy = max(self.speed['water'], self.dy - self.friction['water'])
 
-    def input(self, keys, room):
+    def input(self, input_hand, room):
+        keys = input_hand.keys_down
+
         if self.alive:
             if keys[pygame.K_d]:
                 self.change_weapon(keys)

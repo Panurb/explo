@@ -33,3 +33,10 @@ def row_to_tiles(image, width, height, row, length):
 
 def speed(dx, dy):
     return math.sqrt(dx**2 + dy**2)
+
+
+def outside_screen(rect):
+    if rect.left > WIDTH or rect.right < 0 or rect.top > HEIGHT or rect.bottom < 0:
+        return True
+    else:
+        return False

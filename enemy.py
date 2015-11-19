@@ -144,7 +144,7 @@ class Zombie(Enemy):
         self.rect.height = 16 * helpers.SCALE
         self.speed = 0.25 * helpers.SCALE
         self.armored = True
-        self.gibs = pygame.sprite.Group()
+        self.gibs = animatedsprite.Group()
         self.cooldown = 0
         self.play('armored')
 

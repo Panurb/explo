@@ -1,7 +1,7 @@
-import math
 import pygame
 import animatedsprite
 import helpers
+import imagehandler
 
 
 class PhysicsObject:
@@ -110,7 +110,7 @@ class Gib(PhysicsObject, animatedsprite.AnimatedSprite):
         self.collision = True
         self.bounce = 0.5
         self.friction = 0.75 * helpers.SCALE
-        self.trail = pygame.sprite.Group()
+        self.trail = animatedsprite.Group()
 
     def update(self, room):
         PhysicsObject.update(self, room)
@@ -118,20 +118,14 @@ class Gib(PhysicsObject, animatedsprite.AnimatedSprite):
 
     def animate(self):
         if helpers.speed(self.dx, self.dy) > 0.5 * helpers.SCALE:
-            particle = animatedsprite.AnimatedSprite('particle')
-            particle.set_position(self.rect.x, self.rect.y)
+            particle = Particle(self.rect.x, self.rect.y, 0, 0, 'blood', 'particle')
             self.trail.add(particle)
-            particle.play_once('blood')
             animatedsprite.AnimatedSprite.animate(self)
 
-        for particle in self.trail:
-            particle.animate()
-            if particle.frame == 4:
-                particle.kill()
+        self.trail.animate()
 
     def draw(self, screen, img_hand):
-        for blood in self.trail:
-            blood.draw(screen, img_hand)
+        self.trail.draw(screen, img_hand)
         animatedsprite.AnimatedSprite.draw(self, screen, img_hand)
 
 
@@ -150,6 +144,8 @@ class Particle(PhysicsObject, animatedsprite.AnimatedSprite):
     def update(self, room):
         PhysicsObject.update(self, room)
         self.animate()
+        if self.frame == imagehandler.ACTIONS['particle'][0][0]:
+            self.kill()
 
     def animate(self):
         particle = animatedsprite.AnimatedSprite('particle')

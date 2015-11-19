@@ -1,7 +1,5 @@
 import pygame
 import helpers
-import level
-import powerup
 import textbox
 
 
@@ -16,10 +14,10 @@ class Editor:
         self.room_y = y
         self.object = 0
 
-    def input(self, lvl, keys_pressed, keys_down, mouse_wheel, mouse_down, mouse_x, mouse_y):
+    def input(self, lvl, input_hand):
         room = lvl.room(self.room_x, self.room_y)
-        if mouse_down[0]:
-            x, y = mouse_to_grid(mouse_x, mouse_y)
+        if input_hand.mouse_down[0]:
+            x, y = mouse_to_grid(input_hand.mouse_x, input_hand.mouse_y)
 
             room.remove_object(x, y)
             char = OBJECTS[self.object]
@@ -27,35 +25,35 @@ class Editor:
             room.add_object(x, y, char)
             room.update_visuals()
 
-        if mouse_down[2]:
-            x, y = mouse_to_grid(mouse_x, mouse_y)
+        if input_hand.mouse_down[2]:
+            x, y = mouse_to_grid(input_hand.mouse_x, input_hand.mouse_y)
 
             room.remove_object(x, y)
             room.update_visuals()
 
-        if mouse_wheel[4]:
+        if input_hand.mouse_wheel[4]:
             if self.object > 0:
                 self.object -= 1
             else:
                 self.object = len(OBJECTS) - 1
 
-        if mouse_wheel[5]:
+        if input_hand.mouse_wheel[5]:
             if self.object < len(OBJECTS) - 1:
                 self.object += 1
             else:
                 self.object = 0
 
-        if keys_pressed[pygame.K_UP]:
+        if input_hand.keys_pressed[pygame.K_UP]:
             self.room_y -= 1
-        if keys_pressed[pygame.K_DOWN]:
+        if input_hand.keys_pressed[pygame.K_DOWN]:
             self.room_y += 1
-        if keys_pressed[pygame.K_RIGHT]:
+        if input_hand.keys_pressed[pygame.K_RIGHT]:
             self.room_x += 1
-        if keys_pressed[pygame.K_LEFT]:
+        if input_hand.keys_pressed[pygame.K_LEFT]:
             self.room_x -= 1
-        if keys_down[pygame.K_c]:
+        if input_hand.keys_down[pygame.K_c]:
             room.clear()
-        if keys_down[pygame.K_s]:
+        if input_hand.keys_down[pygame.K_s]:
             lvl.write()
 
     def draw(self, screen, img_hand):
