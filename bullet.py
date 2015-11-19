@@ -51,7 +51,7 @@ class Bullet(animatedsprite.AnimatedSprite):
                 c.destroy()
 
         if collisions:
-            self.destroy('spark')
+            self.destroy('spark', False)
 
         enemy_collisions = pygame.sprite.spritecollide(self, room.enemies, False)
         enemy_collisions = [c for c in enemy_collisions if c.alive]
@@ -64,7 +64,7 @@ class Bullet(animatedsprite.AnimatedSprite):
             c.damage(0, 0)
 
         if enemy_collisions:
-            self.destroy('blood')
+            self.destroy('blood', False)
 
     def move_y(self, room):
         self.rect.move_ip(0, self.dy)
@@ -82,7 +82,7 @@ class Bullet(animatedsprite.AnimatedSprite):
                 c.destroy()
 
         if collisions:
-            self.destroy('spark')
+            self.destroy('spark', True)
 
         enemy_collisions = pygame.sprite.spritecollide(self, room.enemies, False)
         enemy_collisions = [c for c in enemy_collisions if c.alive]
@@ -95,20 +95,34 @@ class Bullet(animatedsprite.AnimatedSprite):
             c.damage(0, 0)
 
         if enemy_collisions:
-            self.destroy('blood')
+            self.destroy('blood', True)
 
-    def destroy(self, particle_type):
+    def destroy(self, particle_type, vertical):
         if self.alive:
-            self.add_particle(0, 0, -0.2 * self.dx, random.uniform(-2, 2) * helpers.SCALE, particle_type)
-            self.add_particle(0, 0, -0.2 * self.dx, random.uniform(-2, 2) * helpers.SCALE, particle_type)
+            random.uniform(-2, 2) * helpers.SCALE, -0.2 * self.dy,
+            self.add_particle(0, 0, particle_type, vertical)
+            self.add_particle(0, 0, particle_type, vertical)
             self.alive = False
 
-    def add_particle(self, x, y, dx, dy, particle_type):
-        particle = physicsobject.Particle(self.rect.x + x, self.rect.y + y, dx, dy, particle_type, 'particle')
-        if self.dx > 0:
-            particle.rect.right = self.rect.right
-        elif self.dx < 0:
-            particle.rect.left = self.rect.left
+    def add_particle(self, x, y, particle_type, vertical):
+        if vertical:
+            dx = random.uniform(-2, 2) * helpers.SCALE
+            dy = -0.2 * self.dy
+        else:
+            dx = -0.2 * self.dx
+            dy = random.uniform(-2, 2) * helpers.SCALE
+        particle = physicsobject.Particle(self.rect.x + x, self.rect.y + y, dx, dy,
+                                          particle_type, 'particle')
+        if not vertical:
+            if self.dx > 0:
+                particle.rect.right = self.rect.right
+            elif self.dx < 0:
+                particle.rect.left = self.rect.left
+        else:
+            if self.dy > 0:
+                particle.rect.top = self.rect.bottom
+            elif self.dy < 0:
+                particle.rect.bottom = self.rect.centery
         self.particles.add(particle)
 
     def draw(self, screen, img_hand):

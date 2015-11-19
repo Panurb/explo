@@ -130,13 +130,13 @@ class Gib(PhysicsObject, animatedsprite.AnimatedSprite):
 
 
 class Particle(PhysicsObject, animatedsprite.AnimatedSprite):
-    def __init__(self, x, y, dx, dy, type, path):
+    def __init__(self, x, y, dx, dy, action, path):
         animatedsprite.AnimatedSprite.__init__(self,  path)
         PhysicsObject.__init__(self, x, y, self.rect.width, self.rect.height)
 
         self.dx = dx
         self.dy = dy
-        self.play_once(type)
+        self.play_once(action)
         self.collision = False
         self.bounce = 0.5
         self.friction = 0

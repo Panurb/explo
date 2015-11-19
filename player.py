@@ -155,8 +155,10 @@ class Player:
             if keys[pygame.K_a]:
                 self.jump()
             if keys[pygame.K_s]:
-                self.attack()
-
+                if keys[pygame.K_UP]:
+                    self.attack(True)
+                else:
+                    self.attack()
             if not self.grounded or not keys[pygame.K_DOWN]:
                 self.uncrouch(room)
             if not keys[pygame.K_a]:
@@ -254,6 +256,7 @@ class Player:
         self.bullets.update(room)
         self.bullets.animate()
 
+        # TODO: move these to Bullet class
         for b in self.bullets:
             if type(b) is bullet.Sword:
                 b.rect.x += self.dx
@@ -420,7 +423,7 @@ class Player:
             self.jump_buffer = False
 
     def crouch(self):
-        if self.grounded and not self.crouched and self.cooldown == 0:
+        if self.grounded and not self.crouched:
             self.rect.height = helpers.TILE_SIZE
             self.rect.y += helpers.TILE_SIZE
             self.crouched = True
@@ -436,7 +439,7 @@ class Player:
                     return
             self.crouched = False
 
-    def attack(self):
+    def attack(self, up=False):
         if self.weapon == '':
             return
 
@@ -448,15 +451,20 @@ class Player:
                     self.bullets.add(bullet.Sword(self.rect.x - helpers.TILE_SIZE, self.rect.y))
                 self.attack_buffer = False
             elif self.weapon == 'gun':
-                spread = random.uniform(-self.spread, self.spread)
-                if self.dir == 'right':
-                    self.bullets.add(bullet.Bullet(self.rect.x + helpers.TILE_SIZE, self.rect.y, self.bullet_speed,
-                                                   spread))
-                elif self.dir == 'left':
-                    self.bullets.add(bullet.Bullet(self.rect.x - helpers.TILE_SIZE, self.rect.y, -self.bullet_speed,
-                                                   spread))
+                if self.crouched:
+                    spread = random.uniform(-self.spread, 0)
+                else:
+                    spread = random.uniform(-self.spread, self.spread)
+                if not up:
+                    if self.dir == 'right':
+                        self.bullets.add(bullet.Bullet(self.rect.x, self.rect.y, self.bullet_speed, spread))
+                    elif self.dir == 'left':
+                        self.bullets.add(bullet.Bullet(self.rect.x, self.rect.y, -self.bullet_speed, spread))
+                else:
+                    self.bullets.add(bullet.Bullet(self.rect.x, self.rect.y, spread, -self.bullet_speed))
                 if not self.abilities['full auto']:
                     self.attack_buffer = False
+
             self.cooldown = self.weapon_cooldown[self.weapon]
 
     def change_weapon(self, keys):

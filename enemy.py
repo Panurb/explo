@@ -172,12 +172,12 @@ class Zombie(Enemy):
                 if self.speed > 0:
                     for i in range(40 * helpers.SCALE):
                         if player.rect.collidepoint(self.rect.x + i * helpers.SCALE, self.rect.y):
-                            self.projectiles.add(bullet.Bullet(self.rect.x + 8 * helpers.SCALE, self.rect.y, 2))
+                            self.projectiles.add(bullet.Bullet(self.rect.x + 8 * helpers.SCALE, self.rect.y, 2, 0))
                             return
                 elif self.speed < 0:
                     for i in range(40 * helpers.SCALE):
                         if player.rect.collidepoint(self.rect.x - i * helpers.SCALE, self.rect.y):
-                            self.projectiles.add(bullet.Bullet(self.rect.x - 8 * helpers.SCALE, self.rect.y, -2))
+                            self.projectiles.add(bullet.Bullet(self.rect.x - 8 * helpers.SCALE, self.rect.y, -2, 0))
                             return
             else:
                 self.cooldown -= 1
