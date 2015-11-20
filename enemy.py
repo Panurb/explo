@@ -129,11 +129,11 @@ class Shrapnel(physicsobject.Gib):
         self.rect.height = 8 * helpers.SCALE
         self.dx = dx
         self.dy = dy
-        self.bounce = 0
+        self.collision = False
 
     def update(self, room):
         physicsobject.Gib.update(self, room)
-        if self.grounded:
+        if helpers.outside_screen(self.rect) and not self.trail:
             self.kill()
 
 
@@ -209,6 +209,7 @@ class Zombie(Enemy):
         Enemy.reset(self)
         self.speed = 0.25 * helpers.SCALE
         self.dx = self.speed
+        self.dy = 0
         if self.dir == 'left':
             self.flip()
         self.armored = True

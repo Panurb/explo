@@ -10,11 +10,10 @@ import physicsobject
 class Bullet(animatedsprite.AnimatedSprite):
     def __init__(self, x, y, dx, dy):
         animatedsprite.AnimatedSprite.__init__(self, 'bullet')
-        self.set_position(x, y)
+        self.rect.x = x
+        self.rect.y = y
         self.dx = dx * helpers.SCALE
         self.dy = dy * helpers.SCALE
-        if dx != 0:
-            self.rotation = math.degrees(math.atan(-self.dy / abs(self.dx)))
         self.alive = True
         if self.dx < 0:
             self.flip()
@@ -30,10 +29,10 @@ class Bullet(animatedsprite.AnimatedSprite):
             if helpers.outside_screen(self.rect):
                 self.kill()
         else:
-            self.particles.update(room)
-
             if not self.particles:
                 self.kill()
+
+        self.particles.update(room)
 
     def move_x(self, room):
         self.rect.move_ip(self.dx, 0)
@@ -100,29 +99,19 @@ class Bullet(animatedsprite.AnimatedSprite):
     def destroy(self, particle_type, vertical):
         if self.alive:
             random.uniform(-2, 2) * helpers.SCALE, -0.2 * self.dy,
-            self.add_particle(0, 0, particle_type, vertical)
-            self.add_particle(0, 0, particle_type, vertical)
+            self.add_particle(0, 0, -0.2, 2, particle_type, vertical)
+            self.add_particle(0, 0, -0.2, 2, particle_type, vertical)
             self.alive = False
 
-    def add_particle(self, x, y, particle_type, vertical):
+    def add_particle(self, x, y, speed, spread, particle_type, vertical):
         if vertical:
-            dx = random.uniform(-2, 2) * helpers.SCALE
-            dy = -0.2 * self.dy
+            dx = random.uniform(-spread, spread) * helpers.SCALE
+            dy = speed * self.dy
         else:
-            dx = -0.2 * self.dx
-            dy = random.uniform(-2, 2) * helpers.SCALE
-        particle = physicsobject.Particle(self.rect.x + x, self.rect.y + y, dx, dy,
-                                          particle_type, 'particle')
-        if not vertical:
-            if self.dx > 0:
-                particle.rect.right = self.rect.right
-            elif self.dx < 0:
-                particle.rect.left = self.rect.left
-        else:
-            if self.dy > 0:
-                particle.rect.top = self.rect.bottom
-            elif self.dy < 0:
-                particle.rect.bottom = self.rect.centery
+            dx = speed * self.dx
+            dy = random.uniform(-spread, spread) * helpers.SCALE
+        particle = physicsobject.Particle(self.rect.x + x, self.rect.y + y, dx, dy, particle_type, True)
+
         self.particles.add(particle)
 
     def draw(self, screen, img_hand):

@@ -3,7 +3,7 @@ import helpers
 
 SIZES = {
     'bg': (160, 120),
-    'bullet': (8, 8),
+    'bullet': (4, 4),
     'chars': (4, 4),
     'checkpoint': (8, 8),
     'crawler': (8, 8),
@@ -32,8 +32,7 @@ ACTIONS = {
         ['sky', 1]
     ],
     'bullet': [
-        ['idle', 1],
-        ['explode', 4]
+        ['idle', 1]
     ],
     'chars': [
         ['idle', 36]

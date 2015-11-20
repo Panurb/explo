@@ -17,7 +17,8 @@ class InputHandler:
                              pygame.K_RIGHT: False,
                              pygame.K_LEFT: False,
                              pygame.K_p: False,
-                             pygame.K_SPACE: False}
+                             pygame.K_SPACE: False,
+                             pygame.K_r: False}
         self.mouse_wheel = {4: False,
                             5: False}
 

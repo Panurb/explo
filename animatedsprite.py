@@ -12,9 +12,8 @@ class AnimatedSprite(pygame.sprite.Sprite):
         self.action = 'idle'
         self.image = None
         for action in imagehandler.ACTIONS[self.name]:
-            name = action[0]
             if not self.action:
-                self.action = name
+                self.action = action[0]
 
         self.rect = pygame.Rect(0, 0, imagehandler.SIZES[self.name][0], imagehandler.SIZES[self.name][1])
         self.rect.width *= helpers.SCALE

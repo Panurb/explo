@@ -74,6 +74,7 @@ class PhysicsObject:
             self.dy += helpers.GRAVITY
 
 
+# TODO: replace uses by Gib
 class Debris(PhysicsObject, animatedsprite.AnimatedSprite):
     def __init__(self, x, y, dx, dy, part, path):
         animatedsprite.AnimatedSprite.__init__(self,  path)
@@ -114,15 +115,11 @@ class Gib(PhysicsObject, animatedsprite.AnimatedSprite):
 
     def update(self, room):
         PhysicsObject.update(self, room)
-        self.animate()
-
-    def animate(self):
-        if helpers.speed(self.dx, self.dy) > 0.5 * helpers.SCALE:
-            particle = Particle(self.rect.x, self.rect.y, 0, 0, 'blood', 'particle')
+        if not helpers.outside_screen(self.rect) and helpers.speed(self.dx, self.dy) > 0.5 * helpers.SCALE:
+            particle = Particle(self.rect.x, self.rect.y, 0, 0, 'blood', False)
             self.trail.add(particle)
-            animatedsprite.AnimatedSprite.animate(self)
-
-        self.trail.animate()
+        self.trail.update(room)
+        self.animate()
 
     def draw(self, screen, img_hand):
         self.trail.draw(screen, img_hand)
@@ -130,21 +127,20 @@ class Gib(PhysicsObject, animatedsprite.AnimatedSprite):
 
 
 class Particle(PhysicsObject, animatedsprite.AnimatedSprite):
-    def __init__(self, x, y, dx, dy, action, path):
-        animatedsprite.AnimatedSprite.__init__(self,  path)
+    def __init__(self, x, y, dx, dy, action, gravity):
+        animatedsprite.AnimatedSprite.__init__(self,  'particle')
         PhysicsObject.__init__(self, x, y, self.rect.width, self.rect.height)
 
         self.dx = dx
         self.dy = dy
         self.play_once(action)
         self.collision = False
-        self.bounce = 0.5
-        self.friction = 0
+        self.gravity = gravity
 
     def update(self, room):
         PhysicsObject.update(self, room)
         self.animate()
-        if self.frame == imagehandler.ACTIONS['particle'][0][0]:
+        if self.frame == imagehandler.ACTIONS['particle'][0][1] - 1:
             self.kill()
 
     def animate(self):

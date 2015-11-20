@@ -18,6 +18,7 @@ class GameLoop:
         self.paused = False
         self.editor_mode = False
         self.editor = editor.Editor(self.player.room_x, self.player.room_y)
+        self.text = textbox.Textbox('PAUSED')
 
     def update(self):
         self.input_hand.update()
@@ -32,11 +33,10 @@ class GameLoop:
         if self.editor_mode:
             try:
                 self.editor.input(self.level, self.input_hand)
-
                 self.level.room(self.editor.room_x, self.editor.room_y).draw(self.screen, self.img_hand)
             except KeyError:
-                self.level.rooms[(self.editor.room_x, self.editor.room_y)] = level.Room(
-                    [], self.editor.room_x, self.editor.room_y, 'sky')
+                room = level.Room([], self.editor.room_x, self.editor.room_y, 'sky')
+                self.level.rooms[(self.editor.room_x, self.editor.room_y)] = room
             self.editor.draw(self.screen, self.img_hand)
         else:
             if not self.paused:
@@ -49,13 +49,17 @@ class GameLoop:
                 self.player.input(self.input_hand, room)
 
                 room.update()
+                last_room = (self.player.room_x, self.player.room_y)
                 self.player.update(room)
 
                 room.draw(self.screen, self.img_hand)
                 self.player.draw(self.screen, self.img_hand)
+
+                # Done after drawing to avoid visual glitches
+                if (self.player.room_x, self.player.room_y) != last_room:
+                    self.level.rooms[last_room].reset()
             else:
-                text = textbox.Textbox('PAUSED')
-                text.draw(self.screen, self.img_hand)
+                self.text.draw(self.screen, self.img_hand)
                 self.map.draw(self.screen, self.img_hand, self.player.room_x, self.player.room_y)
 
         pygame.display.update()

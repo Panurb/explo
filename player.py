@@ -4,6 +4,7 @@ import animatedsprite
 import enemy
 import helpers
 import bullet
+import imagehandler
 import physicsobject
 import save
 import textbox
@@ -74,6 +75,9 @@ class Player:
 
         self.text = textbox.Textbox('')
 
+        self.moving = False
+        self.climbing = False
+
     def update(self, room):
         self.move_x(room)
         self.move_y(room)
@@ -127,45 +131,52 @@ class Player:
                     self.dy = max(self.speed['water'], self.dy - self.friction['water'])
 
     def input(self, input_hand, room):
-        keys = input_hand.keys_down
+        self.moving = False
+        self.climbing = False
+
+        keys_down = input_hand.keys_down
 
         if self.alive:
-            if keys[pygame.K_d]:
-                self.change_weapon(keys)
+            if keys_down[pygame.K_d]:
+                self.change_weapon(keys_down)
                 return
             # TODO: use SHIFT modifier for running
-            if keys[pygame.K_RIGHT]:
+            if keys_down[pygame.K_RIGHT]:
+                self.moving = True
                 self.uncrouch(room)
-                if self.abilities['run'] and not keys[pygame.K_LSHIFT]:
+                if self.abilities['run'] and not keys_down[pygame.K_LSHIFT]:
                     self.move(self.speed['run'])
                 else:
                     self.move(self.speed['walk'])
-            if keys[pygame.K_LEFT]:
+            if keys_down[pygame.K_LEFT]:
+                self.moving = True
                 self.uncrouch(room)
-                if self.abilities['run'] and not keys[pygame.K_LSHIFT]:
+                if self.abilities['run'] and not keys_down[pygame.K_LSHIFT]:
                     self.move(-self.speed['run'])
                 else:
                     self.move(-self.speed['walk'])
-            if keys[pygame.K_UP]:
+            if keys_down[pygame.K_UP]:
+                self.climbing = True
                 self.climb(-self.speed['ladder'], room)
-            if keys[pygame.K_DOWN]:
-                if not keys[pygame.K_LEFT] and not keys[pygame.K_RIGHT]:
+            if keys_down[pygame.K_DOWN]:
+                self.climbing = True
+                if not keys_down[pygame.K_LEFT] and not keys_down[pygame.K_RIGHT]:
                     self.crouch()
                 self.climb(self.speed['ladder'], room)
-            if keys[pygame.K_a]:
+            if keys_down[pygame.K_a]:
                 self.jump()
-            if keys[pygame.K_s]:
-                if keys[pygame.K_UP]:
+            if keys_down[pygame.K_s]:
+                if keys_down[pygame.K_UP]:
                     self.attack(True)
                 else:
                     self.attack()
-            if not self.grounded or not keys[pygame.K_DOWN]:
+            if not self.grounded or not keys_down[pygame.K_DOWN]:
                 self.uncrouch(room)
-            if not keys[pygame.K_a]:
+            if not keys_down[pygame.K_a]:
                 self.jump_buffer = True
-            if not keys[pygame.K_s]:
+            if not keys_down[pygame.K_s]:
                 self.attack_buffer = True
-        if keys[pygame.K_r]:
+        if input_hand.keys_pressed[pygame.K_r]:
             self.reset(room)
 
     def animate(self):
@@ -245,10 +256,10 @@ class Player:
             self.sprite_body.play_once('explode')
             self.sprite_legs.play_once('explode')
 
-        self.sprite_body.set_position(self.rect.centerx - helpers.TILE_SIZE,
-                                      self.rect.y + self.rect.height - 16 * helpers.SCALE)
-        self.sprite_legs.set_position(self.rect.centerx - helpers.TILE_SIZE,
-                                      self.rect.y + self.rect.height - 16 * helpers.SCALE)
+        x = self.rect.centerx - helpers.TILE_SIZE
+        y = self.rect.y + self.rect.height - 16 * helpers.SCALE
+        self.sprite_body.set_position(x, y)
+        self.sprite_legs.set_position(x, y)
         self.sprite_body.animate()
         self.sprite_legs.animate()
 
@@ -262,12 +273,11 @@ class Player:
                 b.rect.x += self.dx
 
             # Reflecting bullets
-            if self.alive:
-                if type(b) is bullet.Sword:
-                    for e in room.enemies:
-                        for p in e.projectiles:
-                            if b.rect.colliderect(p.rect):
-                                p.dx = -p.dx
+            if type(b) is bullet.Sword:
+                for e in room.enemies:
+                    for p in e.projectiles:
+                        if b.rect.colliderect(p.rect):
+                            p.dx = -p.dx
 
     def apply_damage(self, room):
         for spike in room.spikes:
@@ -286,20 +296,16 @@ class Player:
                 e.vision(self)
 
     def apply_saving(self, room):
-        for cp in room.checkpoints:
-            if self.rect.colliderect(cp.rect):
-                self.save.room_x = room.x
-                self.save.room_y = room.y
-                self.save.x = cp.rect.x
-                self.save.y = cp.rect.y - helpers.TILE_SIZE
-                self.save.dir = self.dir
-                for ability in self.abilities:
-                    self.save.abilities[ability] = self.abilities[ability]
+        for cp in pygame.sprite.spritecollide(self, room.checkpoints, False):
+            self.save.room_x = room.x
+            self.save.room_y = room.y
+            self.save.x = cp.rect.x
+            self.save.y = cp.rect.y - helpers.TILE_SIZE
+            self.save.dir = self.dir
+            for ability in self.abilities:
+                self.save.abilities[ability] = self.abilities[ability]
 
-            cp.active = False
-            if room.x == self.save.room_x and room.y == self.save.room_y:
-                if cp.rect.x == self.save.x and cp.rect.y == self.save.y + helpers.TILE_SIZE:
-                    cp.active = True
+            cp.active = True
 
     def apply_powerups(self, room):
         for p in room.powerups:
@@ -307,18 +313,18 @@ class Player:
                 p.visible = True
             else:
                 p.visible = False
-            if self.rect.colliderect(p.rect):
-                if self.abilities[p.ability] is False:
-                    self.text = textbox.Textbox(p.ability + '\\' + p.text, 120)
-                    self.abilities[p.ability] = True
-                    if p.ability == 'sword' or p.ability == 'gun':
-                        self.weapon = p.ability
+        for p in pygame.sprite.spritecollide(self, room.powerups, False):
+            if self.abilities[p.ability] is False:
+                self.abilities[p.ability] = True
+                self.text.set_string(p.ability + '\\' + p.text)
+                self.text.time = 120
+                if p.ability == 'sword' or p.ability == 'gun':
+                    self.weapon = p.ability
 
     def change_room(self, room):
         window_rect = pygame.Rect(0, 0, helpers.WIDTH, helpers.HEIGHT)
         if not window_rect.collidepoint(self.rect.center):
             self.bullets.empty()
-            room.reset()
 
             if self.rect.centerx >= helpers.WIDTH:
                 self.room_x += 1
@@ -336,16 +342,15 @@ class Player:
     def apply_friction(self):
         friction = self.friction['normal']
 
-        keys = pygame.key.get_pressed()
         if self.grounded:
-            if (not keys[pygame.K_LEFT] and not keys[pygame.K_RIGHT]) or self.crouched:
+            if not self.moving:
                 if self.dx > 0:
                     self.dx = max(0, self.dx - friction)
                 if self.dx < 0:
                     self.dx = min(0, self.dx + friction)
 
         if self.laddered:
-            if not keys[pygame.K_UP] and not keys[pygame.K_DOWN]:
+            if not self.climbing:
                 self.dy = 0
 
     def apply_gravity(self):
@@ -432,11 +437,10 @@ class Player:
         if self.crouched:
             self.rect.height = 16 * helpers.SCALE
             self.rect.y -= helpers.TILE_SIZE
-            for wall in room.walls:
-                if self.rect.colliderect(wall.rect):
-                    self.rect.height = helpers.TILE_SIZE
-                    self.rect.y += helpers.TILE_SIZE
-                    return
+            if pygame.sprite.spritecollide(self, room.walls, False):
+                self.rect.height = helpers.TILE_SIZE
+                self.rect.y += helpers.TILE_SIZE
+                return
             self.crouched = False
 
     def attack(self, up=False):
@@ -456,12 +460,14 @@ class Player:
                 else:
                     spread = random.uniform(-self.spread, self.spread)
                 if not up:
+                    y = self.rect.y + 0.5 * imagehandler.SIZES['bullet'][1] * helpers.SCALE
                     if self.dir == 'right':
-                        self.bullets.add(bullet.Bullet(self.rect.x, self.rect.y, self.bullet_speed, spread))
+                        self.bullets.add(bullet.Bullet(self.rect.x, y, self.bullet_speed, spread))
                     elif self.dir == 'left':
-                        self.bullets.add(bullet.Bullet(self.rect.x, self.rect.y, -self.bullet_speed, spread))
+                        self.bullets.add(bullet.Bullet(self.rect.x, y, -self.bullet_speed, spread))
                 else:
-                    self.bullets.add(bullet.Bullet(self.rect.x, self.rect.y, spread, -self.bullet_speed))
+                    x = self.rect.x + 0.5 * imagehandler.SIZES['bullet'][1] * helpers.SCALE
+                    self.bullets.add(bullet.Bullet(x, self.rect.y, spread, -self.bullet_speed))
                 if not self.abilities['full auto']:
                     self.attack_buffer = False
 

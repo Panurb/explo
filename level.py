@@ -164,7 +164,6 @@ class Room:
 
     def reset(self):
         self.enemies.reset()
-        self.powerups.reset()
         self.destroyables.reset()
 
     def draw(self, screen, img_hand):

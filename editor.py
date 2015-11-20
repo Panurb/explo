@@ -13,6 +13,7 @@ class Editor:
         self.room_x = x
         self.room_y = y
         self.object = 0
+        self.text = textbox.Textbox(OBJECT_NAMES[self.object])
 
     def input(self, lvl, input_hand):
         room = lvl.room(self.room_x, self.room_y)
@@ -43,6 +44,8 @@ class Editor:
             else:
                 self.object = 0
 
+        self.text.set_string(OBJECT_NAMES[self.object])
+
         if input_hand.keys_pressed[pygame.K_UP]:
             self.room_y -= 1
         if input_hand.keys_pressed[pygame.K_DOWN]:
@@ -57,8 +60,7 @@ class Editor:
             lvl.write()
 
     def draw(self, screen, img_hand):
-        text = textbox.Textbox(OBJECT_NAMES[self.object])
-        text.draw(screen, img_hand)
+        self.text.draw(screen, img_hand)
 
 
 def mouse_to_grid(mouse_x, mouse_y):
