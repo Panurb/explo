@@ -77,10 +77,26 @@ class Player:
 
         self.moving = False
         self.climbing = False
+        self.sliding = False
 
     def update(self, room):
         self.move_x(room)
         self.move_y(room)
+
+        collider_right = pygame.sprite.Sprite()
+        collider_right.rect = pygame.Rect(self.rect.right, self.rect.y, 1, self.rect.height)
+        collider_left = pygame.sprite.Sprite()
+        collider_left.rect = pygame.Rect(self.rect.left - 1, self.rect.y, 1, self.rect.height)
+        if pygame.sprite.spritecollide(collider_right, room.walls, False):
+            if not self.grounded and self.dir == 'right':
+                self.flip()
+            self.walled = True
+        elif pygame.sprite.spritecollide(collider_left, room.walls, False):
+            if not self.grounded and self.dir == 'left':
+                self.flip()
+            self.walled = True
+        else:
+            self.walled = False
 
         self.apply_damage(room)
         self.apply_saving(room)
@@ -105,7 +121,7 @@ class Player:
 
         self.text.update()
 
-        self.change_room(room)
+        self.change_room()
 
     def apply_ladders(self, room):
         collided = False
@@ -133,6 +149,7 @@ class Player:
     def input(self, input_hand, room):
         self.moving = False
         self.climbing = False
+        self.sliding = False
 
         keys_down = input_hand.keys_down
 
@@ -163,6 +180,8 @@ class Player:
                 if not keys_down[pygame.K_LEFT] and not keys_down[pygame.K_RIGHT]:
                     self.crouch()
                 self.climb(self.speed['ladder'], room)
+                if self.walled:
+                    self.sliding = True
             if keys_down[pygame.K_a]:
                 self.jump()
             if keys_down[pygame.K_s]:
@@ -197,6 +216,8 @@ class Player:
                         self.sprite_body.play('climb')
                     else:
                         self.sprite_body.pause()
+                elif self.walled:
+                    self.sprite_body.play('wall_hug')
                 else:
                     if self.dy < 0:
                         self.sprite_body.play_once('jump', 0)
@@ -245,6 +266,8 @@ class Player:
                     self.sprite_legs.play('climb')
                 else:
                     self.sprite_legs.pause()
+            elif self.walled:
+                self.sprite_legs.play('wall_hug')
             else:
                 if self.dy < 0:
                     self.sprite_legs.play_once('jump', 0)
@@ -321,7 +344,7 @@ class Player:
                 if p.ability == 'sword' or p.ability == 'gun':
                     self.weapon = p.ability
 
-    def change_room(self, room):
+    def change_room(self):
         window_rect = pygame.Rect(0, 0, helpers.WIDTH, helpers.HEIGHT)
         if not window_rect.collidepoint(self.rect.center):
             self.bullets.empty()
@@ -355,7 +378,7 @@ class Player:
 
     def apply_gravity(self):
         if self.alive and not self.laddered:
-            if self.walled and self.abilities['wall jump']:
+            if self.walled and self.abilities['wall jump'] and not self.sliding:
                 self.dy += helpers.GRAVITY / 2
                 self.dy = min(self.dy, self.speed['wall'])
             elif not self.jump_buffer and self.dy < 0:
@@ -376,10 +399,10 @@ class Player:
                 if not self.crouched:
                     self.dx = max(speed, self.dx - acceleration)
         if speed > 0:
-            if self.dir == 'left':
+            if self.dir == 'left' and not self.walled:
                 self.flip()
         elif speed < 0:
-            if self.dir == 'right':
+            if self.dir == 'right' and not self.walled:
                 self.flip()
 
     def climb(self, speed, room):
@@ -399,7 +422,6 @@ class Player:
             self.dir = 'left'
         elif self.dir == 'left':
             self.dir = 'right'
-        self.walled = False
 
     def jump(self):
         if not self.jump_buffer or self.crouched:
@@ -416,12 +438,11 @@ class Player:
             self.laddered = False
         elif self.walled and self.abilities['wall jump']:
             if self.dir == 'left':
-                self.dx = self.speed['run']
-            elif self.dir == 'right':
                 self.dx = -self.speed['run']
+            elif self.dir == 'right':
+                self.dx = self.speed['run']
             self.dy = self.jump_height['wall']
             self.jump_buffer = False
-            self.walled = False
         elif self.abilities['double jump'] and self.jump_count < 2:
             self.dy = self.jump_height['double']
             self.jump_count = 2
@@ -501,9 +522,6 @@ class Player:
 
         if collisions:
             self.dx = 0
-            self.walled = True
-        else:
-            self.walled = False
 
     def move_y(self, room):
         self.rect.move_ip(0, self.dy)
@@ -526,6 +544,8 @@ class Player:
         if collisions:
             self.dy = helpers.GRAVITY
         else:
+            if self.grounded and self.walled:
+                self.flip()
             self.grounded = False
 
         if not self.laddered:

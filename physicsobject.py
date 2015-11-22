@@ -118,8 +118,8 @@ class Gib(PhysicsObject, animatedsprite.AnimatedSprite):
         if not helpers.outside_screen(self.rect) and helpers.speed(self.dx, self.dy) > 0.5 * helpers.SCALE:
             particle = Particle(self.rect.x, self.rect.y, 0, 0, 'blood', False)
             self.trail.add(particle)
+            self.animate()
         self.trail.update(room)
-        self.animate()
 
     def draw(self, screen, img_hand):
         self.trail.draw(screen, img_hand)

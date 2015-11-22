@@ -79,19 +79,16 @@ ACTIONS = {
         ['crouch', 8],
         ['jump', 3],
         ['climb', 6],
+        ['wall_hug', 1],
         ['explode', 5],
-        ['sword_idle', 8],
-        ['sword_walk', 12],
-        ['sword_jump', 3],
-        ['sword_attack', 5],
-        ['sword_crouch', 1],
-        ['sword_crouch_attack', 5],
         ['gun_idle', 8],
         ['gun_walk', 12],
         ['gun_jump', 3],
         ['gun_attack', 3],
+        ['gun_up', 1],
         ['gun_crouch', 1],
-        ['gun_crouch_attack', 3]
+        ['gun_crouch_attack', 3],
+        ['gun_wall_hug', 1]
     ],
     'player_gibs': [
         ['head', 1],
@@ -105,6 +102,7 @@ ACTIONS = {
         ['crouch', 1],
         ['jump', 3],
         ['climb', 6],
+        ['wall_hug', 1],
         ['explode', 1]
     ],
     'powerup': [
