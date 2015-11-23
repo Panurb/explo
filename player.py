@@ -56,6 +56,9 @@ class Player:
         self.laddered = False
         self.crouched = False
         self.watered = False
+        self.moving = False
+        self.climbing = False
+        self.sliding = False
 
         self.dir = 'right'
         self.jump_count = 0
@@ -75,28 +78,17 @@ class Player:
 
         self.text = textbox.Textbox('')
 
-        self.moving = False
-        self.climbing = False
-        self.sliding = False
-
     def update(self, room):
         self.move_x(room)
         self.move_y(room)
 
-        collider_right = pygame.sprite.Sprite()
-        collider_right.rect = pygame.Rect(self.rect.right, self.rect.y, 1, self.rect.height)
-        collider_left = pygame.sprite.Sprite()
-        collider_left.rect = pygame.Rect(self.rect.left - 1, self.rect.y, 1, self.rect.height)
-        if pygame.sprite.spritecollide(collider_right, room.walls, False):
-            if not self.grounded and self.dir == 'right':
-                self.flip()
-            self.walled = True
-        elif pygame.sprite.spritecollide(collider_left, room.walls, False):
-            if not self.grounded and self.dir == 'left':
-                self.flip()
-            self.walled = True
-        else:
-            self.walled = False
+        if self.abilities['wall jump']:
+            collider = pygame.sprite.Sprite()
+            collider.rect = pygame.Rect(self.rect.left - 1, self.rect.y, self.rect.width + 2, self.rect.height)
+            if pygame.sprite.spritecollide(collider, room.walls, False):
+                self.walled = True
+            else:
+                self.walled = False
 
         self.apply_damage(room)
         self.apply_saving(room)
@@ -176,12 +168,10 @@ class Player:
                 self.climbing = True
                 self.climb(-self.speed['ladder'], room)
             if keys_down[pygame.K_DOWN]:
-                self.climbing = True
+                self.sliding = True
                 if not keys_down[pygame.K_LEFT] and not keys_down[pygame.K_RIGHT]:
                     self.crouch()
                 self.climb(self.speed['ladder'], room)
-                if self.walled:
-                    self.sliding = True
             if keys_down[pygame.K_a]:
                 self.jump()
             if keys_down[pygame.K_s]:
@@ -216,7 +206,7 @@ class Player:
                         self.sprite_body.play('climb')
                     else:
                         self.sprite_body.pause()
-                elif self.walled:
+                elif self.walled and self.abilities['wall jump']:
                     self.sprite_body.play('wall_hug')
                 else:
                     if self.dy < 0:
@@ -232,6 +222,8 @@ class Player:
                             self.sprite_body.play(self.weapon + '_crouch_attack')
                         else:
                             self.sprite_body.play(self.weapon + '_crouch')
+                    elif self.climbing:
+                        self.sprite_body.play(self.weapon + '_up')
                     else:
                         if self.cooldown > 0:
                             self.sprite_body.play(self.weapon + '_attack')
@@ -266,7 +258,7 @@ class Player:
                     self.sprite_legs.play('climb')
                 else:
                     self.sprite_legs.pause()
-            elif self.walled:
+            elif self.walled and self.abilities['wall jump']:
                 self.sprite_legs.play('wall_hug')
             else:
                 if self.dy < 0:
@@ -288,19 +280,6 @@ class Player:
 
     def update_bullets(self, room):
         self.bullets.update(room)
-        self.bullets.animate()
-
-        # TODO: move these to Bullet class
-        for b in self.bullets:
-            if type(b) is bullet.Sword:
-                b.rect.x += self.dx
-
-            # Reflecting bullets
-            if type(b) is bullet.Sword:
-                for e in room.enemies:
-                    for p in e.projectiles:
-                        if b.rect.colliderect(p.rect):
-                            p.dx = -p.dx
 
     def apply_damage(self, room):
         for spike in room.spikes:
@@ -373,7 +352,7 @@ class Player:
                     self.dx = min(0, self.dx + friction)
 
         if self.laddered:
-            if not self.climbing:
+            if not self.climbing and not self.sliding:
                 self.dy = 0
 
     def apply_gravity(self):
@@ -437,10 +416,14 @@ class Player:
             self.jump_count = 1
             self.laddered = False
         elif self.walled and self.abilities['wall jump']:
+            self.flip()
+            speed = self.speed['walk']
+            if self.abilities['run']:
+                speed = self.speed['run']
             if self.dir == 'left':
-                self.dx = -self.speed['run']
+                self.dx = -speed
             elif self.dir == 'right':
-                self.dx = self.speed['run']
+                self.dx = speed
             self.dy = self.jump_height['wall']
             self.jump_buffer = False
         elif self.abilities['double jump'] and self.jump_count < 2:
@@ -483,9 +466,17 @@ class Player:
                 if not up:
                     y = self.rect.y + 0.5 * imagehandler.SIZES['bullet'][1] * helpers.SCALE
                     if self.dir == 'right':
-                        self.bullets.add(bullet.Bullet(self.rect.x, y, self.bullet_speed, spread))
+                        if self.walled and not self.grounded:
+                            dx = -self.bullet_speed
+                        else:
+                            dx = self.bullet_speed
+                        self.bullets.add(bullet.Bullet(self.rect.x, y, dx, spread))
                     elif self.dir == 'left':
-                        self.bullets.add(bullet.Bullet(self.rect.x, y, -self.bullet_speed, spread))
+                        if self.walled and not self.grounded:
+                            dx = self.bullet_speed
+                        else:
+                            dx = -self.bullet_speed
+                        self.bullets.add(bullet.Bullet(self.rect.x, y, dx, spread))
                 else:
                     x = self.rect.x + 0.5 * imagehandler.SIZES['bullet'][1] * helpers.SCALE
                     self.bullets.add(bullet.Bullet(x, self.rect.y, spread, -self.bullet_speed))
@@ -544,8 +535,6 @@ class Player:
         if collisions:
             self.dy = helpers.GRAVITY
         else:
-            if self.grounded and self.walled:
-                self.flip()
             self.grounded = False
 
         if not self.laddered:

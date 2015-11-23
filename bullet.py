@@ -128,11 +128,14 @@ class Sword(Bullet):
         self.lifespan = 4
 
     def collide(self, room):
-        Bullet.collide(self, room)
         if self.lifespan == 0:
             self.alive = False
         else:
             self.lifespan -= 1
+
+        for e in room.enemies:
+            for p in pygame.sprite.collidesprite(self, e.projectiles, False):
+                p.dx = -p.dx
 
     def draw(self, screen, img_hand):
         pass

@@ -74,7 +74,6 @@ class PhysicsObject:
             self.dy += helpers.GRAVITY
 
 
-# TODO: replace uses by Gib
 class Debris(PhysicsObject, animatedsprite.AnimatedSprite):
     def __init__(self, x, y, dx, dy, part, path):
         animatedsprite.AnimatedSprite.__init__(self,  path)
@@ -88,16 +87,8 @@ class Debris(PhysicsObject, animatedsprite.AnimatedSprite):
 
     def update(self, room):
         PhysicsObject.update(self, room)
-        self.animate()
-
-    def animate(self):
         if helpers.speed(self.dx, self.dy) > 0.5 * helpers.SCALE:
-            particle = animatedsprite.AnimatedSprite('particle')
-            particle.set_position(self.rect.x, self.rect.y)
-            animatedsprite.AnimatedSprite.animate(self)
-
-    def draw(self, screen, img_hand):
-        animatedsprite.AnimatedSprite.draw(self, screen, img_hand)
+            self.animate()
 
 
 class Gib(PhysicsObject, animatedsprite.AnimatedSprite):
