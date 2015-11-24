@@ -85,7 +85,7 @@ ACTIONS = {
         ['gun_walk', 12],
         ['gun_jump', 3],
         ['gun_attack', 3],
-        ['gun_up', 1],
+        ['gun_up', 8],
         ['gun_crouch', 1],
         ['gun_crouch_attack', 3],
         ['gun_wall_hug', 1]

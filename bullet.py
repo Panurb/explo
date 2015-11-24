@@ -5,15 +5,16 @@ import animatedsprite
 import helpers
 import level
 import physicsobject
+import tile
 
 
 class Bullet(animatedsprite.AnimatedSprite):
-    def __init__(self, x, y, dx, dy):
+    def __init__(self, x, y, speed, angle):
         animatedsprite.AnimatedSprite.__init__(self, 'bullet')
         self.rect.x = x
         self.rect.y = y
-        self.dx = dx * helpers.SCALE
-        self.dy = dy * helpers.SCALE
+        self.dx = speed * math.cos(math.radians(angle))
+        self.dy = speed * math.sin(math.radians(angle))
         self.alive = True
         if self.dx < 0:
             self.flip()
@@ -46,7 +47,7 @@ class Bullet(animatedsprite.AnimatedSprite):
                 self.rect.right = c.rect.left
             if self.dx < 0:
                 self.rect.left = c.rect.right
-            if type(c) is level.Destroyable:
+            if type(c) is tile.Destroyable:
                 c.destroy()
 
         if collisions:
@@ -77,7 +78,7 @@ class Bullet(animatedsprite.AnimatedSprite):
                 self.rect.bottom = c.rect.top
             if self.dy < 0:
                 self.rect.top = c.rect.bottom
-            if type(c) is level.Destroyable:
+            if type(c) is tile.Destroyable:
                 c.destroy()
 
         if collisions:

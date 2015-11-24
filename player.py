@@ -1,3 +1,4 @@
+from enum import Enum
 import random
 import pygame
 import animatedsprite
@@ -8,6 +9,11 @@ import imagehandler
 import physicsobject
 import save
 import textbox
+
+
+class Direction(Enum):
+    right = 1
+    left = 2
 
 
 class Player:
@@ -55,20 +61,19 @@ class Player:
         self.walled = False
         self.laddered = False
         self.crouched = False
-        self.watered = False
         self.moving = False
         self.climbing = False
         self.sliding = False
 
-        self.dir = 'right'
+        self.dir = Direction.right
         self.jump_count = 0
         self.jump_buffer = False
         self.walled_timer = 0
         self.fatal_speed = 8 * helpers.SCALE
 
         self.attack_buffer = True
-        self.bullet_speed = 4
-        self.spread = 0.5
+        self.bullet_speed = 4 * helpers.SCALE
+        self.spread = 5
         self.cooldown = 0
 
         self.bullets = animatedsprite.Group()
@@ -84,8 +89,8 @@ class Player:
 
         if self.abilities['wall jump']:
             collider = pygame.sprite.Sprite()
-            collider.rect = pygame.Rect(self.rect.left - 1, self.rect.y, self.rect.width + 2, self.rect.height)
-            if pygame.sprite.spritecollide(collider, room.walls, False):
+            collider.rect = pygame.Rect(self.rect.left - 1, self.rect.y, self.rect.width + 2, self.rect.height / 2)
+            if pygame.sprite.spritecollide(collider, room.walls, False) and self.dy > 0:
                 self.walled = True
             else:
                 self.walled = False
@@ -125,18 +130,15 @@ class Player:
             self.laddered = False
 
     def apply_water(self, room):
-        for w in room.water:
-            if self.rect.colliderect(w.rect):
-                self.watered = True
-
-                if not self.abilities['rebreather']:
-                    self.die()
-                if self.dx > self.speed['water']:
-                    self.dx = max(self.speed['water'], self.dx - self.friction['water'])
-                elif self.dx < -self.speed['water']:
-                    self.dx = min(-self.speed['water'], self.dx + self.friction['water'])
-                if self.dy > self.speed['water']:
-                    self.dy = max(self.speed['water'], self.dy - self.friction['water'])
+        if pygame.sprite.spritecollide(self, room.water, False):
+            if not self.abilities['rebreather']:
+                self.die()
+            if self.dx > self.speed['water']:
+                self.dx = max(self.speed['water'], self.dx - self.friction['water'])
+            elif self.dx < -self.speed['water']:
+                self.dx = min(-self.speed['water'], self.dx + self.friction['water'])
+            if self.dy > self.speed['water']:
+                self.dy = max(self.speed['water'], self.dy - self.friction['water'])
 
     def input(self, input_hand, room):
         self.moving = False
@@ -149,7 +151,6 @@ class Player:
             if keys_down[pygame.K_d]:
                 self.change_weapon(keys_down)
                 return
-            # TODO: use SHIFT modifier for running
             if keys_down[pygame.K_RIGHT]:
                 self.moving = True
                 self.uncrouch(room)
@@ -207,7 +208,7 @@ class Player:
                     else:
                         self.sprite_body.pause()
                 elif self.walled and self.abilities['wall jump']:
-                    self.sprite_body.play('wall_hug')
+                    self.sprite_body.play_once('wall_hug')
                 else:
                     if self.dy < 0:
                         self.sprite_body.play_once('jump', 0)
@@ -378,29 +379,31 @@ class Player:
                 if not self.crouched:
                     self.dx = max(speed, self.dx - acceleration)
         if speed > 0:
-            if self.dir == 'left' and not self.walled:
+            if self.dir is Direction.left and not self.walled:
                 self.flip()
         elif speed < 0:
-            if self.dir == 'right' and not self.walled:
+            if self.dir is Direction.right and not self.walled:
                 self.flip()
 
     def climb(self, speed, room):
+        collider = pygame.sprite.Sprite()
         width = 2 * helpers.SCALE
-        for l in room.ladders:
-            if l.rect.colliderect(pygame.Rect(self.rect.centerx - width / 2, self.rect.top, width, self.rect.height)):
-                self.laddered = True
-                self.rect.centerx = l.rect.centerx
-                self.dx = 0
+        collider.rect = pygame.Rect(self.rect.centerx - width / 2, self.rect.top, width, self.rect.height)
+
+        for l in pygame.sprite.spritecollide(collider, room.ladders, False):
+            self.laddered = True
+            self.rect.centerx = l.rect.centerx
+            self.dx = 0
         if self.laddered:
             self.dy = speed
 
     def flip(self):
         self.sprite_body.flip()
         self.sprite_legs.flip()
-        if self.dir == 'right':
-            self.dir = 'left'
-        elif self.dir == 'left':
-            self.dir = 'right'
+        if self.dir is Direction.right:
+            self.dir = Direction.left
+        elif self.dir is Direction.left:
+            self.dir = Direction.right
 
     def jump(self):
         if not self.jump_buffer or self.crouched:
@@ -420,9 +423,9 @@ class Player:
             speed = self.speed['walk']
             if self.abilities['run']:
                 speed = self.speed['run']
-            if self.dir == 'left':
+            if self.dir is Direction.left:
                 self.dx = -speed
-            elif self.dir == 'right':
+            elif self.dir is Direction.right:
                 self.dx = speed
             self.dy = self.jump_height['wall']
             self.jump_buffer = False
@@ -460,26 +463,34 @@ class Player:
                 self.attack_buffer = False
             elif self.weapon == 'gun':
                 if self.crouched:
-                    spread = random.uniform(-self.spread, 0)
+                    if self.dir == 'right':
+                        spread = random.uniform(-self.spread, 0)
+                    else:
+                        spread = random.uniform(0, self.spread)
                 else:
                     spread = random.uniform(-self.spread, self.spread)
-                if not up:
-                    y = self.rect.y + 0.5 * imagehandler.SIZES['bullet'][1] * helpers.SCALE
-                    if self.dir == 'right':
-                        if self.walled and not self.grounded:
-                            dx = -self.bullet_speed
-                        else:
-                            dx = self.bullet_speed
-                        self.bullets.add(bullet.Bullet(self.rect.x, y, dx, spread))
-                    elif self.dir == 'left':
-                        if self.walled and not self.grounded:
-                            dx = self.bullet_speed
-                        else:
-                            dx = -self.bullet_speed
-                        self.bullets.add(bullet.Bullet(self.rect.x, y, dx, spread))
+
+                x = y = angle = 0
+                if up:
+                    x = 1.25 * helpers.SCALE
+                    angle = 270
                 else:
-                    x = self.rect.x + 0.5 * imagehandler.SIZES['bullet'][1] * helpers.SCALE
-                    self.bullets.add(bullet.Bullet(x, self.rect.y, spread, -self.bullet_speed))
+                    y = 0.5 * imagehandler.SIZES['bullet'][1] * helpers.SCALE
+                    if self.dir is Direction.left:
+                        if self.walled:
+                            if self.grounded:
+                                angle = 180
+                        else:
+                            angle = 180
+                    elif self.dir is Direction.right:
+                        if self.walled:
+                            if not self.grounded:
+                                angle = 180
+                        else:
+                            angle = 0
+
+                self.bullets.add(bullet.Bullet(self.rect.x + x, self.rect.y + y, self.bullet_speed, angle + spread))
+
                 if not self.abilities['full auto']:
                     self.attack_buffer = False
 
