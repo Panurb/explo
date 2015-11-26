@@ -16,6 +16,22 @@ class Direction(Enum):
     left = 2
 
 
+class Weapon(Enum):
+    none = 1
+    gun = 2
+    sword = 3
+
+
+class Ability(Enum):
+    run = 0
+    double_jump = 1
+    wall_jump = 2
+    sword = 3
+    gun = 4
+    rebreather = 5
+    full_auto = 6
+
+
 class Player:
     def __init__(self, x, y, room_x, room_y):
         self.room_x = room_x
@@ -24,19 +40,12 @@ class Player:
         self.sprite_body = animatedsprite.AnimatedSprite('player_body')
         self.sprite_legs = animatedsprite.AnimatedSprite('player_legs')
 
-        self.abilities = {
-            'run': False,
-            'double jump': False,
-            'slide': False,
-            'wall jump': False,
-            'sword': False,
-            'gun': False,
-            'rebreather': False,
-            'full auto': True
-        }
+        self.abilities = {}
+        for a in Ability:
+            self.abilities[a] = False
 
-        self.weapon = ''
-        self.weapon_cooldown = {'sword': 24, 'gun': 8}
+        self.weapon = Weapon.none
+        self.weapon_cooldown = {Weapon.sword: 24, Weapon.gun: 8}
 
         self.rect = pygame.Rect(x, y, 6 * helpers.SCALE, 16 * helpers.SCALE)
         self.dx = 0
@@ -87,7 +96,7 @@ class Player:
         self.move_x(room)
         self.move_y(room)
 
-        if self.abilities['wall jump']:
+        if self.abilities[Ability.wall_jump]:
             collider = pygame.sprite.Sprite()
             collider.rect = pygame.Rect(self.rect.left - 1, self.rect.y, self.rect.width + 2, self.rect.height / 2)
             if pygame.sprite.spritecollide(collider, room.walls, False) and self.dy > 0:
@@ -131,7 +140,7 @@ class Player:
 
     def apply_water(self, room):
         if pygame.sprite.spritecollide(self, room.water, False):
-            if not self.abilities['rebreather']:
+            if not self.abilities[Ability.rebreather]:
                 self.die()
             if self.dx > self.speed['water']:
                 self.dx = max(self.speed['water'], self.dx - self.friction['water'])
@@ -154,14 +163,14 @@ class Player:
             if keys_down[pygame.K_RIGHT]:
                 self.moving = True
                 self.uncrouch(room)
-                if self.abilities['run'] and not keys_down[pygame.K_LSHIFT]:
+                if self.abilities[Ability.run] and not keys_down[pygame.K_LSHIFT]:
                     self.move(self.speed['run'])
                 else:
                     self.move(self.speed['walk'])
             if keys_down[pygame.K_LEFT]:
                 self.moving = True
                 self.uncrouch(room)
-                if self.abilities['run'] and not keys_down[pygame.K_LSHIFT]:
+                if self.abilities[Ability.run] and not keys_down[pygame.K_LSHIFT]:
                     self.move(-self.speed['run'])
                 else:
                     self.move(-self.speed['walk'])
@@ -192,7 +201,7 @@ class Player:
     def animate(self):
         if self.alive:
             # BODY
-            if self.weapon == '':
+            if self.weapon is Weapon.none:
                 if self.grounded:
                     if self.crouched:
                         self.sprite_body.play('crouch')
@@ -207,7 +216,7 @@ class Player:
                         self.sprite_body.play('climb')
                     else:
                         self.sprite_body.pause()
-                elif self.walled and self.abilities['wall jump']:
+                elif self.walled and self.abilities[Ability.wall_jump]:
                     self.sprite_body.play_once('wall_hug')
                 else:
                     if self.dy < 0:
@@ -220,29 +229,29 @@ class Player:
                 if self.grounded:
                     if self.crouched:
                         if self.cooldown > 0:
-                            self.sprite_body.play(self.weapon + '_crouch_attack')
+                            self.sprite_body.play(self.weapon.name + '_crouch_attack')
                         else:
-                            self.sprite_body.play(self.weapon + '_crouch')
+                            self.sprite_body.play(self.weapon.name + '_crouch')
                     elif self.climbing:
-                        self.sprite_body.play(self.weapon + '_up')
+                        self.sprite_body.play(self.weapon.name + '_up')
                     else:
                         if self.cooldown > 0:
-                            self.sprite_body.play(self.weapon + '_attack')
+                            self.sprite_body.play(self.weapon.name + '_attack')
                         else:
                             if self.dx == 0:
-                                self.sprite_body.play(self.weapon + '_idle')
+                                self.sprite_body.play(self.weapon.name + '_idle')
                             else:
-                                self.sprite_body.play(self.weapon + '_walk')
+                                self.sprite_body.play(self.weapon.name + '_walk')
                 else:
                     if self.cooldown > 0:
-                        self.sprite_body.play(self.weapon + '_attack')
+                        self.sprite_body.play(self.weapon.name + '_attack')
                     else:
                         if self.dy < 0:
-                            self.sprite_body.play_once(self.weapon + '_jump', 0)
+                            self.sprite_body.play_once(self.weapon.name + '_jump', 0)
                         elif self.dy > 0:
-                            self.sprite_body.play_once(self.weapon + '_jump', 2)
+                            self.sprite_body.play_once(self.weapon.name + '_jump', 2)
                         else:
-                            self.sprite_body.play_once(self.weapon + '_jump', 1)
+                            self.sprite_body.play_once(self.weapon.name + '_jump', 1)
 
             # LEGS
             if self.grounded:
@@ -259,7 +268,7 @@ class Player:
                     self.sprite_legs.play('climb')
                 else:
                     self.sprite_legs.pause()
-            elif self.walled and self.abilities['wall jump']:
+            elif self.walled and self.abilities[Ability.wall_jump]:
                 self.sprite_legs.play('wall_hug')
             else:
                 if self.dy < 0:
@@ -319,10 +328,12 @@ class Player:
         for p in pygame.sprite.spritecollide(self, room.powerups, False):
             if self.abilities[p.ability] is False:
                 self.abilities[p.ability] = True
-                self.text.set_string(p.ability + '\\' + p.text)
+                self.text.set_string(p.ability.name + '\\' + p.text)
                 self.text.time = 120
-                if p.ability == 'sword' or p.ability == 'gun':
-                    self.weapon = p.ability
+                if p.ability is Ability.sword:
+                    self.weapon = Weapon.sword
+                elif p.ability is Ability.gun:
+                    self.weapon = Weapon.gun
 
     def change_room(self):
         window_rect = pygame.Rect(0, 0, helpers.WIDTH, helpers.HEIGHT)
@@ -358,9 +369,13 @@ class Player:
 
     def apply_gravity(self):
         if self.alive and not self.laddered:
-            if self.walled and self.abilities['wall jump'] and not self.sliding:
-                self.dy += helpers.GRAVITY / 2
-                self.dy = min(self.dy, self.speed['wall'])
+            if self.walled and self.abilities[Ability.wall_jump]:
+                if not self.sliding:
+                    self.dy += helpers.GRAVITY / 2
+                    self.dy = min(self.dy, self.speed['wall'])
+                else:
+                    self.dy += helpers.GRAVITY
+                    self.dy = min(self.dy, self.fatal_speed)
             elif not self.jump_buffer and self.dy < 0:
                 self.dy += helpers.GRAVITY / 2
             else:
@@ -418,10 +433,10 @@ class Player:
             self.jump_buffer = False
             self.jump_count = 1
             self.laddered = False
-        elif self.walled and self.abilities['wall jump']:
+        elif self.walled and self.abilities[Ability.wall_jump]:
             self.flip()
             speed = self.speed['walk']
-            if self.abilities['run']:
+            if self.abilities[Ability.run]:
                 speed = self.speed['run']
             if self.dir is Direction.left:
                 self.dx = -speed
@@ -429,7 +444,7 @@ class Player:
                 self.dx = speed
             self.dy = self.jump_height['wall']
             self.jump_buffer = False
-        elif self.abilities['double jump'] and self.jump_count < 2:
+        elif self.abilities[Ability.double_jump] and self.jump_count < 2:
             self.dy = self.jump_height['double']
             self.jump_count = 2
             self.jump_buffer = False
@@ -451,19 +466,19 @@ class Player:
             self.crouched = False
 
     def attack(self, up=False):
-        if self.weapon == '':
+        if self.weapon is Weapon.none:
             return
 
         if self.attack_buffer and self.cooldown == 0:
-            if self.weapon == 'sword':
-                if self.dir == 'right':
+            if self.weapon is Weapon.sword:
+                if self.dir is Direction.right:
                     self.bullets.add(bullet.Sword(self.rect.x + helpers.TILE_SIZE, self.rect.y))
-                elif self.dir == 'left':
+                else:
                     self.bullets.add(bullet.Sword(self.rect.x - helpers.TILE_SIZE, self.rect.y))
                 self.attack_buffer = False
-            elif self.weapon == 'gun':
+            elif self.weapon is Weapon.gun:
                 if self.crouched:
-                    if self.dir == 'right':
+                    if self.dir is Direction.right:
                         spread = random.uniform(-self.spread, 0)
                     else:
                         spread = random.uniform(0, self.spread)
@@ -491,22 +506,22 @@ class Player:
 
                 self.bullets.add(bullet.Bullet(self.rect.x + x, self.rect.y + y, self.bullet_speed, angle + spread))
 
-                if not self.abilities['full auto']:
+                if not self.abilities[Ability.full_auto]:
                     self.attack_buffer = False
 
             self.cooldown = self.weapon_cooldown[self.weapon]
 
     def change_weapon(self, keys):
         if keys[pygame.K_UP]:
-            self.weapon = ''
+            self.weapon = Weapon.none
         elif keys[pygame.K_DOWN]:
-            self.weapon = ''
+            self.weapon = Weapon.none
         elif keys[pygame.K_RIGHT]:
-            if self.abilities['sword']:
-                self.weapon = 'sword'
+            if self.abilities[Ability.sword]:
+                self.weapon = Weapon.sword
         elif keys[pygame.K_LEFT]:
-            if self.abilities['gun']:
-                self.weapon = 'gun'
+            if self.abilities[Ability.gun]:
+                self.weapon = Weapon.gun
 
     def move_x(self, room):
         self.rect.move_ip(self.dx, 0)

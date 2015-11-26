@@ -3,6 +3,7 @@ import animatedsprite
 import enemy
 import helpers
 import physicsobject
+import player
 import powerup
 import tile
 
@@ -207,17 +208,17 @@ class Room:
         elif char == 'f':
             self.enemies.add(enemy.Flyer(x, y))
         elif char == '0':
-            self.powerups.add(powerup.Powerup(x, y, 'run'))
+            self.powerups.add(powerup.Powerup(x, y, player.Ability.run))
         elif char == '1':
-            self.powerups.add(powerup.Powerup(x, y, 'double jump'))
+            self.powerups.add(powerup.Powerup(x, y, player.Ability.double_jump))
         elif char == '2':
-            self.powerups.add(powerup.Powerup(x, y, 'wall jump'))
+            self.powerups.add(powerup.Powerup(x, y, player.Ability.wall_jump))
         elif char == '3':
-            self.powerups.add(powerup.Powerup(x, y, 'sword'))
+            self.powerups.add(powerup.Powerup(x, y, player.Ability.sword))
         elif char == '4':
-            self.powerups.add(powerup.Powerup(x, y, 'gun'))
+            self.powerups.add(powerup.Powerup(x, y, player.Ability.gun))
         elif char == '5':
-            self.powerups.add(powerup.Powerup(x, y, 'rebreather'))
+            self.powerups.add(powerup.Powerup(x, y, player.Ability.rebreather))
 
     def remove_object(self, x, y):
         collider = pygame.sprite.Sprite()
