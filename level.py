@@ -2,7 +2,6 @@ import pygame
 import animatedsprite
 import enemy
 import helpers
-import physicsobject
 import player
 import powerup
 import tile
@@ -44,8 +43,7 @@ class Level:
     def write(self):
         f = open('data/lvl/level.txt', 'w')
 
-        for key in self.rooms:
-            room = self.rooms[key]
+        for room in self.rooms.values():
             room.reset()
             tilemap = [['-' for _ in range(20)] for _ in range(15)]
 
@@ -77,17 +75,17 @@ class Level:
                 tilemap[c.rect.y // helpers.TILE_SIZE][c.rect.x // helpers.TILE_SIZE] = 'C'
             for p in room.powerups:
                 char = ''
-                if p.ability == 'run':
+                if p.ability == powerup.Ability.run:
                     char = '0'
-                elif p.ability == 'double jump':
+                elif p.ability == powerup.Ability.double_jump:
                     char = '1'
-                elif p.ability == 'wall jump':
+                elif p.ability == powerup.Ability.wall_jump:
                     char = '2'
-                elif p.ability == 'sword':
+                elif p.ability == powerup.Ability.sword:
                     char = '3'
-                elif p.ability == 'gun':
+                elif p.ability == powerup.Ability.gun:
                     char = '4'
-                elif p.ability == 'rebreather':
+                elif p.ability == powerup.Ability.rebreather:
                     char = '5'
                 tilemap[p.rect.y // helpers.TILE_SIZE][p.rect.x // helpers.TILE_SIZE] = char
             for w in room.water:

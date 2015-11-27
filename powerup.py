@@ -1,11 +1,23 @@
+from enum import Enum
 import animatedsprite
 
 
-TEXTS = {'run': 'HOLD SHIFT TO WALK',
-         'double jump': 'PRESS Z IN MIDAIR',
-         'wall jump': 'PRESS Z WHILE HUGGING A WALL',
-         'sword': 'PRESS X TO SWING',
-         'gun': 'PRESS X TO SHOOT'}
+class Ability(Enum):
+    run = 0
+    double_jump = 1
+    wall_jump = 2
+    sword = 3
+    gun = 4
+    rebreather = 5
+    full_auto = 6
+
+TEXTS = {
+    Ability.run: 'Hold shift to walk',
+    Ability.double_jump: 'Press A in midair',
+    Ability.wall_jump: 'Press A while hugging a wall',
+    Ability.sword: 'Press S to swing',
+    Ability.gun: 'Press S to shoot'
+}
 
 
 class Powerup(animatedsprite.AnimatedSprite):

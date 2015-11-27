@@ -13,6 +13,7 @@ SIZES = {
     'ground': (8, 8),
     'ladder': (8, 8),
     'map': (14, 12),
+    'menu': (32, 8),
     'metal': (8, 8),
     'particle': (4, 4),
     'player_body': (16, 16),
@@ -35,7 +36,9 @@ ACTIONS = {
         ['idle', 1]
     ],
     'chars': [
-        ['idle', 36]
+        ['upper_case', 26],
+        ['lower_case', 26],
+        ['numbers', 10]
     ],
     'checkpoint': [
         ['idle', 2]
@@ -67,6 +70,9 @@ ACTIONS = {
     ],
     'metal': [
         ['idle', 16]
+    ],
+    'menu': [
+        ['button', 1]
     ],
     'particle': [
         ['blood', 4],

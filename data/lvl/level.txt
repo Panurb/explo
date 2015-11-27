@@ -37,7 +37,7 @@ R------------------R
 --------------------
 --------------------
 --------------------
---------------------
+------G-------------
 ------G-------------
 ------G-------------
 ------G----GGG------
@@ -45,7 +45,7 @@ R------------------R
 ------G----GGG------
 GG----G-------------
 GGG---G------------G
-GGGGGGG---C-204GGGGG
+GGGGGGG---C---0G---G
 GGGGGGGGGGGGGGGGGGGG
 GGGGGGGGGGGGGGGGGGGG
 
@@ -297,7 +297,7 @@ G-------------------
 GG------------------
 GG---------------GGG
 GG----------GG---GGG
-GGG---0---GGGG---GGG
+GGG------GGGG---GGG-
 GGGGGGGGGGGGGGGGGGGG
 GGGGGGGGGGGGGGGGGGGG
 GGGGGGGGGGGGGGGGGGGG

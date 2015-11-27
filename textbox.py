@@ -2,30 +2,44 @@ import pygame
 import animatedsprite
 import helpers
 
-CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
+UPPER_CASE = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+LOWER_CASE = 'abcdefghijklmnopqrstuvwxyz'
 
 
 class Textbox:
-    def __init__(self, string, time=-1):
-        self.y = 1 * 4 * helpers.SCALE
+    def __init__(self, string, x=0.5*helpers.WIDTH, y=0.5*helpers.HEIGHT):
+        self.x = x
+        self.y = y
         self.chars = pygame.sprite.Group()
-        self.time = time
+        self.time = -1
         self.set_string(string)
 
     def set_string(self, string):
-        string = string.upper()
         strings = string.split('\\')
         self.chars = pygame.sprite.Group()
 
         for j, string in enumerate(strings):
-            x = 0.5 * helpers.WIDTH - (0.5 * len(string) * 4) * helpers.SCALE
+            string = string.upper()
+            x = self.x - (0.5 * len(string) * 4) * helpers.SCALE
+            y = self.y + 0.5 * 4 * helpers.SCALE
+
             for i, char in enumerate(list(string)):
                 sprite = animatedsprite.AnimatedSprite('chars')
-                index = CHARS.find(char)
-                if index == -1:
-                    continue
-                sprite.show_frame('idle', index)
-                sprite.set_position(x + i * 4 * helpers.SCALE, self.y + j * 5 * helpers.SCALE)
+                try:
+                    index = int(char)
+                    sprite.show_frame('numbers', index)
+                except ValueError:
+                    if char.isupper():
+                        index = UPPER_CASE.find(char)
+                        sprite.show_frame('upper_case', index)
+                    else:
+                        index = LOWER_CASE.find(char)
+                        sprite.show_frame('lower_case', index)
+
+                    if index == -1:
+                        continue
+
+                sprite.set_position(x + i * 4 * helpers.SCALE, y + j * 5 * helpers.SCALE)
                 self.chars.add(sprite)
 
     def update(self):

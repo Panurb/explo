@@ -9,7 +9,8 @@ class InputHandler:
         self.mouse_x = 0
         self.mouse_y = 0
         self.mouse_down = []
-        self.mouse_wheel = {}
+        self.mouse_pressed = []
+        self.mouse_released = []
 
     def update(self):
         self.keys_pressed = {pygame.K_UP: False,
@@ -18,9 +19,10 @@ class InputHandler:
                              pygame.K_LEFT: False,
                              pygame.K_p: False,
                              pygame.K_SPACE: False,
-                             pygame.K_r: False}
-        self.mouse_wheel = {4: False,
-                            5: False}
+                             pygame.K_r: False,
+                             pygame.K_ESCAPE: False}
+        self.mouse_pressed = [False] * 6
+        self.mouse_released = [False] * 6
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -28,9 +30,13 @@ class InputHandler:
             else:
                 if event.type == pygame.KEYDOWN:
                     self.keys_pressed[event.key] = True
-                if event.type == pygame.MOUSEBUTTONDOWN:
-                    self.mouse_wheel[event.button] = True
-                self.keys_down = pygame.key.get_pressed()
+                elif event.type == pygame.MOUSEBUTTONDOWN:
+                    self.mouse_pressed[event.button] = True
+                elif event.type == pygame.MOUSEBUTTONUP:
+                    self.mouse_released[event.button] = True
+
                 self.mouse_x = pygame.mouse.get_pos()[0]
                 self.mouse_y = pygame.mouse.get_pos()[1]
-                self.mouse_down = pygame.mouse.get_pressed()
+
+        self.keys_down = pygame.key.get_pressed()
+        self.mouse_down = pygame.mouse.get_pressed()

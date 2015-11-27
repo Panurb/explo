@@ -13,7 +13,7 @@ class Editor:
         self.room_x = x
         self.room_y = y
         self.object = 0
-        self.text = textbox.Textbox(OBJECT_NAMES[self.object])
+        self.text = textbox.Textbox(OBJECT_NAMES[self.object], 0.5 * helpers.WIDTH, 0)
 
     def input(self, lvl, input_hand):
         room = lvl.room(self.room_x, self.room_y)
@@ -32,13 +32,13 @@ class Editor:
             room.remove_object(x, y)
             room.update_visuals()
 
-        if input_hand.mouse_wheel[4]:
+        if input_hand.mouse_pressed[4]:
             if self.object > 0:
                 self.object -= 1
             else:
                 self.object = len(OBJECTS) - 1
 
-        if input_hand.mouse_wheel[5]:
+        if input_hand.mouse_pressed[5]:
             if self.object < len(OBJECTS) - 1:
                 self.object += 1
             else:

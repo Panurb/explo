@@ -17,8 +17,8 @@ class Main:
         self.fps = 60
 
     def main_loop(self):
-        while True:
-            self.loop.update()
+        while self.loop.state != gameloop.State.quit:
+            self.loop.update(self.clock)
             self.clock.tick(self.fps)
 
 if __name__ == '__main__':

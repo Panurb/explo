@@ -5,8 +5,10 @@ import animatedsprite
 import enemy
 import helpers
 import bullet
+import hud
 import imagehandler
 import physicsobject
+from powerup import Ability
 import save
 import textbox
 
@@ -22,18 +24,8 @@ class Weapon(Enum):
     sword = 3
 
 
-class Ability(Enum):
-    run = 0
-    double_jump = 1
-    wall_jump = 2
-    sword = 3
-    gun = 4
-    rebreather = 5
-    full_auto = 6
-
-
 class Player:
-    def __init__(self, x, y, room_x, room_y):
+    def __init__(self, x, y, room_x, room_y, level):
         self.room_x = room_x
         self.room_y = room_y
 
@@ -73,6 +65,7 @@ class Player:
         self.moving = False
         self.climbing = False
         self.sliding = False
+        self.show_map = False
 
         self.dir = Direction.right
         self.jump_count = 0
@@ -90,7 +83,8 @@ class Player:
 
         self.save = save.Save(x, y, room_x, room_y, self.dir, self.abilities)
 
-        self.text = textbox.Textbox('')
+        self.txtbox = textbox.Textbox('', 0.5 * helpers.WIDTH, 4 * helpers.SCALE)
+        self.map = hud.Map(level)
 
     def update(self, room):
         self.move_x(room)
@@ -125,7 +119,7 @@ class Player:
         if self.cooldown > 0:
             self.cooldown -= 1
 
-        self.text.update()
+        self.txtbox.update()
 
         self.change_room()
 
@@ -189,6 +183,9 @@ class Player:
                     self.attack(True)
                 else:
                     self.attack()
+
+            self.show_map = keys_down[pygame.K_f]
+
             if not self.grounded or not keys_down[pygame.K_DOWN]:
                 self.uncrouch(room)
             if not keys_down[pygame.K_a]:
@@ -314,7 +311,7 @@ class Player:
             self.save.x = cp.rect.x
             self.save.y = cp.rect.y - helpers.TILE_SIZE
             self.save.dir = self.dir
-            for ability in self.abilities:
+            for ability in self.abilities.keys():
                 self.save.abilities[ability] = self.abilities[ability]
 
             cp.active = True
@@ -328,8 +325,8 @@ class Player:
         for p in pygame.sprite.spritecollide(self, room.powerups, False):
             if self.abilities[p.ability] is False:
                 self.abilities[p.ability] = True
-                self.text.set_string(p.ability.name + '\\' + p.text)
-                self.text.time = 120
+                self.txtbox.set_string(p.ability.name.upper() + '\\' + p.text)
+                self.txtbox.time = 120
                 if p.ability is Ability.sword:
                     self.weapon = Weapon.sword
                 elif p.ability is Ability.gun:
@@ -621,4 +618,6 @@ class Player:
         self.bullets.draw(screen, img_hand)
         self.gibs.draw(screen, img_hand)
 
-        self.text.draw(screen, img_hand)
+        self.txtbox.draw(screen, img_hand)
+        if self.show_map:
+            self.map.draw(screen, img_hand, self.room_x, self.room_y)
