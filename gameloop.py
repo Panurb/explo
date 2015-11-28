@@ -37,7 +37,7 @@ class GameLoop:
         if self.state is State.menu:
             self.state = self.menu.input(self.input_hand)
             self.menu.draw(self.screen, self.img_hand)
-        elif self.state is State.game:
+        elif self.state is State.play:
             try:
                 room = self.level.room(self.player.room_x, self.player.room_y)
             except KeyError:
@@ -75,8 +75,8 @@ class GameLoop:
     def change_state(self):
         if self.input_hand.keys_pressed[pygame.K_p]:
             if self.state is State.paused:
-                self.state = State.game
-            elif self.state is State.game:
+                self.state = State.play
+            elif self.state is State.play:
                 self.state = State.paused
 
         if self.state is not State.menu:

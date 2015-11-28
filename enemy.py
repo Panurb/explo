@@ -147,6 +147,8 @@ class Zombie(Enemy):
         self.gibs = animatedsprite.Group()
         self.cooldown = 0
         self.play('armored')
+        self.bullet_speed = 2 * helpers.SCALE
+        self.health = self.max_health = 5
 
     def update(self, room):
         if self.alive and self.grounded:
@@ -168,32 +170,37 @@ class Zombie(Enemy):
     def vision(self, player):
         if self.armored:
             if self.cooldown == 0:
-                self.cooldown = 60
+                self.cooldown = 30
                 if self.speed > 0:
                     for i in range(40 * helpers.SCALE):
                         if player.rect.collidepoint(self.rect.x + i * helpers.SCALE, self.rect.y):
-                            self.projectiles.add(bullet.Bullet(self.rect.x + 8 * helpers.SCALE, self.rect.y, 2, 0))
+                            x = self.rect.x + 8 * helpers.SCALE
+                            y = self.rect.y + 2 * helpers.SCALE
+                            self.projectiles.add(bullet.Bullet(x, y, self.bullet_speed, 0))
                             return
                 elif self.speed < 0:
                     for i in range(40 * helpers.SCALE):
                         if player.rect.collidepoint(self.rect.x - i * helpers.SCALE, self.rect.y):
-                            self.projectiles.add(bullet.Bullet(self.rect.x - 8 * helpers.SCALE, self.rect.y, -2, 0))
+                            x = self.rect.x - 8 * helpers.SCALE
+                            y = self.rect.y + 2 * helpers.SCALE
+                            self.projectiles.add(bullet.Bullet(x, y, -self.bullet_speed, 0))
                             return
             else:
                 self.cooldown -= 1
 
     def damage(self, dx, dy):
-        path = 'zombie_gibs'
-        if self.armored:
-            self.armored = False
-            self.add_gib(0, 4, 0.5, -2.5, 'armor', path)
-            self.add_gib(0, 0, -0.5, -2.5, 'armor', path)
-            self.add_gib(0, 6, -0.25, -2.5, 'armor', path)
-            self.dx = dx
-            self.dy = dy
-            self.grounded = False
-        else:
-            self.die()
+        Enemy.damage(self, dx, dy)
+        # path = 'zombie_gibs'
+        # if self.armored:
+        #     self.armored = False
+        #     self.add_gib(0, 4, 0.5, -2.5, 'armor', path)
+        #     self.add_gib(0, 0, -0.5, -2.5, 'armor', path)
+        #     self.add_gib(0, 6, -0.25, -2.5, 'armor', path)
+        #     self.dx = dx
+        #     self.dy = dy
+        #     self.grounded = False
+        # else:
+        #     self.die()
 
     def die(self):
         Enemy.die(self)

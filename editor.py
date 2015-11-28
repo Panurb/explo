@@ -32,13 +32,13 @@ class Editor:
             room.remove_object(x, y)
             room.update_visuals()
 
-        if input_hand.mouse_pressed[4]:
+        if input_hand.mouse_pressed[4] or input_hand.keys_pressed[pygame.K_COMMA]:
             if self.object > 0:
                 self.object -= 1
             else:
                 self.object = len(OBJECTS) - 1
 
-        if input_hand.mouse_pressed[5]:
+        if input_hand.mouse_pressed[5] or input_hand.keys_pressed[pygame.K_PERIOD]:
             if self.object < len(OBJECTS) - 1:
                 self.object += 1
             else:

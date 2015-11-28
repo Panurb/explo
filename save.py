@@ -1,3 +1,6 @@
+import player
+
+
 class Save:
     def __init__(self, x, y, room_x, room_y, dir, abilities):
         self.x = x
@@ -8,3 +11,4 @@ class Save:
         self.abilities = {}
         for ability in abilities:
             self.abilities[ability] = abilities[ability]
+        self.weapon = player.Weapon.none

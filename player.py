@@ -311,8 +311,8 @@ class Player:
             self.save.x = cp.rect.x
             self.save.y = cp.rect.y - helpers.TILE_SIZE
             self.save.dir = self.dir
-            for ability in self.abilities.keys():
-                self.save.abilities[ability] = self.abilities[ability]
+            self.save.abilities = self.abilities.copy()
+            self.save.weapon = self.weapon
 
             cp.active = True
 
@@ -578,19 +578,19 @@ class Player:
                         self.dy = 0
 
     def reset(self, room):
-        self.alive = True
+        room.reset()
         self.rect.x = self.save.x
         self.rect.y = self.save.y
         self.room_x = self.save.room_x
         self.room_y = self.save.room_y
         if self.dir is not self.save.dir:
             self.flip()
-        for ability in self.save.abilities:
-            self.abilities[ability] = self.save.abilities[ability]
+        self.abilities = self.save.abilities.copy()
         self.dx = 0
         self.dy = 0
         self.gibs.empty()
-        room.reset()
+        self.weapon = self.save.weapon
+        self.alive = True
 
     def die(self):
         if self.alive:

@@ -20,7 +20,9 @@ class InputHandler:
                              pygame.K_p: False,
                              pygame.K_SPACE: False,
                              pygame.K_r: False,
-                             pygame.K_ESCAPE: False}
+                             pygame.K_ESCAPE: False,
+                             pygame.K_PERIOD: False,
+                             pygame.K_COMMA: False}
         self.mouse_pressed = [False] * 6
         self.mouse_released = [False] * 6
 
