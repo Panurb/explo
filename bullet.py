@@ -3,7 +3,6 @@ import random
 import pygame
 import animatedsprite
 import helpers
-import level
 import physicsobject
 import tile
 

@@ -57,6 +57,8 @@ class Level:
                     char = 'R'
                 elif w.path == 'metal':
                     char = 'M'
+                elif w.path == 'ice':
+                    char = 'I'
                 tilemap[w.rect.y // helpers.TILE_SIZE][w.rect.x // helpers.TILE_SIZE] = char
             for l in room.ladders:
                 tilemap[l.rect.y // helpers.TILE_SIZE][l.rect.x // helpers.TILE_SIZE] = '#'
@@ -187,6 +189,8 @@ class Room:
             self.walls.add(tile.Wall(x, y, 'rock'))
         elif char == 'M':
             self.walls.add(tile.Wall(x, y, 'metal'))
+        elif char == 'I':
+            self.walls.add(tile.Wall(x, y, 'ice'))
         elif char == '#':
             self.ladders.add(tile.Ladder(x, y))
         elif char == '~':

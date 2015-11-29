@@ -1,6 +1,12 @@
 import helpers
 import pygame
 import imagehandler
+from enum import Enum
+
+
+class Direction(Enum):
+    right = 1
+    left = 2
 
 
 class AnimatedSprite(pygame.sprite.Sprite):
@@ -24,7 +30,7 @@ class AnimatedSprite(pygame.sprite.Sprite):
         self.delay = 5
         self.timer = self.delay
         self.loop = True
-        self.dir = 'right'
+        self.dir = Direction.right
         self.flipped = False
         self.rotation = 0
 
@@ -57,7 +63,7 @@ class AnimatedSprite(pygame.sprite.Sprite):
         self.image = pygame.transform.scale(self.image, (self.rect.width, self.rect.height))
         if self.rotation != 0:
             self.image = pygame.transform.rotate(self.image, self.rotation)
-        if self.dir == 'left':
+        if self.dir is Direction.left:
             self.image = pygame.transform.flip(self.image, True, False)
         self.sprite.draw(screen)
 
@@ -91,10 +97,10 @@ class AnimatedSprite(pygame.sprite.Sprite):
         self.frame = 0
 
     def flip(self):
-        if self.dir == 'right':
-            self.dir = 'left'
+        if self.dir is Direction.right:
+            self.dir = Direction.left
         else:
-            self.dir = 'right'
+            self.dir = Direction.right
 
 
 class Group(pygame.sprite.Group):

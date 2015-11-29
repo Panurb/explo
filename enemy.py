@@ -4,6 +4,7 @@ import bullet
 import helpers
 import physicsobject
 import random
+from player import Direction
 
 
 class Enemy(animatedsprite.AnimatedSprite, physicsobject.PhysicsObject):
@@ -153,6 +154,8 @@ class Zombie(Enemy):
     def update(self, room):
         if self.alive and self.grounded:
             self.dx = self.speed
+        else:
+            self.dx = 0
 
         Enemy.update(self, room)
 
@@ -205,7 +208,7 @@ class Zombie(Enemy):
     def die(self):
         Enemy.die(self)
         path = 'zombie_gibs'
-        if self.dir == 'right':
+        if self.dir is Direction.right:
             self.add_gib(0, -4, 0.5, -2.5, 'head', path)
         else:
             self.add_gib(0, -4, 0.5, -2.5, 'head', path)
@@ -217,7 +220,7 @@ class Zombie(Enemy):
         self.speed = 0.25 * helpers.SCALE
         self.dx = self.speed
         self.dy = 0
-        if self.dir == 'left':
+        if self.dir is Direction.left:
             self.flip()
         self.armored = True
 

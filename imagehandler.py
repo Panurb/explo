@@ -11,6 +11,7 @@ SIZES = {
     'destroyable_debris': (4, 4),
     'flyer': (8, 8),
     'ground': (8, 8),
+    'ice': (8, 8),
     'ladder': (8, 8),
     'map': (14, 12),
     'menu': (32, 8),
@@ -59,6 +60,9 @@ ACTIONS = {
         ['idle', 5]
     ],
     'ground': [
+        ['idle', 16]
+    ],
+    'ice': [
         ['idle', 16]
     ],
     'ladder': [

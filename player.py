@@ -2,6 +2,7 @@ from enum import Enum
 import random
 import pygame
 import animatedsprite
+from animatedsprite import Direction
 import enemy
 import helpers
 import bullet
@@ -11,11 +12,6 @@ import physicsobject
 from powerup import Ability
 import save
 import textbox
-
-
-class Direction(Enum):
-    right = 1
-    left = 2
 
 
 class Weapon(Enum):
@@ -75,7 +71,7 @@ class Player:
 
         self.attack_buffer = True
         self.bullet_speed = 4 * helpers.SCALE
-        self.spread = 5
+        self.spread = 0
         self.cooldown = 0
 
         self.bullets = animatedsprite.Group()
@@ -106,18 +102,16 @@ class Player:
         self.apply_water(room)
 
         if self.grounded:
+            self.jump_count = 0
             if self.dy <= 0:
                 self.laddered = False
-            self.jump_count = 0
 
         self.apply_gravity()
         self.animate()
-        self.update_bullets(room)
-
+        self.bullets.update(room)
         self.gibs.update(room)
 
-        if self.cooldown > 0:
-            self.cooldown -= 1
+        self.cooldown = max(0, self.cooldown - 1)
 
         self.txtbox.update()
 
@@ -198,7 +192,7 @@ class Player:
     def animate(self):
         if self.alive:
             # BODY
-            if self.weapon is Weapon.none:
+            if self.weapon is Weapon.none or self.laddered:
                 if self.grounded:
                     if self.crouched:
                         self.sprite_body.play('crouch')
@@ -268,9 +262,9 @@ class Player:
             elif self.walled and self.abilities[Ability.wall_jump]:
                 self.sprite_legs.play('wall_hug')
             else:
-                if self.dy < 0:
+                if self.dy < -1 * helpers.SCALE:
                     self.sprite_legs.play_once('jump', 0)
-                elif self.dy > 0:
+                elif self.dy > 1 * helpers.SCALE:
                     self.sprite_legs.play_once('jump', 1)
                 else:
                     self.sprite_legs.play_once('jump', 2)
@@ -284,9 +278,6 @@ class Player:
         self.sprite_legs.set_position(x, y)
         self.sprite_body.animate()
         self.sprite_legs.animate()
-
-    def update_bullets(self, room):
-        self.bullets.update(room)
 
     def apply_damage(self, room):
         for spike in room.spikes:
@@ -463,7 +454,7 @@ class Player:
             self.crouched = False
 
     def attack(self, up=False):
-        if self.weapon is Weapon.none:
+        if self.weapon is Weapon.none or self.laddered:
             return
 
         if self.attack_buffer and self.cooldown == 0:

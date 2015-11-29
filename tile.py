@@ -18,6 +18,7 @@ class Wall(Tile):
         self.show_frame('idle', self.index)
         self.path = path
         self.destroyed = False
+        self.friction = 0.1
 
     def update(self, room):
         up = right = down = left = '0'
