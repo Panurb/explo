@@ -18,10 +18,12 @@ class Wall(Tile):
         self.show_frame('idle', self.index)
         self.path = path
         self.destroyed = False
-        self.friction = 0.1
+        self.friction = 0.125 * helpers.SCALE
+        if self.path == 'ice':
+            self.friction = 0.01 * helpers.SCALE
 
     def update(self, room):
-        up = right = down = left = '0'
+        up = right = down = left = 0
         for w in room.walls:
             if self.path != 'spike':
                 if w.path != self.path:
@@ -29,26 +31,26 @@ class Wall(Tile):
 
             if w.rect.x == self.rect.x:
                 if w.rect.y == self.rect.y - helpers.TILE_SIZE:
-                    up = '1'
+                    up = 1
                 if w.rect.y == self.rect.y + helpers.TILE_SIZE:
-                    down = '1'
+                    down = 1
 
             if w.rect.y == self.rect.y:
                 if w.rect.x == self.rect.x + helpers.TILE_SIZE:
-                    right = '1'
+                    right = 1
                 if w.rect.x == self.rect.x - helpers.TILE_SIZE:
-                    left = '1'
+                    left = 1
 
         if self.rect.y - helpers.TILE_SIZE < 0:
-            up = '1'
-        if self.rect.x + helpers.TILE_SIZE >= helpers.WIDTH:
-            right = '1'
-        if self.rect.y + helpers.TILE_SIZE >= helpers.HEIGHT:
-            down = '1'
-        if self.rect.x - helpers.TILE_SIZE < 0:
-            left = '1'
+            up = 1
+        elif self.rect.x + helpers.TILE_SIZE >= helpers.WIDTH:
+            right = 1
+        elif self.rect.y + helpers.TILE_SIZE >= helpers.HEIGHT:
+            down = 1
+        elif self.rect.x - helpers.TILE_SIZE < 0:
+            left = 1
 
-        self.index = int(up + right + down + left, 2)
+        self.index = int(str(up) + str(right) + str(down) + str(left), 2)
         self.show_frame('idle', self.index)
 
 

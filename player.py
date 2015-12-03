@@ -41,14 +41,13 @@ class Player:
 
         self.speed = {'walk': 0.5 * helpers.SCALE,
                       'run': 1 * helpers.SCALE,
-                      'wall': 0.25 * helpers.SCALE,
                       'ladder': 0.75 * helpers.SCALE,
                       'water': 0.5 * helpers.SCALE}
+        self.speed_wall = 0.25 * helpers.SCALE
         self.acceleration = {'ground': 0.25 * helpers.SCALE,
                              'air': 0.125 * helpers.SCALE}
-        self.friction = {'normal': 0.125 * helpers.SCALE,
-                         'slide': 0.0125 * helpers.SCALE,
-                         'water': 0.125 * helpers.SCALE}
+        self.friction = 0.125 * helpers.SCALE
+        self.friction_water = 0.125 * helpers.SCALE
         self.jump_height = {'normal': -2.25 * helpers.SCALE,
                             'double': -2.5 * helpers.SCALE,
                             'wall': -2.25 * helpers.SCALE}
@@ -131,11 +130,11 @@ class Player:
             if not self.abilities[Ability.rebreather]:
                 self.die()
             if self.dx > self.speed['water']:
-                self.dx = max(self.speed['water'], self.dx - self.friction['water'])
+                self.dx = max(self.speed['water'], self.dx - self.friction_water)
             elif self.dx < -self.speed['water']:
-                self.dx = min(-self.speed['water'], self.dx + self.friction['water'])
+                self.dx = min(-self.speed['water'], self.dx + self.friction_water)
             if self.dy > self.speed['water']:
-                self.dy = max(self.speed['water'], self.dy - self.friction['water'])
+                self.dy = max(self.speed['water'], self.dy - self.friction_water)
 
     def input(self, input_hand, room):
         self.moving = False
@@ -196,10 +195,11 @@ class Player:
                 if self.grounded:
                     if self.crouched:
                         self.sprite_body.play('crouch')
-                    elif abs(self.dx) > self.speed['walk']:
-                        self.sprite_body.play('run', self.sprite_body.frame)
-                    elif abs(self.dx) > 0.1 * helpers.SCALE:
-                        self.sprite_body.play('walk')
+                    elif self.moving:
+                        if abs(self.dx) > self.speed['walk']:
+                            self.sprite_body.play('run', self.sprite_body.frame)
+                        elif abs(self.dx) > 0.1 * helpers.SCALE:
+                            self.sprite_body.play('walk')
                     else:
                         self.sprite_body.play('idle')
                 elif self.laddered:
@@ -248,10 +248,11 @@ class Player:
             if self.grounded:
                 if self.crouched:
                     self.sprite_legs.play('crouch')
-                elif abs(self.dx) > self.speed['walk']:
-                    self.sprite_legs.play('run', self.sprite_body.frame)
-                elif abs(self.dx) > 0.1 * helpers.SCALE:
-                    self.sprite_legs.play('walk', self.sprite_body.frame)
+                elif self.moving:
+                    if abs(self.dx) > self.speed['walk']:
+                        self.sprite_legs.play('run', self.sprite_body.frame)
+                    elif abs(self.dx) > 0.1 * helpers.SCALE:
+                        self.sprite_legs.play('walk', self.sprite_body.frame)
                 else:
                     self.sprite_legs.play('idle')
             elif self.laddered:
@@ -342,14 +343,11 @@ class Player:
                 self.rect.centery = helpers.HEIGHT - 1 * helpers.SCALE
 
     def apply_friction(self):
-        friction = self.friction['normal']
-
-        if self.grounded:
-            if not self.moving:
-                if self.dx > 0:
-                    self.dx = max(0, self.dx - friction)
-                if self.dx < 0:
-                    self.dx = min(0, self.dx + friction)
+        if self.grounded and not self.moving:
+            if self.dx > 0:
+                self.dx = max(0, self.dx - self.friction)
+            if self.dx < 0:
+                self.dx = min(0, self.dx + self.friction)
 
         if self.laddered:
             if not self.climbing and not self.sliding:
@@ -360,7 +358,7 @@ class Player:
             if self.walled and self.abilities[Ability.wall_jump]:
                 if not self.sliding:
                     self.dy += helpers.GRAVITY / 2
-                    self.dy = min(self.dy, self.speed['wall'])
+                    self.dy = min(self.dy, self.speed_wall)
                 else:
                     self.dy += helpers.GRAVITY
                     self.dy = min(self.dy, self.fatal_speed)
@@ -372,7 +370,7 @@ class Player:
     def move(self, speed):
         if not self.laddered:
             if self.grounded:
-                acceleration = self.acceleration['ground']
+                acceleration = 4 * self.friction
             else:
                 acceleration = self.acceleration['air']
             if speed > 0:
@@ -539,6 +537,7 @@ class Player:
             if self.dy > 0:
                 self.rect.bottom = c.rect.top
                 self.grounded = True
+                self.friction = c.friction
 
             if self.dy < 0:
                 self.rect.top = c.rect.bottom

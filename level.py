@@ -65,6 +65,7 @@ class Level:
             for s in room.spikes:
                 tilemap[s.rect.y // helpers.TILE_SIZE][s.rect.x // helpers.TILE_SIZE] = '*'
             for e in room.enemies:
+                y = e.rect.y // helpers.TILE_SIZE
                 char = ''
                 if type(e) is enemy.Crawler:
                     char = 'c'
@@ -72,7 +73,8 @@ class Level:
                     char = 'f'
                 elif type(e) is enemy.Zombie:
                     char = 'z'
-                tilemap[e.rect.y // helpers.TILE_SIZE][e.rect.x // helpers.TILE_SIZE] = char
+                    y += 1
+                tilemap[y][e.rect.x // helpers.TILE_SIZE] = char
             for c in room.checkpoints:
                 tilemap[c.rect.y // helpers.TILE_SIZE][c.rect.x // helpers.TILE_SIZE] = 'C'
             for p in room.powerups:

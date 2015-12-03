@@ -39,12 +39,12 @@ R------------------R
 --------------------
 --------------------
 --------------------
-----z---------------
+--------------------
 -----------GGG------
 -----------GGG------
 -----------GGG------
 GG------------------
-GGG----------------G
+GGGIIII------------G
 GGGGGGG---C---024--G
 GGGGGGGGGGGGGGGGGGGG
 GGGGGGGGGGGGGGGGGGGG
@@ -143,8 +143,8 @@ RRRRRRRRRRRRRRRRRRRR
 G-------------------
 GG------------------
 GG---------------GGG
-GG----------GG---GGG
-GGG------GGGG---GGG-
+GG---------------GGG
+GGG------GGGG----GG-
 GGGGGGGGGGGGGGGGGGGG
 GGGGGGGGGGGGGGGGGGGG
 GGGGGGGGGGGGGGGGGGGG
