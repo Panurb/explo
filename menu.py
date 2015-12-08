@@ -10,21 +10,18 @@ class ButtonType(enum.Enum):
     editor = 2
     options = 3
     quit = 4
+    resume = 5
+    menu = 6
 
 
 class Menu:
     def __init__(self):
         self.buttons = animatedsprite.Group()
-        dy = 0
-        for b in ButtonType:
-            self.buttons.add(Button(0, (2 + dy) * 2 * helpers.TILE_SIZE, b))
-            dy += 1
-        self.state = gameloop.State.menu
-        self.bg_sprite = animatedsprite.AnimatedSprite('bg')
-        self.bg_sprite.play('sky')
+
+    def add_button(self, x, y, button_type):
+        self.buttons.add(Button(x * helpers.TILE_SIZE, y * helpers.TILE_SIZE, button_type))
 
     def draw(self, screen, img_hand):
-        self.bg_sprite.draw(screen, img_hand)
         self.buttons.draw(screen, img_hand)
 
     def input(self, input_hand):
@@ -33,7 +30,35 @@ class Menu:
                 if input_hand.mouse_released[1]:
                     return b.press()
 
-        return gameloop.State.menu
+        return False
+
+
+class MainMenu(Menu):
+    def __init__(self):
+        Menu.__init__(self)
+        self.add_button(0, 2, ButtonType.play)
+        self.add_button(0, 4, ButtonType.editor)
+        self.add_button(0, 6, ButtonType.options)
+        self.add_button(0, 8, ButtonType.quit)
+
+        self.bg_sprite = animatedsprite.AnimatedSprite('bg')
+        self.bg_sprite.play('sky')
+
+    def draw(self, screen, img_hand):
+        self.bg_sprite.draw(screen, img_hand)
+        Menu.draw(self, screen, img_hand)
+
+
+class PauseMenu(Menu):
+    def __init__(self):
+        Menu.__init__(self)
+        self.add_button(0, 4, ButtonType.resume)
+        self.add_button(0, 6, ButtonType.options)
+        self.add_button(0, 8, ButtonType.menu)
+
+
+class OptionsMenu(Menu):
+    pass
 
 
 class Button(animatedsprite.AnimatedSprite):
@@ -57,6 +82,10 @@ class Button(animatedsprite.AnimatedSprite):
         elif self.type is ButtonType.editor:
             return gameloop.State.editor
         elif self.type is ButtonType.options:
-            return gameloop.State.menu
-        else:
+            return gameloop.State.options
+        elif self.type is ButtonType.resume:
+            return gameloop.State.play
+        elif self.type is ButtonType.quit:
             return gameloop.State.quit
+        elif self.type is ButtonType.menu:
+            return gameloop.State.menu

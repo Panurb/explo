@@ -19,8 +19,10 @@ class Wall(Tile):
         self.path = path
         self.destroyed = False
         self.friction = 0.125 * helpers.SCALE
+        self.slide_speed = 0.25 * helpers.SCALE
         if self.path == 'ice':
             self.friction = 0.01 * helpers.SCALE
+            self.slide_speed = helpers.TERMINAL_VELOCITY
 
     def update(self, room):
         up = right = down = left = 0
@@ -101,9 +103,9 @@ class Water(Tile):
             self.play('idle')
 
 
-class Destroyable(Tile):
+class Destroyable(Wall):
     def __init__(self, x, y):
-        Tile.__init__(self, x, y, 'destroyable')
+        Wall.__init__(self, x, y, 'destroyable')
         self.destroyed = False
         self.debris = animatedsprite.Group()
 
@@ -126,5 +128,5 @@ class Destroyable(Tile):
         self.debris.empty()
 
     def draw(self, screen, img_hand):
-        Tile.draw(self, screen, img_hand)
+        Wall.draw(self, screen, img_hand)
         self.debris.draw(screen, img_hand)

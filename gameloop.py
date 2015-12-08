@@ -14,6 +14,8 @@ class State(enum.Enum):
     paused = 3
     editor = 4
     quit = 5
+    options = 6
+    level_select = 7
 
 
 class GameLoop:
@@ -22,7 +24,8 @@ class GameLoop:
         self.img_hand = img_hand
         self.input_hand = input_hand
 
-        self.menu = menu.Menu()
+        self.main_menu = menu.MainMenu()
+        self.pause_menu = menu.PauseMenu()
         self.level = level.Level()
         self.player = player.Player(self.level.room(0, 0).player_x, self.level.room(0, 0).player_y, 0, 0, self.level)
         self.editor = editor.Editor(self.player.room_x, self.player.room_y)
@@ -35,8 +38,13 @@ class GameLoop:
         self.change_state()
 
         if self.state is State.menu:
-            self.state = self.menu.input(self.input_hand)
-            self.menu.draw(self.screen, self.img_hand)
+            if self.main_menu.input(self.input_hand):
+                self.state = self.main_menu.input(self.input_hand)
+            self.main_menu.draw(self.screen, self.img_hand)
+        elif self.state is State.paused:
+            if self.pause_menu.input(self.input_hand):
+                self.state = self.pause_menu.input(self.input_hand)
+            self.pause_menu.draw(self.screen, self.img_hand)
         elif self.state is State.play:
             try:
                 room = self.level.room(self.player.room_x, self.player.room_y)
@@ -56,8 +64,6 @@ class GameLoop:
             # Done after drawing to avoid visual glitches on room change
             if (self.player.room_x, self.player.room_y) != last_room:
                 self.level.rooms[last_room].reset()
-        elif self.state is State.paused:
-            pass
         elif self.state is State.editor:
             try:
                 self.editor.input(self.level, self.input_hand)
@@ -73,12 +79,14 @@ class GameLoop:
         pygame.display.update()
 
     def change_state(self):
-        if self.input_hand.keys_pressed[pygame.K_p]:
-            if self.state is State.paused:
-                self.state = State.play
-            elif self.state is State.play:
+        if self.input_hand.keys_pressed[pygame.K_ESCAPE]:
+            if self.state is State.play:
                 self.state = State.paused
-
-        if self.state is not State.menu:
-            if self.input_hand.keys_pressed[pygame.K_ESCAPE]:
+            elif self.state is State.editor:
                 self.state = State.menu
+            elif self.state is State.options:
+                self.state = State.menu
+            elif self.state is State.level_select:
+                self.state = State.menu
+            elif self.state is State.paused:
+                self.state = State.play

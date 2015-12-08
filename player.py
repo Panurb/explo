@@ -66,7 +66,6 @@ class Player:
         self.jump_count = 0
         self.jump_buffer = False
         self.walled_timer = 0
-        self.fatal_speed = 8 * helpers.SCALE
 
         self.attack_buffer = True
         self.bullet_speed = 4 * helpers.SCALE
@@ -88,8 +87,13 @@ class Player:
         if self.abilities[Ability.wall_jump]:
             collider = pygame.sprite.Sprite()
             collider.rect = pygame.Rect(self.rect.left - 1, self.rect.y, self.rect.width + 2, self.rect.height / 2)
-            if pygame.sprite.spritecollide(collider, room.walls, False) and self.dy > 0:
-                self.walled = True
+            # TODO: check for destroyables
+            collisions = pygame.sprite.spritecollide(collider, room.walls, False)
+            for c in collisions:
+                self.speed_wall = c.slide_speed
+            if collisions and self.dy > 0:
+                if self.speed_wall < helpers.TERMINAL_VELOCITY:
+                    self.walled = True
             else:
                 self.walled = False
 
@@ -361,7 +365,7 @@ class Player:
                     self.dy = min(self.dy, self.speed_wall)
                 else:
                     self.dy += helpers.GRAVITY
-                    self.dy = min(self.dy, self.fatal_speed)
+                    self.dy = min(self.dy, helpers.TERMINAL_VELOCITY)
             elif not self.jump_buffer and self.dy < 0:
                 self.dy += helpers.GRAVITY / 2
             else:
@@ -518,6 +522,7 @@ class Player:
 
         for c in collisions:
             if not c.destroyed:
+                self.speed_wall = c.slide_speed
                 if self.dx > 0:
                     self.rect.right = c.rect.left
                 if self.dx < 0:
@@ -542,7 +547,7 @@ class Player:
             if self.dy < 0:
                 self.rect.top = c.rect.bottom
 
-            if abs(self.dy) > self.fatal_speed:
+            if abs(self.dy) >= helpers.TERMINAL_VELOCITY:
                 self.die()
 
         if collisions:
