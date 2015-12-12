@@ -8,9 +8,9 @@ import tile
 
 
 class Level:
-    def __init__(self):
-        path = 'data/lvl/level.txt'
-        with open(path) as f:
+    def __init__(self, filename):
+        self.path = 'data/lvl/' + filename
+        with open(self.path) as f:
             lines = f.readlines()
 
         self.rooms = {}
@@ -41,7 +41,7 @@ class Level:
         return self.rooms[(x, y)]
 
     def write(self):
-        f = open('data/lvl/level.txt', 'w')
+        f = open(self.path, 'w')
 
         for room in self.rooms.values():
             room.reset()

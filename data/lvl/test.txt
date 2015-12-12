@@ -1,0 +1,17 @@
+(0, 0, sky)
+--------------------
+--------------------
+--------------------
+--------GGGG--------
+-------GGG-GG-------
+-------GGGGGG-------
+-------GG-----------
+----MMMMMMMMMMMM----
+----MMMM----MMMM----
+--------------------
+-----C--------------
+----MMMM-f--MMMM----
+GGGGMMMMMMMMMMMM----
+GGGGGGGGGGGGGGGGGGGG
+GGGGGGGGGGGGGGGGGGGG
+

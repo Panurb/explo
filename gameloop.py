@@ -26,9 +26,11 @@ class GameLoop:
 
         self.main_menu = menu.MainMenu()
         self.pause_menu = menu.PauseMenu()
-        self.level = level.Level()
-        self.player = player.Player(self.level.room(0, 0).player_x, self.level.room(0, 0).player_y, 0, 0, self.level)
-        self.editor = editor.Editor(self.player.room_x, self.player.room_y)
+        self.level_select_menu = menu.LevelSelectMenu()
+        self.level_name = ''
+        self.level = None
+        self.player = None
+        self.editor = None
         self.clock_text = textbox.Textbox('', helpers.WIDTH - 0.5 * helpers.TILE_SIZE, 0)
 
         self.state = State.menu
@@ -38,14 +40,19 @@ class GameLoop:
         self.change_state()
 
         if self.state is State.menu:
-            if self.main_menu.input(self.input_hand):
-                self.state = self.main_menu.input(self.input_hand)
+            self.level = None
+            self.state = self.main_menu.input(self.input_hand)
             self.main_menu.draw(self.screen, self.img_hand)
         elif self.state is State.paused:
-            if self.pause_menu.input(self.input_hand):
-                self.state = self.pause_menu.input(self.input_hand)
+            self.state = self.pause_menu.input(self.input_hand)
             self.pause_menu.draw(self.screen, self.img_hand)
+        elif self.state is State.level_select:
+            self.state = self.level_select_menu.input(self.input_hand)
+            self.level_select_menu.draw(self.screen, self.img_hand)
         elif self.state is State.play:
+            if self.level is None:
+                self.level = level.Level(self.level_select_menu.level_name)
+                self.player = player.Player(self.level)
             try:
                 room = self.level.room(self.player.room_x, self.player.room_y)
             except KeyError:
@@ -65,6 +72,10 @@ class GameLoop:
             if (self.player.room_x, self.player.room_y) != last_room:
                 self.level.rooms[last_room].reset()
         elif self.state is State.editor:
+            if self.level is None:
+                self.level = level.Level(self.level_select_menu.level_name)
+                self.player = player.Player(self.level)
+                self.editor = editor.Editor(self.player.room_x, self.player.room_y)
             try:
                 self.editor.input(self.level, self.input_hand)
                 self.level.room(self.editor.room_x, self.editor.room_y).draw(self.screen, self.img_hand)

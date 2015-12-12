@@ -12,9 +12,11 @@ class Textbox:
         self.y = y
         self.chars = pygame.sprite.Group()
         self.time = -1
+        self.string = string
         self.set_string(string)
 
     def set_string(self, string):
+        self.string = string
         strings = string.split('\\')
         self.chars = pygame.sprite.Group()
 

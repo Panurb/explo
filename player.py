@@ -21,9 +21,11 @@ class Weapon(Enum):
 
 
 class Player:
-    def __init__(self, x, y, room_x, room_y, level):
-        self.room_x = room_x
-        self.room_y = room_y
+    def __init__(self, level):
+        x = level.room(0, 0).player_x
+        y = level.room(0, 0).player_y
+        self.room_x = 0
+        self.room_y = 0
 
         self.sprite_body = animatedsprite.AnimatedSprite('player_body')
         self.sprite_legs = animatedsprite.AnimatedSprite('player_legs')
@@ -75,7 +77,7 @@ class Player:
         self.bullets = animatedsprite.Group()
         self.gibs = animatedsprite.Group()
 
-        self.save = save.Save(x, y, room_x, room_y, self.dir, self.abilities)
+        self.save = save.Save(self.rect.x, self.rect.y, self.room_x, self.room_y, self.dir, self.abilities)
 
         self.txtbox = textbox.Textbox('', 0.5 * helpers.WIDTH, 4 * helpers.SCALE)
         self.map = hud.Map(level)
