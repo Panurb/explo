@@ -86,19 +86,6 @@ class Player:
         self.move_x(room)
         self.move_y(room)
 
-        if self.abilities[Ability.wall_jump]:
-            collider = pygame.sprite.Sprite()
-            collider.rect = pygame.Rect(self.rect.left - 1, self.rect.y, self.rect.width + 2, self.rect.height / 2)
-            # TODO: check for destroyables
-            collisions = pygame.sprite.spritecollide(collider, room.walls, False)
-            for c in collisions:
-                self.speed_wall = c.slide_speed
-            if collisions and self.dy > 0:
-                if self.speed_wall < helpers.TERMINAL_VELOCITY:
-                    self.walled = True
-            else:
-                self.walled = False
-
         self.apply_damage(room)
         self.apply_saving(room)
         self.apply_powerups(room)
@@ -201,7 +188,7 @@ class Player:
                 if self.grounded:
                     if self.crouched:
                         self.sprite_body.play('crouch')
-                    elif self.moving:
+                    elif self.moving and not self.walled:
                         if abs(self.dx) > self.speed['walk']:
                             self.sprite_body.play('run', self.sprite_body.frame)
                         elif abs(self.dx) > 0.1 * helpers.SCALE:
@@ -254,7 +241,7 @@ class Player:
             if self.grounded:
                 if self.crouched:
                     self.sprite_legs.play('crouch')
-                elif self.moving:
+                elif self.moving and not self.walled:
                     if abs(self.dx) > self.speed['walk']:
                         self.sprite_legs.play('run', self.sprite_body.frame)
                     elif abs(self.dx) > 0.1 * helpers.SCALE:
@@ -299,8 +286,11 @@ class Player:
                 if self.rect.colliderect(p.rect):
                     self.die()
 
-            if type(e) is enemy.Zombie and e.alive:
-                e.vision(self)
+            if e.alive:
+                if type(e) is enemy.Zombie:
+                    e.vision(self, room)
+                elif type(e)is enemy.Chaser:
+                    e.chase(self)
 
     def apply_saving(self, room):
         for cp in pygame.sprite.spritecollide(self, room.checkpoints, False):
@@ -532,6 +522,19 @@ class Player:
 
         if collisions:
             self.dx = 0
+
+        if self.abilities[Ability.wall_jump]:
+            collider = pygame.sprite.Sprite()
+            collider.rect = pygame.Rect(self.rect.left - 1, self.rect.y, self.rect.width + 2, self.rect.height / 2)
+            # TODO: check for destroyables
+            collisions = pygame.sprite.spritecollide(collider, room.walls, False)
+            for c in collisions:
+                self.speed_wall = c.slide_speed
+            if collisions and self.dy > 0:
+                if self.speed_wall < helpers.TERMINAL_VELOCITY:
+                    self.walled = True
+            else:
+                self.walled = False
 
     def move_y(self, room):
         self.rect.move_ip(0, self.dy)

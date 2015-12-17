@@ -31,7 +31,8 @@ SIZES = {
 
 ACTIONS = {
     'bg': [
-        ['sky', 1]
+        ['sky', 1],
+        ['cave', 1]
     ],
     'bullet': [
         ['idle', 1]

@@ -14,11 +14,14 @@ class ButtonType(enum.Enum):
     menu = 6
     level = 7
     edit = 8
+    new = 9
+    editor = 10
 
 
 class Menu:
     def __init__(self):
         self.buttons = animatedsprite.Group()
+        self.state = None
 
     def add_button(self, x, y, button_type, text=''):
         self.buttons.add(Button(x * helpers.TILE_SIZE, y * helpers.TILE_SIZE, button_type, text))
@@ -38,9 +41,10 @@ class Menu:
 class MainMenu(Menu):
     def __init__(self):
         Menu.__init__(self)
-        self.add_button(0, 2, ButtonType.play)
-        self.add_button(0, 4, ButtonType.options)
-        self.add_button(0, 6, ButtonType.quit)
+        self.add_button(0, 4, ButtonType.play)
+        self.add_button(0, 6, ButtonType.editor)
+        self.add_button(0, 8, ButtonType.options)
+        self.add_button(0, 10, ButtonType.quit)
 
         self.bg_sprite = animatedsprite.AnimatedSprite('bg')
         self.bg_sprite.play('sky')
@@ -65,8 +69,7 @@ class LevelSelectMenu(Menu):
         self.add_button(0, 10, ButtonType.menu)
         dy = 2
         for filename in os.listdir('data/lvl'):
-            self.add_button(0, 2 * dy, ButtonType.level, filename)
-            self.add_button(5, 2 * dy, ButtonType.edit, filename)
+            self.add_button(0, 2 * dy, ButtonType.level, filename.replace('.txt', ''))
             dy += 1
 
         self.bg_sprite = animatedsprite.AnimatedSprite('bg')
@@ -82,15 +85,55 @@ class LevelSelectMenu(Menu):
         for b in self.buttons.sprites():
             if b.rect.collidepoint(input_hand.mouse_x, input_hand.mouse_y):
                 if input_hand.mouse_released[1]:
-                    if b.type is ButtonType.level or b.type is ButtonType.edit:
-                        self.level_name = b.txtbox.string
+                    if b.type is ButtonType.level:
+                        self.level_name = b.txtbox.string + '.txt'
+                    return b.press()
+
+        return self.state
+
+
+class EditorSelectMenu(Menu):
+    def __init__(self):
+        Menu.__init__(self)
+        self.add_button(0, 10, ButtonType.menu)
+        dy = 2
+        for filename in os.listdir('data/lvl'):
+            self.add_button(0, 2 * dy, ButtonType.edit, filename.replace('.txt', ''))
+            dy += 1
+
+        self.add_button(0, 2 * dy, ButtonType.new)
+
+        self.bg_sprite = animatedsprite.AnimatedSprite('bg')
+        self.bg_sprite.play('cave')
+        self.state = gameloop.State.editor_select
+        self.level_name = ''
+
+    def draw(self, screen, img_hand):
+        self.bg_sprite.draw(screen, img_hand)
+        Menu.draw(self, screen, img_hand)
+
+    def input(self, input_hand):
+        for b in self.buttons.sprites():
+            if b.rect.collidepoint(input_hand.mouse_x, input_hand.mouse_y):
+                if input_hand.mouse_released[1]:
+                    if b.type is ButtonType.edit:
+                        self.level_name = b.txtbox.string + '.txt'
                     return b.press()
 
         return self.state
 
 
 class OptionsMenu(Menu):
-    pass
+    def __init__(self):
+        Menu.__init__(self)
+        self.bg_sprite = animatedsprite.AnimatedSprite('bg')
+        self.bg_sprite.play('sky')
+        self.state = gameloop.State.options
+        self.add_button(0, 10, ButtonType.menu)
+
+    def draw(self, screen, img_hand):
+        self.bg_sprite.draw(screen, img_hand)
+        Menu.draw(self, screen, img_hand)
 
 
 class Button(animatedsprite.AnimatedSprite):
@@ -125,3 +168,5 @@ class Button(animatedsprite.AnimatedSprite):
             return gameloop.State.play
         elif self.type is ButtonType.edit:
             return gameloop.State.editor
+        elif self.type is ButtonType.editor:
+            return gameloop.State.editor_select

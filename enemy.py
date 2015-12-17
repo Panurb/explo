@@ -144,7 +144,6 @@ class Zombie(Enemy):
 
         self.rect.height = 16 * helpers.SCALE
         self.speed = 0.25 * helpers.SCALE
-        self.armored = True
         self.gibs = animatedsprite.Group()
         self.cooldown = 0
         self.play('armored')
@@ -152,7 +151,7 @@ class Zombie(Enemy):
         self.health = self.max_health = 5
 
     def update(self, room):
-        if self.alive and self.grounded:
+        if self.alive and self.grounded and not self.projectiles:
             self.dx = self.speed
         else:
             self.dx = 0
@@ -163,33 +162,39 @@ class Zombie(Enemy):
             if self.walled or self.on_edge(room):
                 self.speed = -self.speed
                 self.flip()
-            if self.armored:
-                self.play('armored')
+
+        self.animate()
+
+    def animate(self):
+        if self.alive:
+            if self.dx == 0:
+                self.pause()
             else:
-                self.play('nude', self.frame)
+                self.play('armored')
         else:
             self.play_once('die')
 
-    def vision(self, player):
-        if self.armored:
-            if self.cooldown == 0:
-                self.cooldown = 30
-                if self.speed > 0:
-                    for i in range(40 * helpers.SCALE):
-                        if player.rect.collidepoint(self.rect.x + i * helpers.SCALE, self.rect.y):
-                            x = self.rect.x + 8 * helpers.SCALE
-                            y = self.rect.y + 2 * helpers.SCALE
-                            self.projectiles.add(bullet.Bullet(x, y, self.bullet_speed, 0))
-                            return
-                elif self.speed < 0:
-                    for i in range(40 * helpers.SCALE):
-                        if player.rect.collidepoint(self.rect.x - i * helpers.SCALE, self.rect.y):
-                            x = self.rect.x - 8 * helpers.SCALE
-                            y = self.rect.y + 2 * helpers.SCALE
-                            self.projectiles.add(bullet.Bullet(x, y, -self.bullet_speed, 0))
-                            return
-            else:
-                self.cooldown -= 1
+    def vision(self, player, room):
+        if self.cooldown == 0:
+            self.cooldown = 30
+            if self.speed > 0:
+                #collider = pygame.sprite.Sprite()
+                #collider.rect = pygame.Rect(self.rect.left - 1, self.rect.y, self.rect.width + 2, self.rect.height / 2)
+                for i in range(40 * helpers.SCALE):
+                    if player.rect.collidepoint(self.rect.x + i * helpers.SCALE, self.rect.y):
+                        x = self.rect.x + 8 * helpers.SCALE
+                        y = self.rect.y + 2 * helpers.SCALE
+                        self.projectiles.add(bullet.Bullet(x, y, self.bullet_speed, 0))
+                        return
+            elif self.speed < 0:
+                for i in range(40 * helpers.SCALE):
+                    if player.rect.collidepoint(self.rect.x - i * helpers.SCALE, self.rect.y):
+                        x = self.rect.x - 8 * helpers.SCALE
+                        y = self.rect.y + 2 * helpers.SCALE
+                        self.projectiles.add(bullet.Bullet(x, y, -self.bullet_speed, 0))
+                        return
+        else:
+            self.cooldown -= 1
 
     def damage(self, dx, dy):
         Enemy.damage(self, dx, dy)
@@ -222,7 +227,6 @@ class Zombie(Enemy):
         self.dy = 0
         if self.dir is Direction.left:
             self.flip()
-        self.armored = True
 
 
 class Flyer(Enemy):
@@ -253,3 +257,20 @@ class Flyer(Enemy):
         Enemy.reset(self)
         self.dx = self.speed
         self.dy = 0
+
+
+class Spawner(Enemy):
+    pass
+
+
+class Chaser(Enemy):
+    def __init__(self, x, y):
+        Enemy.__init__(self, x, y, 'chaser')
+        self.gravity = False
+        self.speed = 1 * helpers.SCALE
+
+    def update(self, room):
+        Enemy.update(self, room)
+
+    def chase(self, player):
+        pass

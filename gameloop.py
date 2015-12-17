@@ -16,6 +16,7 @@ class State(enum.Enum):
     quit = 5
     options = 6
     level_select = 7
+    editor_select = 8
 
 
 class GameLoop:
@@ -27,6 +28,8 @@ class GameLoop:
         self.main_menu = menu.MainMenu()
         self.pause_menu = menu.PauseMenu()
         self.level_select_menu = menu.LevelSelectMenu()
+        self.editor_select_menu = menu.EditorSelectMenu()
+        self.options_menu = menu.OptionsMenu()
         self.level_name = ''
         self.level = None
         self.player = None
@@ -49,6 +52,12 @@ class GameLoop:
         elif self.state is State.level_select:
             self.state = self.level_select_menu.input(self.input_hand)
             self.level_select_menu.draw(self.screen, self.img_hand)
+        elif self.state is State.editor_select:
+            self.state = self.editor_select_menu.input(self.input_hand)
+            self.editor_select_menu.draw(self.screen, self.img_hand)
+        elif self.state is State.options:
+            self.state = self.options_menu.input(self.input_hand)
+            self.options_menu.draw(self.screen, self.img_hand)
         elif self.state is State.play:
             if self.level is None:
                 self.level = level.Level(self.level_select_menu.level_name)
@@ -73,7 +82,7 @@ class GameLoop:
                 self.level.rooms[last_room].reset()
         elif self.state is State.editor:
             if self.level is None:
-                self.level = level.Level(self.level_select_menu.level_name)
+                self.level = level.Level(self.editor_select_menu.level_name)
                 self.player = player.Player(self.level)
                 self.editor = editor.Editor(self.player.room_x, self.player.room_y)
             try:
@@ -82,6 +91,7 @@ class GameLoop:
             except KeyError:
                 room = level.Room([], self.editor.room_x, self.editor.room_y, 'sky')
                 self.level.rooms[(self.editor.room_x, self.editor.room_y)] = room
+
             self.editor.draw(self.screen, self.img_hand)
 
         self.clock_text.set_string(str(int(clock.get_fps())))
@@ -101,3 +111,5 @@ class GameLoop:
                 self.state = State.menu
             elif self.state is State.paused:
                 self.state = State.play
+            elif self.state is State.editor_select:
+                self.state = State.menu
