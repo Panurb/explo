@@ -3,9 +3,10 @@ import helpers
 import textbox
 
 
-OBJECTS = ['W', 'G', 'R', 'M', 'I', 'D', '#', '~', '=', 'C', '*', 'c', 'z', 'f', '0', '1', '2', '3', '4', '5']
+OBJECTS = ['W', 'G', 'R', 'M', 'I', 'D', '#', '~', '=', 'C', '*', 'c', 'z', 's', 'f', '0', '1', '2', '3', '4', '5']
 OBJECT_NAMES = ['WALL', 'GROUND', 'ROCK', 'METAL', 'ICE', 'DESTROYABLE', 'LADDER', 'SURFACE', 'WATER', 'CHECKPOINT',
-                'THORNS', 'CRAWLER', 'ZOMBIE', 'FLYER', 'RUN', 'DOUBLE JUMP', 'WALL JUMP', 'SWORD', 'GUN', 'REBREATHER']
+                'THORNS', 'CRAWLER', 'ZOMBIE', 'SPAWNER', 'FLYER', 'RUN', 'DOUBLE JUMP', 'WALL JUMP', 'SWORD', 'GUN',
+                'REBREATHER']
 
 
 class Editor:

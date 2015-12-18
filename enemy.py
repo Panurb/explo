@@ -260,7 +260,15 @@ class Flyer(Enemy):
 
 
 class Spawner(Enemy):
-    pass
+    def __init__(self, x, y):
+        Enemy.__init__(self, x, y, 'spawner')
+        self.children = animatedsprite.Group()
+        self.rect.width = 16 * helpers.SCALE
+        self.rect.height = 16 * helpers.SCALE
+
+    def update(self, room):
+        if not self.children:
+            self.children.add(Chaser(self.rect.x, self.rect.y))
 
 
 class Chaser(Enemy):
@@ -273,4 +281,8 @@ class Chaser(Enemy):
         Enemy.update(self, room)
 
     def chase(self, player):
-        pass
+        x = abs(self.rect.x - player.rect.x)
+        y = abs(self.rect.y - player.rect.y)
+        distance = helpers.speed(x, y)
+        self.dx = (x / distance) * self.speed
+        self.dy = (y / distance) * self.speed

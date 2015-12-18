@@ -5,6 +5,7 @@ SIZES = {
     'bg': (160, 120),
     'bullet': (4, 4),
     'chars': (4, 4),
+    'chaser': (8, 8),
     'checkpoint': (8, 8),
     'crawler': (8, 8),
     'destroyable': (8, 8),
@@ -41,6 +42,9 @@ ACTIONS = {
         ['upper_case', 26],
         ['lower_case', 26],
         ['numbers', 10]
+    ],
+    'chaser': [
+        ['idle', 1]
     ],
     'checkpoint': [
         ['idle', 2]
