@@ -3,7 +3,7 @@ import math
 import pygame
 
 
-SCALE = 4
+SCALE = 5
 WIDTH = 160 * SCALE
 HEIGHT = 120 * SCALE
 TILE_SIZE = 8 * SCALE
@@ -19,6 +19,7 @@ def load_image(name):
         print('Cannot load image:', name)
         raise SystemExit(message)
     image = image.convert_alpha()
+
     return image
 
 
@@ -32,12 +33,16 @@ def row_to_tiles(image, width, height, row, length):
     return tiles
 
 
-def speed(dx, dy):
-    return math.sqrt(dx**2 + dy**2)
-
-
 def outside_screen(rect):
     if rect.left > WIDTH or rect.right < 0 or rect.top > HEIGHT or rect.bottom < 0:
         return True
     else:
         return False
+
+
+def rotation(dx, dy):
+    rot = math.degrees(math.atan2(-dy, dx))
+    if rot < 0:
+        rot += 360
+
+    return rot

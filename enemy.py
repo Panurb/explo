@@ -5,6 +5,7 @@ import helpers
 import physicsobject
 import random
 from player import Direction
+import math
 
 
 class Enemy(animatedsprite.AnimatedSprite, physicsobject.PhysicsObject):
@@ -22,11 +23,12 @@ class Enemy(animatedsprite.AnimatedSprite, physicsobject.PhysicsObject):
         self.health = self.max_health
 
     def reset(self):
-        self.rect.x = self.spawn_x
-        self.rect.y = self.spawn_y
+        self.x = self.spawn_x
+        self.y = self.spawn_y
+        self.dx = 0
+        self.dy = 0
         self.alive = True
         self.gibs.empty()
-        self.frame = 0
         self.projectiles.empty()
         self.health = self.max_health
 
@@ -262,27 +264,82 @@ class Flyer(Enemy):
 class Spawner(Enemy):
     def __init__(self, x, y):
         Enemy.__init__(self, x, y, 'spawner')
-        self.children = animatedsprite.Group()
         self.rect.width = 16 * helpers.SCALE
         self.rect.height = 16 * helpers.SCALE
+        self.gravity = False
+        self.health = 5
+        self.max_health = self.health
+        self.cooldown = 0
 
     def update(self, room):
-        if not self.children:
-            self.children.add(Chaser(self.rect.x, self.rect.y))
+        Enemy.update(self, room)
+        if self.alive and len(self.projectiles) < 3 and self.cooldown == 60:
+            self.projectiles.add(Chaser(self.rect.x + 0.25 * self.rect.width, self.rect.y + 0.25 * self.rect.height))
+            self.cooldown = 0
+
+        if self.cooldown < 60:
+            self.cooldown += 1
+
+    def chase(self, player):
+        for c in self.projectiles.sprites():
+            c.chase(player)
+
+    def die(self):
+        Enemy.die(self)
+        self.play_once('die')
+
+    def reset(self):
+        Enemy.reset(self)
+        self.play('idle')
+        self.cooldown = 0
 
 
 class Chaser(Enemy):
     def __init__(self, x, y):
         Enemy.__init__(self, x, y, 'chaser')
         self.gravity = False
-        self.speed = 1 * helpers.SCALE
+        self.collision = False
+        self.speed = 0.25 * helpers.SCALE
+        self.show_frame('idle', 0)
 
     def update(self, room):
         Enemy.update(self, room)
+        if pygame.sprite.spritecollide(self, room.walls, False):
+            self.speed = 0.1 * helpers.SCALE
+        else:
+            self.speed = 0.25 * helpers.SCALE
+
+        rotation = helpers.rotation(self.dx, self.dy)
+        if self.alive:
+            self.show_frame('idle', int((rotation / 360) * 8))
+        elif self.animation_finished:
+            self.kill()
 
     def chase(self, player):
-        x = abs(self.rect.x - player.rect.x)
-        y = abs(self.rect.y - player.rect.y)
-        distance = helpers.speed(x, y)
-        self.dx = (x / distance) * self.speed
-        self.dy = (y / distance) * self.speed
+        if self.alive and player.alive:
+            x = player.rect.x - self.rect.x
+            y = player.rect.y - self.rect.y
+            distance = math.hypot(x, y)
+            if distance > 0:
+                self.dx = (x / distance) * self.speed
+                self.dy = (y / distance) * self.speed
+            else:
+                self.dx = 0
+                self.dy = 0
+        else:
+            self.dx = 0
+            self.dy = 0
+
+    def reset(self):
+        Enemy.reset(self)
+
+    def die(self):
+        Enemy.die(self)
+        self.play_once('die')
+        self.dx = 0
+        self.dy = 0
+
+
+class Charger(Enemy):
+    def __init__(self, x, y):
+        Enemy.__init__(self, x, y, 'charger')

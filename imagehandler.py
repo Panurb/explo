@@ -4,6 +4,7 @@ import helpers
 SIZES = {
     'bg': (160, 120),
     'bullet': (4, 4),
+    'charger': (32, 32),
     'chars': (4, 4),
     'chaser': (8, 8),
     'checkpoint': (8, 8),
@@ -23,6 +24,7 @@ SIZES = {
     'player_legs': (16, 16),
     'powerup': (8, 8),
     'rock': (8, 8),
+    'spawner': (16, 16),
     'thorns': (8, 8),
     'wall': (8, 8),
     'water': (8, 8),
@@ -38,13 +40,18 @@ ACTIONS = {
     'bullet': [
         ['idle', 1]
     ],
+    'charger': [
+        ['idle', 1],
+        ['walk', 2]
+    ],
     'chars': [
         ['upper_case', 26],
         ['lower_case', 26],
         ['numbers', 10]
     ],
     'chaser': [
-        ['idle', 1]
+        ['idle', 8],
+        ['die', 6]
     ],
     'checkpoint': [
         ['idle', 2]
@@ -125,6 +132,10 @@ ACTIONS = {
     ],
     'rock': [
         ['idle', 16]
+    ],
+    'spawner': [
+        ['idle', 1],
+        ['die', 2]
     ],
     'thorns': [
         ['idle', 16]

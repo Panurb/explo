@@ -2,11 +2,14 @@ import pygame
 import animatedsprite
 import helpers
 import imagehandler
+import math
 
 
 class PhysicsObject:
     def __init__(self, x, y, width, height):
         self.rect = pygame.Rect(x, y, width, height)
+        self.x = x
+        self.y = y
         self.dx = 0
         self.dy = 0
         self.grounded = False
@@ -24,7 +27,8 @@ class PhysicsObject:
         self.apply_gravity()
 
     def move_x(self, room):
-        self.rect.move_ip(self.dx, 0)
+        self.x += self.dx
+        self.rect.x = self.x
 
         if self.collision:
             collisions = pygame.sprite.spritecollide(self, room.walls, False)
@@ -32,8 +36,10 @@ class PhysicsObject:
             for c in collisions:
                 if self.dx > 0:
                     self.rect.right = c.rect.left
+                    self.x = self.rect.x
                 if self.dx < 0:
                     self.rect.left = c.rect.right
+                    self.x = self.rect.x
 
             if collisions:
                 self.dx *= -self.bounce
@@ -42,7 +48,8 @@ class PhysicsObject:
                 self.walled = False
 
     def move_y(self, room):
-        self.rect.move_ip(0, self.dy)
+        self.y += self.dy
+        self.rect.y = self.y
 
         if self.collision:
             collisions = pygame.sprite.spritecollide(self, room.walls, False)
@@ -50,14 +57,19 @@ class PhysicsObject:
             for c in collisions:
                 if self.dy > 0:
                     self.rect.bottom = c.rect.top
+                    self.y = self.rect.y
                     self.grounded = True
 
                 if self.dy < 0:
                     self.rect.top = c.rect.bottom
+                    self.y = self.rect.y
                     self.ceilinged = True
 
             if collisions:
-                self.dy *= -self.bounce
+                if self.dy > 1 * helpers.SCALE:
+                    self.dy *= -self.bounce
+                else:
+                    self.dy = 0
             else:
                 self.grounded = False
                 self.ceilinged = False
@@ -70,8 +82,8 @@ class PhysicsObject:
                 self.dx = min(0, self.dx + self.friction)
 
     def apply_gravity(self):
-        if self.gravity:
-            self.dy += helpers.GRAVITY
+        if self.gravity and not self.grounded:
+            self.dy = min(self.dy + helpers.GRAVITY, helpers.TERMINAL_VELOCITY)
 
 
 class Debris(PhysicsObject, animatedsprite.AnimatedSprite):
@@ -87,7 +99,7 @@ class Debris(PhysicsObject, animatedsprite.AnimatedSprite):
 
     def update(self, room):
         PhysicsObject.update(self, room)
-        if helpers.speed(self.dx, self.dy) > 0.5 * helpers.SCALE:
+        if helpers.norm(self.dx, self.dy) > 0.5 * helpers.SCALE:
             self.animate()
 
 
@@ -106,7 +118,7 @@ class Gib(PhysicsObject, animatedsprite.AnimatedSprite):
 
     def update(self, room):
         PhysicsObject.update(self, room)
-        if not helpers.outside_screen(self.rect) and helpers.speed(self.dx, self.dy) > 0.5 * helpers.SCALE:
+        if not helpers.outside_screen(self.rect) and math.hypot(self.dx, self.dy) > 0.5 * helpers.SCALE:
             particle = Particle(self.rect.x, self.rect.y, 0, 0, 'blood', False)
             self.trail.add(particle)
             self.animate()

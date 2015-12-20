@@ -22,8 +22,8 @@ class Weapon(Enum):
 
 class Player:
     def __init__(self, level):
-        x = level.room(0, 0).player_x
-        y = level.room(0, 0).player_y
+        self.x = level.room(0, 0).player_x
+        self.y = level.room(0, 0).player_y
         self.room_x = 0
         self.room_y = 0
 
@@ -37,7 +37,7 @@ class Player:
         self.weapon = Weapon.none
         self.weapon_cooldown = {Weapon.sword: 24, Weapon.gun: 8}
 
-        self.rect = pygame.Rect(x, y, 6 * helpers.SCALE, 16 * helpers.SCALE)
+        self.rect = pygame.Rect(self.x, self.y, 6 * helpers.SCALE, 15 * helpers.SCALE)
         self.dx = 0
         self.dy = 0
 
@@ -274,22 +274,21 @@ class Player:
         self.sprite_legs.animate()
 
     def apply_damage(self, room):
-        for spike in room.spikes:
-            if self.rect.colliderect(spike.rect):
-                self.die()
+        if pygame.sprite.spritecollide(self, room.spikes, False):
+            self.die()
 
         for e in room.enemies:
             if self.rect.colliderect(e.rect) and e.alive:
                 self.die()
 
             for p in e.projectiles:
-                if self.rect.colliderect(p.rect):
+                if p.alive and self.rect.colliderect(p.rect):
                     self.die()
 
             if e.alive:
                 if type(e) is enemy.Zombie:
                     e.vision(self, room)
-                elif type(e)is enemy.Chaser:
+                elif type(e)is enemy.Spawner:
                     e.chase(self)
 
     def apply_saving(self, room):
@@ -337,6 +336,9 @@ class Player:
             if self.rect.centery <= 0:
                 self.room_y -= 1
                 self.rect.centery = helpers.HEIGHT - 1 * helpers.SCALE
+
+            self.x = self.rect.x
+            self.y = self.rect.y
 
     def apply_friction(self):
         if self.grounded and not self.moving:
@@ -433,17 +435,20 @@ class Player:
 
     def crouch(self):
         if self.grounded and not self.crouched:
-            self.rect.height = helpers.TILE_SIZE
-            self.rect.y += helpers.TILE_SIZE
+            self.rect.height = 8 * helpers.SCALE
+            self.rect.y += 7 * helpers.SCALE
+            self.y = self.rect.y
             self.crouched = True
 
     def uncrouch(self, room):
         if self.crouched:
-            self.rect.height = 16 * helpers.SCALE
-            self.rect.y -= helpers.TILE_SIZE
+            self.rect.height = 15 * helpers.SCALE
+            self.rect.y -= 7 * helpers.SCALE
+            self.y = self.rect.y
             if pygame.sprite.spritecollide(self, room.walls, False):
                 self.rect.height = helpers.TILE_SIZE
                 self.rect.y += helpers.TILE_SIZE
+                self.y = self.rect.y
                 return
             self.crouched = False
 
@@ -506,7 +511,8 @@ class Player:
                 self.weapon = Weapon.gun
 
     def move_x(self, room):
-        self.rect.move_ip(self.dx, 0)
+        self.x += self.dx
+        self.rect.x = self.x
 
         collisions = (pygame.sprite.spritecollide(self, room.walls, False) +
                       pygame.sprite.spritecollide(self, room.destroyables, False))
@@ -517,8 +523,10 @@ class Player:
                 self.speed_wall = c.slide_speed
                 if self.dx > 0:
                     self.rect.right = c.rect.left
+                    self.x = self.rect.x
                 if self.dx < 0:
                     self.rect.left = c.rect.right
+                    self.x = self.rect.x
 
         if collisions:
             self.dx = 0
@@ -537,7 +545,8 @@ class Player:
                 self.walled = False
 
     def move_y(self, room):
-        self.rect.move_ip(0, self.dy)
+        self.y += self.dy
+        self.rect.y = self.y
 
         collisions = (pygame.sprite.spritecollide(self, room.walls, False) +
                       pygame.sprite.spritecollide(self, room.destroyables, False))
@@ -546,11 +555,13 @@ class Player:
         for c in collisions:
             if self.dy > 0:
                 self.rect.bottom = c.rect.top
+                self.y = self.rect.y
                 self.grounded = True
                 self.friction = c.friction
 
             if self.dy < 0:
                 self.rect.top = c.rect.bottom
+                self.y = self.rect.y
 
             if abs(self.dy) >= helpers.TERMINAL_VELOCITY:
                 self.die()
@@ -569,18 +580,20 @@ class Player:
                     width = 2 * helpers.SCALE
                     if not self.crouched:
                         self.rect.bottom = c.rect.top
+                        self.y = self.rect.y
                         self.grounded = True
                         self.dy = 0
                     elif not c.rect.colliderect(
                             pygame.Rect(self.rect.centerx - width / 2, self.rect.top, width, self.rect.height)):
                         self.rect.bottom = c.rect.top
+                        self.y = self.rect.y
                         self.grounded = True
                         self.dy = 0
 
     def reset(self, room):
         room.reset()
-        self.rect.x = self.save.x
-        self.rect.y = self.save.y
+        self.x = self.save.x
+        self.y = self.save.y
         self.room_x = self.save.room_x
         self.room_y = self.save.room_y
         if self.dir is not self.save.dir:

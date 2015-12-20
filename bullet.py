@@ -2,6 +2,7 @@ import math
 import random
 import pygame
 import animatedsprite
+import enemy
 import helpers
 import physicsobject
 import tile
@@ -61,9 +62,18 @@ class Bullet(animatedsprite.AnimatedSprite):
             if self.dx < 0:
                 self.rect.left = c.rect.right
             c.damage(0, 0)
+            break
 
         if enemy_collisions:
             self.destroy('blood', False)
+
+        for e in room.enemies:
+            if type(e) is enemy.Spawner:
+                for c in pygame.sprite.spritecollide(self, e.projectiles, False):
+                    if c.alive:
+                        c.die()
+                        self.destroy('blood', False)
+                        break
 
     def move_y(self, room):
         self.rect.move_ip(0, self.dy)
@@ -87,11 +97,12 @@ class Bullet(animatedsprite.AnimatedSprite):
         enemy_collisions = [c for c in enemy_collisions if c.alive]
 
         for c in enemy_collisions:
-            if self.dx > 0:
-                self.rect.right = c.rect.left
-            if self.dx < 0:
-                self.rect.left = c.rect.right
+            if self.dy > 0:
+                self.rect.bottom = c.rect.top
+            if self.dy < 0:
+                self.rect.top = c.rect.bottom
             c.damage(0, 0)
+            break
 
         if enemy_collisions:
             self.destroy('blood', True)
