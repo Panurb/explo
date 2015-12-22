@@ -45,10 +45,11 @@ class Wall(Tile):
 
         if self.rect.y - helpers.TILE_SIZE < 0:
             up = 1
-        elif self.rect.x + helpers.TILE_SIZE >= helpers.WIDTH:
-            right = 1
         elif self.rect.y + helpers.TILE_SIZE >= helpers.HEIGHT:
             down = 1
+
+        if self.rect.x + helpers.TILE_SIZE >= helpers.WIDTH:
+            right = 1
         elif self.rect.x - helpers.TILE_SIZE < 0:
             left = 1
 
@@ -87,7 +88,7 @@ class Checkpoint(Tile):
 
     def update(self, room):
         if self.active:
-            self.show_frame('idle', 1)
+            self.show_frame('idle', 0)
         else:
             self.show_frame('idle', 0)
 

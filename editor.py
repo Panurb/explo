@@ -3,9 +3,9 @@ import helpers
 import textbox
 
 
-OBJECTS = ['W', 'G', 'R', 'M', 'I', 'D', '#', '~', '=', 'C', '*', 'c', 'z', 's', 'f', '0', '1', '2', '3', '4', '5', '6']
+OBJECTS = ['W', 'G', 'R', 'M', 'I', 'D', '#', '~', '=', 'C', '*', 'c', 'z', 's', 'f', 'h', '0', '1', '2', '3', '4', '5', '6']
 OBJECT_NAMES = ['WALL', 'GROUND', 'ROCK', 'METAL', 'ICE', 'DESTROYABLE', 'LADDER', 'SURFACE', 'WATER', 'CHECKPOINT',
-                'THORNS', 'CRAWLER', 'ZOMBIE', 'SPAWNER', 'FLYER', 'RUN', 'DOUBLE JUMP', 'WALL JUMP', 'SWORD', 'GUN',
+                'THORNS', 'CRAWLER', 'ZOMBIE', 'SPAWNER', 'FLYER', 'CHARGER', 'RUN', 'DOUBLE JUMP', 'WALL JUMP', 'SWORD', 'GUN',
                 'REBREATHER', 'FULL AUTO']
 
 
@@ -21,6 +21,7 @@ class Editor:
         if input_hand.mouse_down[0]:
             x, y = mouse_to_grid(input_hand.mouse_x, input_hand.mouse_y)
 
+            # TODO: Remove objects according to object size
             room.remove_object(x, y)
             char = OBJECTS[self.object]
 

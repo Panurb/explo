@@ -18,7 +18,7 @@ class PhysicsObject:
         self.bounce = 0
         self.friction = 1 * helpers.SCALE
         self.collision = True
-        self.gravity = True
+        self.gravity = 1
 
     def update(self, room):
         self.move_x(room)
@@ -27,6 +27,7 @@ class PhysicsObject:
         self.apply_gravity()
 
     def move_x(self, room):
+        self.dx = max(-helpers.TERMINAL_VELOCITY, min(self.dx, helpers.TERMINAL_VELOCITY))
         self.x += self.dx
         self.rect.x = self.x
 
@@ -48,6 +49,7 @@ class PhysicsObject:
                 self.walled = False
 
     def move_y(self, room):
+        self.dy = max(-helpers.TERMINAL_VELOCITY, min(self.dy, helpers.TERMINAL_VELOCITY))
         self.y += self.dy
         self.rect.y = self.y
 
@@ -82,8 +84,8 @@ class PhysicsObject:
                 self.dx = min(0, self.dx + self.friction)
 
     def apply_gravity(self):
-        if self.gravity and not self.grounded:
-            self.dy = min(self.dy + helpers.GRAVITY, helpers.TERMINAL_VELOCITY)
+        if not self.grounded:
+            self.dy += self.gravity * helpers.GRAVITY
 
 
 class Debris(PhysicsObject, animatedsprite.AnimatedSprite):

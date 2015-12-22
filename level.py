@@ -73,9 +73,10 @@ class Level:
                     char = 'f'
                 elif type(e) is enemy.Zombie:
                     char = 'z'
-                    y += 1
                 elif type(e) is enemy.Spawner:
                     char = 's'
+                elif type(e) is enemy.Charger:
+                    char = 'h'
                 tilemap[y][e.rect.x // helpers.TILE_SIZE] = char
             for c in room.checkpoints:
                 tilemap[c.rect.y // helpers.TILE_SIZE][c.rect.x // helpers.TILE_SIZE] = 'C'
@@ -154,7 +155,7 @@ class Room:
                 if char == 'C':
                     if self.x == 0 and self.y == 0:
                         self.player_x = x
-                        self.player_y = y - helpers.TILE_SIZE
+                        self.player_y = y
 
     def update(self):
         self.enemies.update(self)
@@ -217,6 +218,8 @@ class Room:
             self.enemies.add(enemy.Flyer(x, y))
         elif char == 's':
             self.enemies.add(enemy.Spawner(x, y))
+        elif char == 'h':
+            self.enemies.add(enemy.Charger(x, y))
         elif char == '0':
             self.powerups.add(powerup.Powerup(x, y, player.Ability.run))
         elif char == '1':

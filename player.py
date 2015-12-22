@@ -62,12 +62,12 @@ class Player:
         self.moving = False
         self.climbing = False
         self.sliding = False
+        self.hugging = False
         self.show_map = False
 
         self.dir = Direction.right
         self.jump_count = 0
         self.jump_buffer = False
-        self.walled_timer = 0
 
         self.attack_buffer = True
         self.bullet_speed = 4 * helpers.SCALE
@@ -200,7 +200,7 @@ class Player:
                         self.sprite_body.play('climb')
                     else:
                         self.sprite_body.pause()
-                elif self.walled and self.abilities[Ability.wall_jump]:
+                elif self.hugging and self.abilities[Ability.wall_jump]:
                     self.sprite_body.play_once('wall_hug')
                 else:
                     if self.dy < 0:
@@ -253,7 +253,7 @@ class Player:
                     self.sprite_legs.play('climb')
                 else:
                     self.sprite_legs.pause()
-            elif self.walled and self.abilities[Ability.wall_jump]:
+            elif self.hugging and self.abilities[Ability.wall_jump]:
                 self.sprite_legs.play('wall_hug')
             else:
                 if self.dy < -1 * helpers.SCALE:
@@ -288,7 +288,9 @@ class Player:
             if e.alive:
                 if type(e) is enemy.Zombie:
                     e.vision(self, room)
-                elif type(e)is enemy.Spawner:
+                elif type(e) is enemy.Charger:
+                    e.see(self, room)
+            if type(e)is enemy.Spawner:
                     e.chase(self)
 
     def apply_saving(self, room):
@@ -296,7 +298,7 @@ class Player:
             self.save.room_x = room.x
             self.save.room_y = room.y
             self.save.x = cp.rect.x
-            self.save.y = cp.rect.y - helpers.TILE_SIZE
+            self.save.y = cp.rect.y
             self.save.dir = self.dir
             self.save.abilities = self.abilities.copy()
             self.save.weapon = self.weapon
@@ -353,7 +355,7 @@ class Player:
 
     def apply_gravity(self):
         if self.alive and not self.laddered:
-            if self.walled and self.abilities[Ability.wall_jump]:
+            if self.hugging and self.abilities[Ability.wall_jump]:
                 if not self.sliding:
                     self.dy += helpers.GRAVITY / 2
                     self.dy = min(self.dy, self.speed_wall)
@@ -392,6 +394,7 @@ class Player:
         for l in pygame.sprite.spritecollide(collider, room.ladders, False):
             self.laddered = True
             self.rect.centerx = l.rect.centerx
+            self.x = self.rect.x
             self.dx = 0
         if self.laddered:
             self.dy = speed
@@ -417,7 +420,7 @@ class Player:
             self.jump_buffer = False
             self.jump_count = 1
             self.laddered = False
-        elif self.walled and self.abilities[Ability.wall_jump]:
+        elif self.hugging and self.abilities[Ability.wall_jump]:
             self.flip()
             speed = self.speed['walk']
             if self.abilities[Ability.run]:
@@ -529,7 +532,10 @@ class Player:
                     self.x = self.rect.x
 
         if collisions:
+            self.walled = True
             self.dx = 0
+        else:
+            self.walled = False
 
         if self.abilities[Ability.wall_jump]:
             collider = pygame.sprite.Sprite()
@@ -540,9 +546,9 @@ class Player:
                 self.speed_wall = c.slide_speed
             if collisions and self.dy > 0:
                 if self.speed_wall < helpers.TERMINAL_VELOCITY:
-                    self.walled = True
+                    self.hugging = True
             else:
-                self.walled = False
+                self.hugging = False
 
     def move_y(self, room):
         self.y += self.dy
@@ -578,6 +584,7 @@ class Player:
             for c in ladder_collisions:
                 if self.dy > 0 and self.rect.bottom - self.dy <= c.rect.top:
                     width = 2 * helpers.SCALE
+                    self.friction = 0.125 * helpers.SCALE
                     if not self.crouched:
                         self.rect.bottom = c.rect.top
                         self.y = self.rect.y
@@ -610,8 +617,9 @@ class Player:
             self.add_gib(0, 0, 0, -2.5, 'head')
             self.add_gib(-0.5, 2, -1.25, -2.5, 'arm')
             self.add_gib(0.5, 2, 1.25, -2.5, 'arm')
-            self.add_gib(-0.5, 4, -0.5, -1.25, 'leg')
-            self.add_gib(0.5, 4, 0.5, -1.25, 'leg')
+            if not self.crouched:
+                self.add_gib(-0.5, 4, -0.5, -1.25, 'leg')
+                self.add_gib(0.5, 4, 0.5, -1.25, 'leg')
             self.alive = False
         self.dx = 0
         self.dy = 0

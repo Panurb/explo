@@ -9,7 +9,7 @@ import math
 
 
 class Enemy(animatedsprite.AnimatedSprite, physicsobject.PhysicsObject):
-    def __init__(self, x, y, path):
+    def __init__(self, x, y, health, path):
         animatedsprite.AnimatedSprite.__init__(self, path)
         physicsobject.PhysicsObject.__init__(self, x, y, self.rect.width, self.rect.height)
 
@@ -19,7 +19,7 @@ class Enemy(animatedsprite.AnimatedSprite, physicsobject.PhysicsObject):
         self.gibs = animatedsprite.Group()
         self.projectiles = animatedsprite.Group()
         self.play('idle')
-        self.max_health = 1
+        self.max_health = health
         self.health = self.max_health
 
     def reset(self):
@@ -85,11 +85,9 @@ class Enemy(animatedsprite.AnimatedSprite, physicsobject.PhysicsObject):
 
 class Crawler(Enemy):
     def __init__(self, x, y):
-        Enemy.__init__(self, x, y, 'crawler')
+        Enemy.__init__(self, x, y, 3, 'crawler')
 
         self.speed = 0.25 * helpers.SCALE
-
-        self.max_health = self.health = 5
 
     def update(self, room):
         if self.alive:
@@ -142,7 +140,7 @@ class Shrapnel(physicsobject.Gib):
 
 class Zombie(Enemy):
     def __init__(self, x, y):
-        Enemy.__init__(self, x, y - 8 * helpers.SCALE, 'zombie')
+        Enemy.__init__(self, x, y, 5, 'zombie')
 
         self.rect.height = 16 * helpers.SCALE
         self.speed = 0.25 * helpers.SCALE
@@ -150,7 +148,6 @@ class Zombie(Enemy):
         self.cooldown = 0
         self.play('armored')
         self.bullet_speed = 2 * helpers.SCALE
-        self.health = self.max_health = 5
 
     def update(self, room):
         if self.alive and self.grounded and not self.projectiles:
@@ -225,15 +222,13 @@ class Zombie(Enemy):
     def reset(self):
         Enemy.reset(self)
         self.speed = 0.25 * helpers.SCALE
-        self.dx = self.speed
-        self.dy = 0
         if self.dir is Direction.left:
             self.flip()
 
 
 class Flyer(Enemy):
     def __init__(self, x, y):
-        Enemy.__init__(self, x, y, 'flyer')
+        Enemy.__init__(self, x, y, -1, 'flyer')
         self.speed = 0.5 * helpers.SCALE
         self.dx = self.speed
         self.gravity = False
@@ -263,12 +258,10 @@ class Flyer(Enemy):
 
 class Spawner(Enemy):
     def __init__(self, x, y):
-        Enemy.__init__(self, x, y, 'spawner')
+        Enemy.__init__(self, x, y, 5, 'spawner')
         self.rect.width = 16 * helpers.SCALE
         self.rect.height = 16 * helpers.SCALE
         self.gravity = False
-        self.health = 5
-        self.max_health = self.health
         self.cooldown = 0
 
     def update(self, room):
@@ -296,7 +289,7 @@ class Spawner(Enemy):
 
 class Chaser(Enemy):
     def __init__(self, x, y):
-        Enemy.__init__(self, x, y, 'chaser')
+        Enemy.__init__(self, x, y, 1, 'chaser')
         self.gravity = False
         self.collision = False
         self.speed = 0.25 * helpers.SCALE
@@ -342,4 +335,41 @@ class Chaser(Enemy):
 
 class Charger(Enemy):
     def __init__(self, x, y):
-        Enemy.__init__(self, x, y, 'charger')
+        Enemy.__init__(self, x, y, 6, 'charger')
+        self.play('idle')
+        self.speed = 1 * helpers.SCALE
+        self.goal_dx = 0
+
+    def update(self, room):
+        if self.alive:
+            if self.dx != 0:
+                self.play('charge')
+            else:
+                self.play('idle')
+
+        Enemy.update(self, room)
+
+    def die(self):
+        Enemy.die(self)
+        self.play_once('die')
+
+    def see(self, player, room):
+        if self.alive and player.alive:
+            collider = pygame.sprite.Sprite()
+            width = abs(self.rect.x - player.rect.x)
+            collider.rect = pygame.Rect(self.rect.left, self.rect.centery, width + player.rect.width, helpers.TILE_SIZE)
+            if player.rect.x < self.rect.x:
+                collider.rect.x = self.rect.x - width
+                collider.rect.width = width
+
+            if pygame.sprite.spritecollide(collider, room.walls, False):
+                self.dx = 0
+            elif collider.rect.colliderect(player.rect):
+                if player.rect.x > self.rect.x:
+                    if self.dir is Direction.left:
+                        self.flip()
+                    self.dx = self.speed
+                elif player.rect.x < self.rect.x:
+                    if self.dir is Direction.right:
+                        self.flip()
+                    self.dx = -self.speed

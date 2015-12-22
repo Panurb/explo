@@ -4,10 +4,10 @@ import helpers
 SIZES = {
     'bg': (160, 120),
     'bullet': (4, 4),
-    'charger': (32, 32),
+    'charger': (16, 16),
     'chars': (4, 4),
     'chaser': (8, 8),
-    'checkpoint': (8, 8),
+    'checkpoint': (8, 16),
     'crawler': (8, 8),
     'destroyable': (8, 8),
     'destroyable_debris': (4, 4),
@@ -41,8 +41,9 @@ ACTIONS = {
         ['idle', 1]
     ],
     'charger': [
-        ['idle', 1],
-        ['walk', 2]
+        ['idle', 4],
+        ['charge', 4],
+        ['die', 4]
     ],
     'chars': [
         ['upper_case', 26],
@@ -54,7 +55,7 @@ ACTIONS = {
         ['die', 6]
     ],
     'checkpoint': [
-        ['idle', 2]
+        ['idle', 1]
     ],
     'crawler': [
         ['idle', 4],

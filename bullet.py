@@ -121,7 +121,7 @@ class Bullet(animatedsprite.AnimatedSprite):
         else:
             dx = speed * self.dx
             dy = random.uniform(-spread, spread) * helpers.SCALE
-        particle = physicsobject.Particle(self.rect.x + x, self.rect.y + y, dx, dy, particle_type, True)
+        particle = physicsobject.Particle(self.rect.x + x, self.rect.y + y, dx, dy, particle_type, 0.5)
 
         self.particles.add(particle)
 
