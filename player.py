@@ -191,7 +191,7 @@ class Player:
                     elif self.moving and not self.walled:
                         if abs(self.dx) > self.speed['walk']:
                             self.sprite_body.play('run', self.sprite_body.frame)
-                        elif abs(self.dx) > 0.1 * helpers.SCALE:
+                        elif abs(self.dx) > 0:
                             self.sprite_body.play('walk')
                     else:
                         self.sprite_body.play('idle')
@@ -244,7 +244,7 @@ class Player:
                 elif self.moving and not self.walled:
                     if abs(self.dx) > self.speed['walk']:
                         self.sprite_legs.play('run', self.sprite_body.frame)
-                    elif abs(self.dx) > 0.1 * helpers.SCALE:
+                    elif abs(self.dx) > 0:
                         self.sprite_legs.play('walk', self.sprite_body.frame)
                 else:
                     self.sprite_legs.play('idle')
@@ -287,9 +287,9 @@ class Player:
 
             if e.alive:
                 if type(e) is enemy.Zombie:
-                    e.vision(self, room)
+                    e.see_player(self, room)
                 elif type(e) is enemy.Charger:
-                    e.see(self, room)
+                    e.see_player(self, room)
             if type(e)is enemy.Spawner:
                     e.chase(self)
 
@@ -380,10 +380,10 @@ class Player:
                 if not self.crouched:
                     self.dx = max(speed, self.dx - acceleration)
         if speed > 0:
-            if self.dir is Direction.left and not self.walled:
+            if self.dir is Direction.left:
                 self.flip()
         elif speed < 0:
-            if self.dir is Direction.right and not self.walled:
+            if self.dir is Direction.right:
                 self.flip()
 
     def climb(self, speed, room):
@@ -532,10 +532,7 @@ class Player:
                     self.x = self.rect.x
 
         if collisions:
-            self.walled = True
             self.dx = 0
-        else:
-            self.walled = False
 
         if self.abilities[Ability.wall_jump]:
             collider = pygame.sprite.Sprite()
@@ -545,9 +542,11 @@ class Player:
             for c in collisions:
                 self.speed_wall = c.slide_speed
             if collisions and self.dy > 0:
+                self.walled = True
                 if self.speed_wall < helpers.TERMINAL_VELOCITY:
                     self.hugging = True
             else:
+                self.walled = False
                 self.hugging = False
 
     def move_y(self, room):

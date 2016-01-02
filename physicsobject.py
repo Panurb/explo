@@ -61,6 +61,7 @@ class PhysicsObject:
                     self.rect.bottom = c.rect.top
                     self.y = self.rect.y
                     self.grounded = True
+                    self.friction = c.friction
 
                 if self.dy < 0:
                     self.rect.top = c.rect.bottom

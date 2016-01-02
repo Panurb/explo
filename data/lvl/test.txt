@@ -9,8 +9,8 @@
 --------------------
 --------------------
 --------------------
--C---------G--------
---0---G-2--G--------
+-C----------------h-
+--0---G-24-G--------
 GGGGGGGGGGGGGGGGGGGG
 GGGGGGGGGGGGGGGGGGGG
 GGGGGGGGGGGGGGGGGGGG

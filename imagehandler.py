@@ -5,6 +5,7 @@ SIZES = {
     'bg': (160, 120),
     'bullet': (4, 4),
     'charger': (16, 16),
+    'charger_gibs': (8, 8),
     'chars': (4, 4),
     'chaser': (8, 8),
     'checkpoint': (8, 16),
@@ -44,6 +45,10 @@ ACTIONS = {
         ['idle', 4],
         ['charge', 4],
         ['die', 4]
+    ],
+    'charger_gibs': [
+        ['left', 4],
+        ['right', 4]
     ],
     'chars': [
         ['upper_case', 26],

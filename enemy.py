@@ -21,6 +21,7 @@ class Enemy(animatedsprite.AnimatedSprite, physicsobject.PhysicsObject):
         self.play('idle')
         self.max_health = health
         self.health = self.max_health
+        self.sees_player = False
 
     def reset(self):
         self.x = self.spawn_x
@@ -65,6 +66,20 @@ class Enemy(animatedsprite.AnimatedSprite, physicsobject.PhysicsObject):
                     on_edge = False
         return on_edge
 
+    def see_player(self, player, room):
+        if self.alive and player.alive:
+            collider = pygame.sprite.Sprite()
+            width = abs(self.rect.x - player.rect.x)
+            collider.rect = pygame.Rect(self.rect.left, self.rect.centery, width + player.rect.width, helpers.TILE_SIZE)
+            if player.rect.x < self.rect.x:
+                collider.rect.x = self.rect.x - width
+                collider.rect.width = width
+
+            if pygame.sprite.spritecollide(collider, room.walls, False):
+                self.sees_player = False
+            elif collider.rect.colliderect(player.rect):
+                self.sees_player = True
+
     def update(self, room):
         physicsobject.PhysicsObject.update(self, room)
 
@@ -76,6 +91,9 @@ class Enemy(animatedsprite.AnimatedSprite, physicsobject.PhysicsObject):
         self.projectiles.update(room)
 
         self.animate()
+
+    def apply_friction(self):
+        pass
 
     def draw(self, screen, img_hand):
         animatedsprite.AnimatedSprite.draw(self, screen, img_hand)
@@ -173,26 +191,24 @@ class Zombie(Enemy):
         else:
             self.play_once('die')
 
-    def vision(self, player, room):
-        if self.cooldown == 0:
+    def see_player(self, player, room):
+        Enemy.see_player(self, player, room)
+
+        if self.sees_player and self.cooldown == 0:
             self.cooldown = 30
-            if self.speed > 0:
-                #collider = pygame.sprite.Sprite()
-                #collider.rect = pygame.Rect(self.rect.left - 1, self.rect.y, self.rect.width + 2, self.rect.height / 2)
-                for i in range(40 * helpers.SCALE):
-                    if player.rect.collidepoint(self.rect.x + i * helpers.SCALE, self.rect.y):
-                        x = self.rect.x + 8 * helpers.SCALE
-                        y = self.rect.y + 2 * helpers.SCALE
-                        self.projectiles.add(bullet.Bullet(x, y, self.bullet_speed, 0))
-                        return
-            elif self.speed < 0:
-                for i in range(40 * helpers.SCALE):
-                    if player.rect.collidepoint(self.rect.x - i * helpers.SCALE, self.rect.y):
-                        x = self.rect.x - 8 * helpers.SCALE
-                        y = self.rect.y + 2 * helpers.SCALE
-                        self.projectiles.add(bullet.Bullet(x, y, -self.bullet_speed, 0))
-                        return
-        else:
+            if player.rect.x > self.rect.x:
+                if self.dir is Direction.left:
+                    self.flip()
+                x = self.rect.x + 8 * helpers.SCALE
+                y = self.rect.y + 2 * helpers.SCALE
+                self.projectiles.add(bullet.Bullet(x, y, self.bullet_speed, 0))
+            elif player.rect.x < self.rect.x:
+                if self.dir is Direction.right:
+                    self.flip()
+                x = self.rect.x - 8 * helpers.SCALE
+                y = self.rect.y + 2 * helpers.SCALE
+                self.projectiles.add(bullet.Bullet(x, y, -self.bullet_speed, 0))
+        elif self.cooldown > 0:
             self.cooldown -= 1
 
     def damage(self, dx, dy):
@@ -342,7 +358,15 @@ class Charger(Enemy):
 
     def update(self, room):
         if self.alive:
-            if self.dx != 0:
+            if self.walled:
+                self.goal_dx = 0
+
+            if self.goal_dx != 0:
+                acceleration = self.friction
+                if self.goal_dx < self.dx:
+                    self.dx -= acceleration
+                elif self.goal_dx > self.dx:
+                    self.dx += acceleration
                 self.play('charge')
             else:
                 self.play('idle')
@@ -351,25 +375,23 @@ class Charger(Enemy):
 
     def die(self):
         Enemy.die(self)
+        self.add_gib(0, 0, -1, -1, 'left', 'charger_gibs')
+        self.add_gib(0, 0, 1, -1, 'right', 'charger_gibs')
         self.play_once('die')
 
-    def see(self, player, room):
-        if self.alive and player.alive:
-            collider = pygame.sprite.Sprite()
-            width = abs(self.rect.x - player.rect.x)
-            collider.rect = pygame.Rect(self.rect.left, self.rect.centery, width + player.rect.width, helpers.TILE_SIZE)
-            if player.rect.x < self.rect.x:
-                collider.rect.x = self.rect.x - width
-                collider.rect.width = width
+    def see_player(self, player, room):
+        Enemy.see_player(self, player, room)
 
-            if pygame.sprite.spritecollide(collider, room.walls, False):
-                self.dx = 0
-            elif collider.rect.colliderect(player.rect):
-                if player.rect.x > self.rect.x:
-                    if self.dir is Direction.left:
-                        self.flip()
-                    self.dx = self.speed
-                elif player.rect.x < self.rect.x:
-                    if self.dir is Direction.right:
-                        self.flip()
-                    self.dx = -self.speed
+        if self.sees_player:
+            if player.rect.x > self.rect.x:
+                if self.dir is Direction.left:
+                    self.flip()
+                self.goal_dx = self.speed
+            elif player.rect.x < self.rect.x:
+                if self.dir is Direction.right:
+                    self.flip()
+                self.goal_dx = -self.speed
+
+    def reset(self):
+        Enemy.reset(self)
+        self.goal_dx = 0
