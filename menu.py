@@ -139,7 +139,7 @@ class OptionsMenu(Menu):
 class Button(animatedsprite.AnimatedSprite):
     def __init__(self, x, y, button_type, text=''):
         animatedsprite.AnimatedSprite.__init__(self, 'menu')
-        self.rect.x = x + 0.5 * helpers.WIDTH - 16 * helpers.SCALE
+        self.rect.x = x + 0.5 * helpers.SCREEN_WIDTH - 16 * helpers.SCALE
         self.rect.y = y
         if text == '':
             text = button_type.name
@@ -170,3 +170,12 @@ class Button(animatedsprite.AnimatedSprite):
             return gameloop.State.editor
         elif self.type is ButtonType.editor:
             return gameloop.State.editor_select
+
+
+class TextInput(animatedsprite.AnimatedSprite):
+    def __init__(self):
+        animatedsprite.AnimatedSprite.__init__(self, 'menu')
+        self.selected = False
+
+    def input(self, input_hand):
+        pass

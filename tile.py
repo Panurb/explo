@@ -45,10 +45,10 @@ class Wall(Tile):
 
         if self.rect.y - helpers.TILE_SIZE < 0:
             up = 1
-        elif self.rect.y + helpers.TILE_SIZE >= helpers.HEIGHT:
+        elif self.rect.y + helpers.TILE_SIZE >= helpers.SCREEN_HEIGHT:
             down = 1
 
-        if self.rect.x + helpers.TILE_SIZE >= helpers.WIDTH:
+        if self.rect.x + helpers.TILE_SIZE >= helpers.SCREEN_WIDTH:
             right = 1
         elif self.rect.x - helpers.TILE_SIZE < 0:
             left = 1

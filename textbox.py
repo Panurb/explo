@@ -7,7 +7,7 @@ LOWER_CASE = 'abcdefghijklmnopqrstuvwxyz'
 
 
 class Textbox:
-    def __init__(self, string, x=0.5*helpers.WIDTH, y=0.5*helpers.HEIGHT):
+    def __init__(self, string, x=0.5*helpers.SCREEN_WIDTH, y=0.5*helpers.SCREEN_HEIGHT):
         self.x = x
         self.y = y
         self.chars = pygame.sprite.Group()

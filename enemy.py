@@ -375,8 +375,8 @@ class Charger(Enemy):
 
     def die(self):
         Enemy.die(self)
-        self.add_gib(0, 0, -1, -1, 'left', 'charger_gibs')
-        self.add_gib(0, 0, 1, -1, 'right', 'charger_gibs')
+        self.add_gib(0, 0, -1, -2, 'left', 'charger_gibs')
+        self.add_gib(0, 0, 1, -2, 'right', 'charger_gibs')
         self.play_once('die')
 
     def see_player(self, player, room):

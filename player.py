@@ -22,8 +22,11 @@ class Weapon(Enum):
 
 class Player:
     def __init__(self, level):
-        self.x = level.room(0, 0).player_x
-        self.y = level.room(0, 0).player_y
+        try:
+            self.x = level.room(0, 0).player_x
+            self.y = level.room(0, 0).player_y
+        except KeyError:
+            self.x = self.y = 0
         self.room_x = 0
         self.room_y = 0
 
@@ -79,7 +82,7 @@ class Player:
 
         self.save = save.Save(self.rect.x, self.rect.y, self.room_x, self.room_y, self.dir, self.abilities)
 
-        self.txtbox = textbox.Textbox('', 0.5 * helpers.WIDTH, 4 * helpers.SCALE)
+        self.txtbox = textbox.Textbox('', 0.5 * helpers.SCREEN_WIDTH, 4 * helpers.SCALE)
         self.map = hud.Map(level)
 
     def update(self, room):
@@ -322,22 +325,22 @@ class Player:
                     self.weapon = Weapon.gun
 
     def change_room(self):
-        window_rect = pygame.Rect(0, 0, helpers.WIDTH, helpers.HEIGHT)
+        window_rect = pygame.Rect(0, 0, helpers.SCREEN_WIDTH, helpers.SCREEN_HEIGHT)
         if not window_rect.collidepoint(self.rect.center):
             self.bullets.empty()
 
-            if self.rect.centerx >= helpers.WIDTH:
+            if self.rect.centerx >= helpers.SCREEN_WIDTH:
                 self.room_x += 1
                 self.rect.centerx = 1 * helpers.SCALE
             if self.rect.centerx <= 0:
                 self.room_x -= 1
-                self.rect.centerx = helpers.WIDTH - 1 * helpers.SCALE
-            if self.rect.centery >= helpers.HEIGHT:
+                self.rect.centerx = helpers.SCREEN_WIDTH - 1 * helpers.SCALE
+            if self.rect.centery >= helpers.SCREEN_HEIGHT:
                 self.room_y += 1
                 self.rect.centery = 1 * helpers.SCALE
             if self.rect.centery <= 0:
                 self.room_y -= 1
-                self.rect.centery = helpers.HEIGHT - 1 * helpers.SCALE
+                self.rect.centery = helpers.SCREEN_HEIGHT - 1 * helpers.SCALE
 
             self.x = self.rect.x
             self.y = self.rect.y

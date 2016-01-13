@@ -6,10 +6,9 @@ import inputhandler
 
 
 class Main:
-    def __init__(self, width=160, height=120):
+    def __init__(self, width, height):
         pygame.init()
-        size = (width, height)
-        self.screen = pygame.display.set_mode(size)
+        self.screen = pygame.display.set_mode((width, height))
         self.img_hand = imagehandler.ImageHandler()
         self.input_hand = inputhandler.InputHandler()
         self.loop = gameloop.GameLoop(self.screen, self.img_hand, self.input_hand)
@@ -22,5 +21,5 @@ class Main:
             self.clock.tick(self.fps)
 
 if __name__ == '__main__':
-    main_window = Main(160 * helpers.SCALE, 120 * helpers.SCALE)
+    main_window = Main(helpers.SCREEN_WIDTH, helpers.SCREEN_HEIGHT)
     main_window.main_loop()

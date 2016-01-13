@@ -14,7 +14,7 @@ class Editor:
         self.room_x = x
         self.room_y = y
         self.object = 0
-        self.text = textbox.Textbox(OBJECT_NAMES[self.object], 0.5 * helpers.WIDTH, 0)
+        self.text = textbox.Textbox(OBJECT_NAMES[self.object], 0.5 * helpers.SCREEN_WIDTH, 0)
 
     def input(self, lvl, input_hand):
         room = lvl.room(self.room_x, self.room_y)

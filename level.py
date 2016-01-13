@@ -16,21 +16,16 @@ class Level:
         self.rooms = {}
         room = []
         coordinates = ()
-        bg = ''
         for line in lines:
             line = line.rstrip('\n')
 
             if line.find('(') == 0:
                 line = line.replace('(', '').replace(')', '').split(',')
                 coordinates = (int(line[0]), int(line[1]))
-                try:
-                    bg = line[2].replace(' ', '')
-                except IndexError:
-                    bg = 'sky'
                 continue
 
             if not line.rstrip():
-                self.rooms[coordinates] = Room(room, coordinates[0], coordinates[1], bg)
+                self.rooms[coordinates] = Room(room, coordinates[0], coordinates[1])
                 room = []
                 coordinates = ()
                 continue
@@ -45,7 +40,7 @@ class Level:
 
         for room in self.rooms.values():
             room.reset()
-            tilemap = [['-' for _ in range(20)] for _ in range(15)]
+            tilemap = [['-' for _ in range(helpers.ROOM_WIDTH)] for _ in range(helpers.ROOM_HEIGHT)]
 
             for w in room.walls:
                 char = ''
@@ -113,7 +108,7 @@ class Level:
                         break
 
             if not empty:
-                print('(' + str(room.x) + ', ' + str(room.y) + ', ' + room.bg + ')', file=f)
+                print('(' + str(room.x) + ', ' + str(room.y) + ')', file=f)
                 for row in tilemap:
                     print(''.join(row), file=f)
                 print('', file=f)
@@ -122,8 +117,8 @@ class Level:
 
 
 class Room:
-    def __init__(self, tilemap, x, y, bg):
-        self.bg = bg
+    def __init__(self, tilemap, x, y):
+        self.bg = 'sky'
         self.bg_sprite = animatedsprite.AnimatedSprite('bg')
         self.bg_sprite.play(self.bg)
 

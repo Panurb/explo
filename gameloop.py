@@ -34,7 +34,7 @@ class GameLoop:
         self.level = None
         self.player = None
         self.editor = None
-        self.clock_text = textbox.Textbox('', helpers.WIDTH - 0.5 * helpers.TILE_SIZE, 0)
+        self.clock_text = textbox.Textbox('', helpers.SCREEN_WIDTH - 0.5 * helpers.TILE_SIZE, 0)
 
         self.state = State.menu
 
@@ -65,7 +65,7 @@ class GameLoop:
             try:
                 room = self.level.room(self.player.room_x, self.player.room_y)
             except KeyError:
-                room = level.Room([], self.player.room_x, self.player.room_y, 'sky')
+                room = level.Room([], self.player.room_x, self.player.room_y)
                 self.level.rooms[(self.player.room_x, self.player.room_y)] = room
 
             self.player.input(self.input_hand, room)
@@ -89,7 +89,7 @@ class GameLoop:
                 self.editor.input(self.level, self.input_hand)
                 self.level.room(self.editor.room_x, self.editor.room_y).draw(self.screen, self.img_hand)
             except KeyError:
-                room = level.Room([], self.editor.room_x, self.editor.room_y, 'sky')
+                room = level.Room([], self.editor.room_x, self.editor.room_y)
                 self.level.rooms[(self.editor.room_x, self.editor.room_y)] = room
 
             self.editor.draw(self.screen, self.img_hand)

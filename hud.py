@@ -24,8 +24,8 @@ class Map():
 
         for key in self.rooms:
             room = self.rooms[key]
-            self.sprite.rect.x = 0.5 * helpers.WIDTH - ((width / 2 - room.x + min_x) * 14) * helpers.SCALE
-            self.sprite.rect.y = 0.5 * helpers.HEIGHT - ((height / 2 - room.y + min_y) * 12) * helpers.SCALE
+            self.sprite.rect.x = 0.5 * helpers.SCREEN_WIDTH - ((width / 2 - room.x + min_x) * 14) * helpers.SCALE
+            self.sprite.rect.y = 0.5 * helpers.SCREEN_HEIGHT - ((height / 2 - room.y + min_y) * 12) * helpers.SCALE
 
             if room.x == x and room.y == y:
                 self.sprite.play('active')

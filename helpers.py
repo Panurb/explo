@@ -4,9 +4,11 @@ import pygame
 
 
 SCALE = 5
-WIDTH = 160 * SCALE
-HEIGHT = 120 * SCALE
+ROOM_WIDTH = 20
+ROOM_HEIGHT = 15
 TILE_SIZE = 8 * SCALE
+SCREEN_WIDTH = ROOM_WIDTH * TILE_SIZE
+SCREEN_HEIGHT = ROOM_HEIGHT * TILE_SIZE
 GRAVITY = 0.25 * SCALE
 TERMINAL_VELOCITY = 8 * SCALE
 
@@ -34,7 +36,7 @@ def row_to_tiles(image, width, height, row, length):
 
 
 def outside_screen(rect):
-    if rect.left > WIDTH or rect.right < 0 or rect.top > HEIGHT or rect.bottom < 0:
+    if rect.left > SCREEN_WIDTH or rect.right < 0 or rect.top > SCREEN_HEIGHT or rect.bottom < 0:
         return True
     else:
         return False
