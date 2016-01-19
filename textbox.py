@@ -44,6 +44,14 @@ class Textbox:
                 sprite.set_position(x + i * 4 * helpers.SCALE, y + j * 5 * helpers.SCALE)
                 self.chars.add(sprite)
 
+    def add_char(self, char):
+        if LOWER_CASE.find(char) != -1:
+            self.set_string(self.string + char)
+
+    def remove_char(self):
+        if len(self.string) > 0:
+            self.set_string(self.string[:-1])
+
     def update(self):
         if self.time == -1:
             return

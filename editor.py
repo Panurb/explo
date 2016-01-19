@@ -3,9 +3,9 @@ import helpers
 import textbox
 
 
-OBJECTS = ['W', 'G', 'R', 'M', 'I', 'D', '#', '~', '=', 'C', '*', 'c', 'z', 's', 'f', 'h', '0', '1', '2', '3', '4', '5', '6']
+OBJECTS = ['W', 'G', 'R', 'M', 'I', 'D', '#', '~', '=', 'C', '*', 'c', 'z', 's', 'f', 'h', '0', '1', '2', '3', '4', '5']
 OBJECT_NAMES = ['WALL', 'GROUND', 'ROCK', 'METAL', 'ICE', 'DESTROYABLE', 'LADDER', 'SURFACE', 'WATER', 'CHECKPOINT',
-                'THORNS', 'CRAWLER', 'ZOMBIE', 'SPAWNER', 'FLYER', 'CHARGER', 'RUN', 'DOUBLE JUMP', 'WALL JUMP', 'SWORD', 'GUN',
+                'THORNS', 'CRAWLER', 'ZOMBIE', 'SPAWNER', 'FLYER', 'CHARGER', 'RUN', 'DOUBLE JUMP', 'WALL JUMP', 'GUN',
                 'REBREATHER', 'FULL AUTO']
 
 

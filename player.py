@@ -319,9 +319,7 @@ class Player:
                 self.abilities[p.ability] = True
                 self.txtbox.set_string(p.ability.name.upper() + '\\' + p.text)
                 self.txtbox.time = 120
-                if p.ability is Ability.sword:
-                    self.weapon = Weapon.sword
-                elif p.ability is Ability.gun:
+                if p.ability is Ability.gun:
                     self.weapon = Weapon.gun
 
     def change_room(self):

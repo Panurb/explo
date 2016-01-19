@@ -6,6 +6,8 @@ class InputHandler:
     def __init__(self):
         self.keys_down = {}
         self.keys_pressed = {}
+        for i in range(len(pygame.key.get_pressed())):
+            self.keys_pressed[i] = False
         self.mouse_x = 0
         self.mouse_y = 0
         self.mouse_down = []
@@ -13,16 +15,8 @@ class InputHandler:
         self.mouse_released = []
 
     def update(self):
-        self.keys_pressed = {pygame.K_UP: False,
-                             pygame.K_DOWN: False,
-                             pygame.K_RIGHT: False,
-                             pygame.K_LEFT: False,
-                             pygame.K_p: False,
-                             pygame.K_SPACE: False,
-                             pygame.K_r: False,
-                             pygame.K_ESCAPE: False,
-                             pygame.K_PERIOD: False,
-                             pygame.K_COMMA: False}
+        for key in self.keys_pressed:
+            self.keys_pressed[key] = False
         self.mouse_pressed = [False] * 6
         self.mouse_released = [False] * 6
 

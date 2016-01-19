@@ -17,6 +17,7 @@ class State(enum.Enum):
     options = 6
     level_select = 7
     editor_select = 8
+    level_creation = 9
 
 
 class GameLoop:
@@ -30,6 +31,8 @@ class GameLoop:
         self.level_select_menu = menu.LevelSelectMenu()
         self.editor_select_menu = menu.EditorSelectMenu()
         self.options_menu = menu.OptionsMenu()
+        self.level_creation_menu = menu.LevelCreationMenu()
+
         self.level_name = ''
         self.level = None
         self.player = None
@@ -58,6 +61,9 @@ class GameLoop:
         elif self.state is State.options:
             self.state = self.options_menu.input(self.input_hand)
             self.options_menu.draw(self.screen, self.img_hand)
+        elif self.state is State.level_creation:
+            self.state = self.level_creation_menu.input(self.input_hand)
+            self.level_creation_menu.draw(self.screen, self.img_hand)
         elif self.state is State.play:
             if self.level is None:
                 self.level = level.Level(self.level_select_menu.level_name)
@@ -82,7 +88,10 @@ class GameLoop:
                 self.level.rooms[last_room].reset()
         elif self.state is State.editor:
             if self.level is None:
-                self.level = level.Level(self.editor_select_menu.level_name)
+                if self.editor_select_menu.level_name != '':
+                    self.level = level.Level(self.editor_select_menu.level_name)
+                else:
+                    self.level = level.Level(self.level_creation_menu.input_name.txtbox.string)
                 self.player = player.Player(self.level)
                 self.editor = editor.Editor(self.player.room_x, self.player.room_y)
             try:
@@ -113,3 +122,5 @@ class GameLoop:
                 self.state = State.play
             elif self.state is State.editor_select:
                 self.state = State.menu
+            elif self.state is State.level_creation:
+                self.state = State.editor_select

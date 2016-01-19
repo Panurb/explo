@@ -9,9 +9,10 @@ import tile
 
 class Level:
     def __init__(self, filename):
-        self.path = 'data/lvl/' + filename
-        with open(self.path) as f:
-            lines = f.readlines()
+        self.path = 'data/lvl/' + filename + '.txt'
+        file = open(self.path, 'a+')
+        file.seek(0)
+        lines = file.readlines()
 
         self.rooms = {}
         room = []
@@ -27,7 +28,6 @@ class Level:
             if not line.rstrip():
                 self.rooms[coordinates] = Room(room, coordinates[0], coordinates[1])
                 room = []
-                coordinates = ()
                 continue
 
             room.append(list(line))
@@ -83,14 +83,12 @@ class Level:
                     char = '1'
                 elif p.ability == powerup.Ability.wall_jump:
                     char = '2'
-                elif p.ability == powerup.Ability.sword:
-                    char = '3'
                 elif p.ability == powerup.Ability.gun:
-                    char = '4'
+                    char = '3'
                 elif p.ability == powerup.Ability.rebreather:
-                    char = '5'
+                    char = '4'
                 elif p.ability == powerup.Ability.full_auto:
-                    char = '6'
+                    char = '5'
                 tilemap[p.rect.y // helpers.TILE_SIZE][p.rect.x // helpers.TILE_SIZE] = char
             for w in room.water:
                 if w.surface:
@@ -173,11 +171,11 @@ class Room:
     def draw(self, screen, img_hand):
         self.bg_sprite.draw(screen, img_hand)
 
+        self.checkpoints.draw(screen, img_hand)
         self.walls.draw(screen, img_hand)
         self.ladders.draw(screen, img_hand)
         self.spikes.draw(screen, img_hand)
         self.enemies.draw(screen, img_hand)
-        self.checkpoints.draw(screen, img_hand)
         self.powerups.draw(screen, img_hand)
         self.water.draw(screen, img_hand)
         self.destroyables.draw(screen, img_hand)
@@ -222,12 +220,10 @@ class Room:
         elif char == '2':
             self.powerups.add(powerup.Powerup(x, y, player.Ability.wall_jump))
         elif char == '3':
-            self.powerups.add(powerup.Powerup(x, y, player.Ability.sword))
-        elif char == '4':
             self.powerups.add(powerup.Powerup(x, y, player.Ability.gun))
-        elif char == '5':
+        elif char == '4':
             self.powerups.add(powerup.Powerup(x, y, player.Ability.rebreather))
-        elif char == '6':
+        elif char == '5':
             self.powerups.add(powerup.Powerup(x, y, player.Ability.full_auto))
 
     def remove_object(self, x, y):

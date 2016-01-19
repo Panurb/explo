@@ -1,4 +1,5 @@
 import enum
+import pygame
 import animatedsprite
 import gameloop
 import helpers
@@ -16,6 +17,7 @@ class ButtonType(enum.Enum):
     edit = 8
     new = 9
     editor = 10
+    create = 11
 
 
 class Menu:
@@ -66,11 +68,12 @@ class PauseMenu(Menu):
 class LevelSelectMenu(Menu):
     def __init__(self):
         Menu.__init__(self)
-        self.add_button(0, 10, ButtonType.menu)
+
         dy = 2
         for filename in os.listdir('data/lvl'):
-            self.add_button(0, 2 * dy, ButtonType.level, filename.replace('.txt', ''))
-            dy += 1
+            self.add_button(0, dy, ButtonType.level, filename.replace('.txt', ''))
+            dy += 2
+        self.add_button(0, dy, ButtonType.menu)
 
         self.bg_sprite = animatedsprite.AnimatedSprite('bg')
         self.bg_sprite.play('sky')
@@ -86,7 +89,7 @@ class LevelSelectMenu(Menu):
             if b.rect.collidepoint(input_hand.mouse_x, input_hand.mouse_y):
                 if input_hand.mouse_released[1]:
                     if b.type is ButtonType.level:
-                        self.level_name = b.txtbox.string + '.txt'
+                        self.level_name = b.txtbox.string
                     return b.press()
 
         return self.state
@@ -117,7 +120,7 @@ class EditorSelectMenu(Menu):
             if b.rect.collidepoint(input_hand.mouse_x, input_hand.mouse_y):
                 if input_hand.mouse_released[1]:
                     if b.type is ButtonType.edit:
-                        self.level_name = b.txtbox.string + '.txt'
+                        self.level_name = b.txtbox.string
                     return b.press()
 
         return self.state
@@ -170,12 +173,52 @@ class Button(animatedsprite.AnimatedSprite):
             return gameloop.State.editor
         elif self.type is ButtonType.editor:
             return gameloop.State.editor_select
+        elif self.type is ButtonType.new:
+            return gameloop.State.level_creation
+        elif self.type is ButtonType.create:
+            return gameloop.State.editor
+
+
+class LevelCreationMenu(Menu):
+    def __init__(self):
+        Menu.__init__(self)
+        self.input_name = TextInput(0, 6)
+        self.add_button(0, 8, ButtonType.create)
+        self.add_button(0, 10, ButtonType.editor, 'BACK')
+        self.state = gameloop.State.level_creation
+        self.bg_sprite = animatedsprite.AnimatedSprite('bg')
+        self.bg_sprite.play('sky')
+
+    def draw(self, screen, img_hand):
+        self.bg_sprite.draw(screen, img_hand)
+        self.input_name.draw(screen, img_hand)
+        Menu.draw(self, screen, img_hand)
+
+    def input(self, input_hand):
+        self.input_name.input(input_hand)
+        Menu.input(self, input_hand)
+        return self.state
 
 
 class TextInput(animatedsprite.AnimatedSprite):
-    def __init__(self):
+    def __init__(self, x, y):
         animatedsprite.AnimatedSprite.__init__(self, 'menu')
-        self.selected = False
+        self.rect.x = x + 0.5 * helpers.SCREEN_WIDTH - 16 * helpers.SCALE
+        self.rect.y = y * helpers.TILE_SIZE
+        self.txtbox = textbox.Textbox('', self.rect.centerx, self.rect.y)
+        self.max_length = 7
+
+        self.play('button')
+
+    def draw(self, screen, img_hand):
+        animatedsprite.AnimatedSprite.draw(self, screen, img_hand)
+        self.txtbox.draw(screen, img_hand)
 
     def input(self, input_hand):
-        pass
+        for key in input_hand.keys_pressed:
+            if input_hand.keys_pressed[key]:
+                if key == pygame.K_BACKSPACE:
+                    self.txtbox.remove_char()
+                else:
+                    if len(self.txtbox.string) < self.max_length:
+                        self.txtbox.add_char(chr(key))
