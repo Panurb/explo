@@ -3,7 +3,7 @@ import math
 import pygame
 
 
-SCALE = 5
+SCALE = 4
 ROOM_WIDTH = 20
 ROOM_HEIGHT = 15
 TILE_SIZE = 8 * SCALE

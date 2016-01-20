@@ -5,9 +5,11 @@ import imagehandler
 import math
 
 
-class PhysicsObject:
-    def __init__(self, x, y, width, height):
-        self.rect = pygame.Rect(x, y, width, height)
+class PhysicsObject(animatedsprite.AnimatedSprite):
+    def __init__(self, x, y, path):
+        animatedsprite.AnimatedSprite.__init__(self, path)
+        self.rect.x = x
+        self.rect.y = y
         self.x = x
         self.y = y
         self.dx = 0
@@ -89,10 +91,9 @@ class PhysicsObject:
             self.dy += self.gravity * helpers.GRAVITY
 
 
-class Debris(PhysicsObject, animatedsprite.AnimatedSprite):
+class Debris(PhysicsObject):
     def __init__(self, x, y, dx, dy, part, path):
-        animatedsprite.AnimatedSprite.__init__(self,  path)
-        PhysicsObject.__init__(self, x, y, self.rect.width, self.rect.height)
+        PhysicsObject.__init__(self, x, y, path)
 
         self.dx = dx
         self.dy = dy
@@ -102,14 +103,13 @@ class Debris(PhysicsObject, animatedsprite.AnimatedSprite):
 
     def update(self, room):
         PhysicsObject.update(self, room)
-        if helpers.norm(self.dx, self.dy) > 0.5 * helpers.SCALE:
+        if math.hypot(self.dx, self.dy) > 0.5 * helpers.SCALE:
             self.animate()
 
 
-class Gib(PhysicsObject, animatedsprite.AnimatedSprite):
+class Gib(PhysicsObject):
     def __init__(self, x, y, dx, dy, part, path):
-        animatedsprite.AnimatedSprite.__init__(self,  path)
-        PhysicsObject.__init__(self, x, y, self.rect.width, self.rect.height)
+        PhysicsObject.__init__(self, x, y, path)
 
         self.dx = dx
         self.dy = dy
@@ -129,13 +129,12 @@ class Gib(PhysicsObject, animatedsprite.AnimatedSprite):
 
     def draw(self, screen, img_hand):
         self.trail.draw(screen, img_hand)
-        animatedsprite.AnimatedSprite.draw(self, screen, img_hand)
+        PhysicsObject.draw(self, screen, img_hand)
 
 
-class Particle(PhysicsObject, animatedsprite.AnimatedSprite):
+class Particle(PhysicsObject):
     def __init__(self, x, y, dx, dy, action, gravity):
-        animatedsprite.AnimatedSprite.__init__(self,  'particle')
-        PhysicsObject.__init__(self, x, y, self.rect.width, self.rect.height)
+        PhysicsObject.__init__(self, x, y, 'particle')
 
         self.dx = dx
         self.dy = dy
@@ -152,4 +151,4 @@ class Particle(PhysicsObject, animatedsprite.AnimatedSprite):
     def animate(self):
         particle = animatedsprite.AnimatedSprite('particle')
         particle.set_position(self.rect.x, self.rect.y)
-        animatedsprite.AnimatedSprite.animate(self)
+        PhysicsObject.animate(self)

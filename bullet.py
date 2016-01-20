@@ -9,7 +9,7 @@ import tile
 
 
 class Bullet(animatedsprite.AnimatedSprite):
-    def __init__(self, x, y, speed, angle):
+    def __init__(self, x, y, speed, angle, gravity=0):
         animatedsprite.AnimatedSprite.__init__(self, 'bullet')
         self.rect.x = x
         self.rect.y = y
@@ -19,6 +19,7 @@ class Bullet(animatedsprite.AnimatedSprite):
         if self.dx < 0:
             self.flip()
         self.particles = animatedsprite.Group()
+        self.gravity = gravity
 
         self.play('idle', 0)
 
@@ -26,6 +27,9 @@ class Bullet(animatedsprite.AnimatedSprite):
         if self.alive:
             self.move_x(room)
             self.move_y(room)
+
+            if self.gravity:
+                self.dy += self.gravity * helpers.GRAVITY
 
             if helpers.outside_screen(self.rect):
                 self.kill()

@@ -17,7 +17,6 @@ import textbox
 class Weapon(Enum):
     none = 1
     gun = 2
-    sword = 3
 
 
 class Player:
@@ -35,10 +34,13 @@ class Player:
 
         self.abilities = {}
         for a in Ability:
-            self.abilities[a] = False
+            self.abilities[a] = True
 
-        self.weapon = Weapon.none
-        self.weapon_cooldown = {Weapon.sword: 24, Weapon.gun: 8}
+        self.weapon = Weapon.gun
+        self.weapon_cooldown = {Weapon.gun: 8}
+        self.weapon_mods = {'full auto': False,
+                            'spread': False,
+                            'gravity': False}
 
         self.rect = pygame.Rect(self.x, self.y, 6 * helpers.SCALE, 15 * helpers.SCALE)
         self.dx = 0
@@ -74,7 +76,7 @@ class Player:
 
         self.attack_buffer = True
         self.bullet_speed = 4 * helpers.SCALE
-        self.spread = 0
+        self.spread = 10
         self.cooldown = 0
 
         self.bullets = animatedsprite.Group()
@@ -141,7 +143,7 @@ class Player:
 
         if self.alive:
             if keys_down[pygame.K_d]:
-                self.change_weapon(keys_down)
+                self.change_mods(input_hand.keys_pressed)
                 return
             if keys_down[pygame.K_RIGHT]:
                 self.moving = True
@@ -321,6 +323,8 @@ class Player:
                 self.txtbox.time = 120
                 if p.ability is Ability.gun:
                     self.weapon = Weapon.gun
+                elif p.ability is Ability.full_auto or p.ability is Ability.spread or p.ability is Ability.gravity:
+                    self.weapon_mods[p.ability.name] = True
 
     def change_room(self):
         window_rect = pygame.Rect(0, 0, helpers.SCREEN_WIDTH, helpers.SCREEN_HEIGHT)
@@ -461,58 +465,60 @@ class Player:
             return
 
         if self.attack_buffer and self.cooldown == 0:
-            if self.weapon is Weapon.sword:
+            if self.crouched:
                 if self.dir is Direction.right:
-                    self.bullets.add(bullet.Sword(self.rect.x + helpers.TILE_SIZE, self.rect.y))
+                    spread = random.uniform(-self.spread, 0)
                 else:
-                    self.bullets.add(bullet.Sword(self.rect.x - helpers.TILE_SIZE, self.rect.y))
-                self.attack_buffer = False
-            elif self.weapon is Weapon.gun:
-                if self.crouched:
-                    if self.dir is Direction.right:
-                        spread = random.uniform(-self.spread, 0)
-                    else:
-                        spread = random.uniform(0, self.spread)
-                else:
-                    spread = random.uniform(-self.spread, self.spread)
+                    spread = random.uniform(0, self.spread)
+            else:
+                spread = random.uniform(-self.spread, self.spread)
 
-                x = y = angle = 0
-                if up:
-                    x = 1.25 * helpers.SCALE
-                    angle = 270
-                else:
-                    y = 0.5 * imagehandler.SIZES['bullet'][1] * helpers.SCALE
-                    if self.dir is Direction.left:
-                        if self.walled:
-                            if self.grounded:
-                                angle = 180
-                        else:
+            x = self.rect.x
+            y = self.rect.y
+            angle = 0
+            if up:
+                x += 1.25 * helpers.SCALE
+                angle = 270
+            else:
+                y += 0.5 * imagehandler.SIZES['bullet'][1] * helpers.SCALE
+                if self.dir is Direction.left:
+                    if self.walled:
+                        if self.grounded:
                             angle = 180
-                    elif self.dir is Direction.right:
-                        if self.walled:
-                            if not self.grounded:
-                                angle = 180
-                        else:
-                            angle = 0
+                    else:
+                        angle = 180
+                elif self.dir is Direction.right:
+                    if self.walled:
+                        if not self.grounded:
+                            angle = 180
+                    else:
+                        angle = 0
 
-                self.bullets.add(bullet.Bullet(self.rect.x + x, self.rect.y + y, self.bullet_speed, angle + spread))
+            grav = 0
+            if self.weapon_mods['gravity']:
+                grav = 1
+            self.bullets.add(bullet.Bullet(x, y, self.bullet_speed, angle + spread, grav))
+            if self.weapon_mods['spread']:
+                self.bullets.add(bullet.Bullet(x, y, self.bullet_speed, angle + 22.5 + spread, grav))
+                self.bullets.add(bullet.Bullet(x, y, self.bullet_speed, angle - 22.5 + spread, grav))
 
-                if not self.abilities[Ability.full_auto]:
-                    self.attack_buffer = False
+            if not self.weapon_mods['full auto']:
+                self.attack_buffer = False
 
             self.cooldown = self.weapon_cooldown[self.weapon]
 
-    def change_weapon(self, keys):
+    def change_mods(self, keys):
         if keys[pygame.K_UP]:
-            self.weapon = Weapon.none
+            pass
         elif keys[pygame.K_DOWN]:
-            self.weapon = Weapon.none
+            if self.abilities[Ability.gravity]:
+                self.weapon_mods['gravity'] = not self.weapon_mods['gravity']
         elif keys[pygame.K_RIGHT]:
-            if self.abilities[Ability.sword]:
-                self.weapon = Weapon.sword
+            if self.abilities[Ability.full_auto]:
+                self.weapon_mods['full auto'] = not self.weapon_mods['full auto']
         elif keys[pygame.K_LEFT]:
-            if self.abilities[Ability.gun]:
-                self.weapon = Weapon.gun
+            if self.abilities[Ability.spread]:
+                self.weapon_mods['spread'] = not self.weapon_mods['spread']
 
     def move_x(self, room):
         self.x += self.dx

@@ -89,6 +89,10 @@ class Level:
                     char = '4'
                 elif p.ability == powerup.Ability.full_auto:
                     char = '5'
+                elif p.ability == powerup.Ability.spread:
+                    char = '6'
+                elif p.ability == powerup.Ability.gravity:
+                    char = '7'
                 tilemap[p.rect.y // helpers.TILE_SIZE][p.rect.x // helpers.TILE_SIZE] = char
             for w in room.water:
                 if w.surface:
@@ -225,6 +229,10 @@ class Room:
             self.powerups.add(powerup.Powerup(x, y, player.Ability.rebreather))
         elif char == '5':
             self.powerups.add(powerup.Powerup(x, y, player.Ability.full_auto))
+        elif char == '6':
+            self.powerups.add(powerup.Powerup(x, y, player.Ability.spread))
+        elif char == '7':
+            self.powerups.add(powerup.Powerup(x, y, player.Ability.gravity))
 
     def remove_object(self, x, y):
         collider = pygame.sprite.Sprite()

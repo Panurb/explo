@@ -3,10 +3,11 @@ import helpers
 import textbox
 
 
-OBJECTS = ['W', 'G', 'R', 'M', 'I', 'D', '#', '~', '=', 'C', '*', 'c', 'z', 's', 'f', 'h', '0', '1', '2', '3', '4', '5']
+OBJECTS = ['W', 'G', 'R', 'M', 'I', 'D', '#', '~', '=', 'C', '*', 'c', 'z', 's', 'f', 'h', '0', '1', '2', '3', '4',
+           '5', '6', '7']
 OBJECT_NAMES = ['WALL', 'GROUND', 'ROCK', 'METAL', 'ICE', 'DESTROYABLE', 'LADDER', 'SURFACE', 'WATER', 'CHECKPOINT',
                 'THORNS', 'CRAWLER', 'ZOMBIE', 'SPAWNER', 'FLYER', 'CHARGER', 'RUN', 'DOUBLE JUMP', 'WALL JUMP', 'GUN',
-                'REBREATHER', 'FULL AUTO']
+                'REBREATHER', 'FULL AUTO', 'SPREAD', 'GRAVITY']
 
 
 class Editor:
@@ -66,7 +67,7 @@ class Editor:
 
 
 def mouse_to_grid(mouse_x, mouse_y):
-    x = mouse_x - mouse_x % (8 * helpers.SCALE)
-    y = mouse_y - mouse_y % (8 * helpers.SCALE)
+    x = mouse_x - mouse_x % helpers.TILE_SIZE
+    y = mouse_y - mouse_y % helpers.TILE_SIZE
 
     return x, y

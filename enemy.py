@@ -8,10 +8,9 @@ from player import Direction
 import math
 
 
-class Enemy(animatedsprite.AnimatedSprite, physicsobject.PhysicsObject):
+class Enemy(physicsobject.PhysicsObject):
     def __init__(self, x, y, health, path):
-        animatedsprite.AnimatedSprite.__init__(self, path)
-        physicsobject.PhysicsObject.__init__(self, x, y, self.rect.width, self.rect.height)
+        physicsobject.PhysicsObject.__init__(self, x, y, path)
 
         self.spawn_x = x
         self.spawn_y = y

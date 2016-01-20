@@ -9,6 +9,8 @@ class Ability(Enum):
     gun = 3
     rebreather = 4
     full_auto = 5
+    spread = 6
+    gravity = 7
 
 TEXTS = {
     Ability.run: 'Hold shift to walk',
