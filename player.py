@@ -12,6 +12,7 @@ import physicsobject
 from powerup import Ability
 import save
 import textbox
+import tile
 
 
 class Weapon(Enum):
@@ -537,6 +538,10 @@ class Player:
                 if self.dx < 0:
                     self.rect.left = c.rect.right
                     self.x = self.rect.x
+
+                if type(c) is tile.Platform:
+                    self.dx = c.dx
+                    self.dy = c.dy
 
         if collisions:
             self.dx = 0

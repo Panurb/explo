@@ -100,7 +100,10 @@ class Level:
                 else:
                     tilemap[w.rect.y // helpers.TILE_SIZE][w.rect.x // helpers.TILE_SIZE] = '='
             for d in room.destroyables:
-                tilemap[d.rect.y // helpers.TILE_SIZE][d.rect.x // helpers.TILE_SIZE] = 'D'
+                if type(d) is tile.Destroyable:
+                    tilemap[d.rect.y // helpers.TILE_SIZE][d.rect.x // helpers.TILE_SIZE] = 'D'
+                elif type(d) is tile.Platform:
+                    tilemap[d.rect.y // helpers.TILE_SIZE][d.rect.x // helpers.TILE_SIZE] = 'P'
 
             empty = True
             for row in tilemap:
@@ -195,6 +198,8 @@ class Room:
             self.walls.add(tile.Wall(x, y, 'metal'))
         elif char == 'I':
             self.walls.add(tile.Wall(x, y, 'ice'))
+        elif char == 'P':
+            self.destroyables.add(tile.Platform(x, y))
         elif char == '#':
             self.ladders.add(tile.Ladder(x, y))
         elif char == '~':

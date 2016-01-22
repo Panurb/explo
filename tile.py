@@ -131,3 +131,16 @@ class Destroyable(Wall):
     def draw(self, screen, img_hand):
         Wall.draw(self, screen, img_hand)
         self.debris.draw(screen, img_hand)
+
+
+class Platform(physicsobject.PhysicsObject):
+    def __init__(self, x, y):
+        Wall.__init__(self, x, y, 'platform')
+        physicsobject.PhysicsObject.__init__(self, x, y, 'platform')
+        self.gravity = 0
+        self.bounce = 1
+        self.dx = 0.5 * helpers.SCALE
+
+    def update(self, room):
+        Wall.update(self, room)
+        physicsobject.PhysicsObject.update(self, room)

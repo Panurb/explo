@@ -20,6 +20,7 @@ SIZES = {
     'menu': (32, 8),
     'metal': (8, 8),
     'particle': (4, 4),
+    'platform': (24, 8),
     'player_body': (16, 16),
     'player_gibs': (4, 4),
     'player_legs': (16, 16),
@@ -99,6 +100,9 @@ ACTIONS = {
     'particle': [
         ['blood', 4],
         ['spark', 4]
+    ],
+    'platform': [
+        ['idle', 1]
     ],
     'player_body': [
         ['idle', 8],
