@@ -2,13 +2,11 @@ import pygame
 import helpers
 import textbox
 
-
-OBJECTS = ['W', 'G', 'R', 'M', 'I', 'P', 'D', '#', '~', '=', 'C', '*', 'c', 'z', 's', 'f', 'h', '0', '1', '2', '3', '4',
-           '5', '6', '7']
-OBJECT_NAMES = ['WALL', 'GROUND', 'ROCK', 'METAL', 'ICE', 'PLATFORM', 'DESTROYABLE', 'LADDER', 'SURFACE', 'WATER',
-                'CHECKPOINT',
-                'THORNS', 'CRAWLER', 'ZOMBIE', 'SPAWNER', 'FLYER', 'CHARGER', 'RUN', 'DOUBLE JUMP', 'WALL JUMP', 'GUN',
-                'REBREATHER', 'FULL AUTO', 'SPREAD', 'GRAVITY']
+OBJECTS = ['W', 'G', 'R', 'M', 'I', 'P', 'V', 'D', '#', '~', '=', 'C', '*', 'c', 'z', 's', 'f', 'h', '0', '1', '2', '3',
+           '4', '5', '6', '7']
+OBJECT_NAMES = ['WALL', 'GROUND', 'ROCK', 'METAL', 'ICE', 'PLATFORM', 'VERTICAL PLATFORM', 'DESTROYABLE', 'LADDER',
+                'SURFACE', 'WATER', 'CHECKPOINT', 'THORNS', 'CRAWLER', 'ZOMBIE', 'SPAWNER', 'FLYER', 'CHARGER', 'RUN',
+                'DOUBLE JUMP', 'WALL JUMP', 'GUN', 'REBREATHER', 'FULL AUTO', 'SPREAD', 'GRAVITY']
 
 
 class Editor:

@@ -44,6 +44,8 @@ class Player:
                             'gravity': False}
 
         self.rect = pygame.Rect(self.x, self.y, 6 * helpers.SCALE, 15 * helpers.SCALE)
+        self.base_dx = 0
+        self.base_dy = 0
         self.dx = 0
         self.dy = 0
 
@@ -329,7 +331,7 @@ class Player:
 
     def change_room(self):
         window_rect = pygame.Rect(0, 0, helpers.SCREEN_WIDTH, helpers.SCREEN_HEIGHT)
-        if not window_rect.collidepoint(self.rect.center):
+        if not window_rect.collidepoint(self.rect.centerx, self.rect.centery):
             self.bullets.empty()
 
             if self.rect.centerx >= helpers.SCREEN_WIDTH:
@@ -522,35 +524,56 @@ class Player:
                 self.weapon_mods['spread'] = not self.weapon_mods['spread']
 
     def move_x(self, room):
-        self.x += self.dx
+        self.x += self.base_dx + self.dx
         self.rect.x = self.x
 
         collisions = (pygame.sprite.spritecollide(self, room.walls, False) +
-                      pygame.sprite.spritecollide(self, room.destroyables, False))
+                      pygame.sprite.spritecollide(self, room.dynamic_objects, False))
         collisions = [c for c in collisions if not c.destroyed]
 
         for c in collisions:
             if not c.destroyed:
                 self.speed_wall = c.slide_speed
-                if self.dx > 0:
-                    self.rect.right = c.rect.left
-                    self.x = self.rect.x
-                if self.dx < 0:
-                    self.rect.left = c.rect.right
-                    self.x = self.rect.x
-
                 if type(c) is tile.Platform:
-                    self.dx = c.dx
-                    self.dy = c.dy
+                    self.base_dx = c.dx
+                    self.base_dy = c.dy
+                    if c.dx > 0 >= self.dx:
+                        if abs(self.rect.left - c.rect.right) > 0.5 * self.rect.width:
+                            self.die()
+                        else:
+                            self.rect.left = c.rect.right
+                        self.x = self.rect.x
+                    elif c.dx < 0 <= self.dx:
+                        if abs(self.rect.right - c.rect.left) > 0.5 * self.rect.width:
+                            self.die()
+                        else:
+                            self.rect.right = c.rect.left
+                        self.x = self.rect.x
+                else:
+                    if self.base_dx + self.dx > 0:
+                        if abs(self.rect.right - c.rect.left) > 0.5 * self.rect.width:
+                            self.die()
+                        else:
+                            self.rect.right = c.rect.left
+                        self.x = self.rect.x
+                    elif self.base_dx + self.dx < 0:
+                        if abs(self.rect.left - c.rect.right) > 0.5 * self.rect.width:
+                            self.die()
+                        else:
+                            self.rect.left = c.rect.right
+                        self.x = self.rect.x
+                    self.dx = 0
 
-        if collisions:
-            self.dx = 0
+        if not collisions:
+            self.base_dx = 0
+            self.base_dy = 0
 
         if self.abilities[Ability.wall_jump]:
             collider = pygame.sprite.Sprite()
             collider.rect = pygame.Rect(self.rect.left - 1, self.rect.y, self.rect.width + 2, self.rect.height / 2)
-            # TODO: check for destroyables
-            collisions = pygame.sprite.spritecollide(collider, room.walls, False)
+            collisions = (pygame.sprite.spritecollide(collider, room.walls, False) +
+                          pygame.sprite.spritecollide(collider, room.dynamic_objects, False))
+            collisions = [c for c in collisions if not c.destroyed]
             for c in collisions:
                 self.speed_wall = c.slide_speed
             if collisions and self.dy > 0:
@@ -562,31 +585,42 @@ class Player:
                 self.hugging = False
 
     def move_y(self, room):
-        self.y += self.dy
+        self.y += self.base_dy + self.dy
         self.rect.y = self.y
 
         collisions = (pygame.sprite.spritecollide(self, room.walls, False) +
-                      pygame.sprite.spritecollide(self, room.destroyables, False))
+                      pygame.sprite.spritecollide(self, room.dynamic_objects, False))
         collisions = [c for c in collisions if not c.destroyed]
 
         for c in collisions:
-            if self.dy > 0:
-                self.rect.bottom = c.rect.top
+            if type(c) is tile.Platform:
+                self.base_dx = c.dx
+                self.base_dy = c.dy
+
+            if self.base_dy + self.dy > 0:
+                if abs(self.rect.bottom - c.rect.top) > 0.5 * self.rect.height:
+                    self.die()
+                else:
+                    self.rect.bottom = c.rect.top
                 self.y = self.rect.y
                 self.grounded = True
                 self.friction = c.friction
-
-            if self.dy < 0:
-                self.rect.top = c.rect.bottom
+            elif self.base_dy + self.dy < 0:
+                if abs(self.rect.top - c.rect.bottom) > 0.5 * self.rect.height:
+                    self.die()
+                else:
+                    self.rect.top = c.rect.bottom
                 self.y = self.rect.y
 
             if abs(self.dy) >= helpers.TERMINAL_VELOCITY:
                 self.die()
 
         if collisions:
-            self.dy = helpers.GRAVITY
+            self.dy = 0
         else:
             self.grounded = False
+            self.base_dx = 0
+            self.base_dy = 0
 
         if not self.laddered:
             ladder_collisions = pygame.sprite.spritecollide(self, room.ladders, False)

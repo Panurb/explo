@@ -134,13 +134,27 @@ class Destroyable(Wall):
 
 
 class Platform(physicsobject.PhysicsObject):
-    def __init__(self, x, y):
-        Wall.__init__(self, x, y, 'platform')
+    def __init__(self, x, y, vertical=False):
         physicsobject.PhysicsObject.__init__(self, x, y, 'platform')
+        self.destroyed = False
         self.gravity = 0
         self.bounce = 1
-        self.dx = 0.5 * helpers.SCALE
+        self.vertical = vertical
+        self.slide_speed = 0.25 * helpers.SCALE
+        if self.vertical:
+            self.dy = 0.5 * helpers.SCALE
+        else:
+            self.dx = 0.5 * helpers.SCALE
+        self.spawn_x = x
+        self.spawn_y = y
 
     def update(self, room):
-        Wall.update(self, room)
         physicsobject.PhysicsObject.update(self, room)
+
+    def reset(self):
+        self.x = self.spawn_x
+        self.y = self.spawn_y
+        if self.vertical:
+            self.dy = 0.5 * helpers.SCALE
+        else:
+            self.dx = 0.5 * helpers.SCALE

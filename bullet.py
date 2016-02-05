@@ -43,7 +43,7 @@ class Bullet(animatedsprite.AnimatedSprite):
         self.rect.move_ip(self.dx, 0)
 
         collisions = (pygame.sprite.spritecollide(self, room.walls, False) +
-                      pygame.sprite.spritecollide(self, room.destroyables, False))
+                      pygame.sprite.spritecollide(self, room.dynamic_objects, False))
         collisions = [c for c in collisions if not c.destroyed]
 
         for c in collisions:
@@ -83,7 +83,7 @@ class Bullet(animatedsprite.AnimatedSprite):
         self.rect.move_ip(0, self.dy)
 
         collisions = (pygame.sprite.spritecollide(self, room.walls, False) +
-                      pygame.sprite.spritecollide(self, room.destroyables, False))
+                      pygame.sprite.spritecollide(self, room.dynamic_objects, False))
         collisions = [c for c in collisions if not c.destroyed]
 
         for c in collisions:

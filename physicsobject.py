@@ -71,7 +71,7 @@ class PhysicsObject(animatedsprite.AnimatedSprite):
                     self.ceilinged = True
 
             if collisions:
-                if self.dy > 1 * helpers.SCALE:
+                if self.dy > 1 * helpers.SCALE or self.gravity == 0:
                     self.dy *= -self.bounce
                 else:
                     self.dy = 0

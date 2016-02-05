@@ -103,7 +103,10 @@ class Level:
                 if type(d) is tile.Destroyable:
                     tilemap[d.rect.y // helpers.TILE_SIZE][d.rect.x // helpers.TILE_SIZE] = 'D'
                 elif type(d) is tile.Platform:
-                    tilemap[d.rect.y // helpers.TILE_SIZE][d.rect.x // helpers.TILE_SIZE] = 'P'
+                    if d.vertical:
+                        tilemap[d.rect.y // helpers.TILE_SIZE][d.rect.x // helpers.TILE_SIZE] = 'V'
+                    else:
+                        tilemap[d.rect.y // helpers.TILE_SIZE][d.rect.x // helpers.TILE_SIZE] = 'P'
 
             empty = True
             for row in tilemap:
@@ -134,7 +137,7 @@ class Room:
         self.checkpoints = animatedsprite.Group()
         self.powerups = animatedsprite.Group()
         self.water = animatedsprite.Group()
-        self.destroyables = animatedsprite.Group()
+        self.dynamic_objects = animatedsprite.Group()
         self.x = x
         self.y = y
         self.player_x = 0
@@ -161,7 +164,7 @@ class Room:
         self.enemies.update(self)
         self.checkpoints.update(self)
         self.powerups.update(self)
-        self.destroyables.update(self)
+        self.dynamic_objects.update(self)
 
         self.water.animate()
         self.powerups.animate()
@@ -173,7 +176,7 @@ class Room:
 
     def reset(self):
         self.enemies.reset()
-        self.destroyables.reset()
+        self.dynamic_objects.reset()
 
     def draw(self, screen, img_hand):
         self.bg_sprite.draw(screen, img_hand)
@@ -185,7 +188,7 @@ class Room:
         self.enemies.draw(screen, img_hand)
         self.powerups.draw(screen, img_hand)
         self.water.draw(screen, img_hand)
-        self.destroyables.draw(screen, img_hand)
+        self.dynamic_objects.draw(screen, img_hand)
 
     def add_object(self, x, y, char):
         if char == 'W':
@@ -199,7 +202,9 @@ class Room:
         elif char == 'I':
             self.walls.add(tile.Wall(x, y, 'ice'))
         elif char == 'P':
-            self.destroyables.add(tile.Platform(x, y))
+            self.dynamic_objects.add(tile.Platform(x, y))
+        elif char == 'V':
+            self.dynamic_objects.add(tile.Platform(x, y, True))
         elif char == '#':
             self.ladders.add(tile.Ladder(x, y))
         elif char == '~':
@@ -211,7 +216,7 @@ class Room:
         elif char == '*':
             self.spikes.add(tile.Spike(x, y, 0))
         elif char == 'D':
-            self.destroyables.add(tile.Destroyable(x, y))
+            self.dynamic_objects.add(tile.Destroyable(x, y))
         elif char == 'c':
             self.enemies.add(enemy.Crawler(x, y))
         elif char == 'z':
@@ -250,7 +255,7 @@ class Room:
         pygame.sprite.spritecollide(collider, self.checkpoints, True)
         pygame.sprite.spritecollide(collider, self.powerups, True)
         pygame.sprite.spritecollide(collider, self.water, True)
-        pygame.sprite.spritecollide(collider, self.destroyables, True)
+        pygame.sprite.spritecollide(collider, self.dynamic_objects, True)
 
     def clear(self):
         self.walls.empty()
@@ -261,4 +266,4 @@ class Room:
         self.checkpoints.empty()
         self.powerups.empty()
         self.water.empty()
-        self.destroyables.empty()
+        self.dynamic_objects.empty()
