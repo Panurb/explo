@@ -48,3 +48,11 @@ def rotation(dx, dy):
         rot += 360
 
     return rot
+
+
+def limit_speed(dx, dy):
+    speed = math.hypot(dx, dy)
+    if speed > TERMINAL_VELOCITY:
+        dx *= (TERMINAL_VELOCITY / speed)
+        dy *= (TERMINAL_VELOCITY / speed)
+    return dx, dy

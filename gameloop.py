@@ -4,7 +4,6 @@ import editor
 import helpers
 import level
 import menu
-import player
 import textbox
 
 
@@ -35,7 +34,6 @@ class GameLoop:
 
         self.level_name = ''
         self.level = None
-        self.player = None
         self.editor = None
         self.clock_text = textbox.Textbox('', helpers.SCREEN_WIDTH - 0.5 * helpers.TILE_SIZE, 0)
 
@@ -67,24 +65,14 @@ class GameLoop:
         elif self.state is State.play:
             if self.level is None:
                 self.level = level.Level(self.level_select_menu.level_name)
-                self.player = player.Player(self.level)
-            try:
-                room = self.level.room(self.player.room_x, self.player.room_y)
-            except KeyError:
-                room = level.Room([], self.player.room_x, self.player.room_y)
-                self.level.rooms[(self.player.room_x, self.player.room_y)] = room
 
-            self.player.input(self.input_hand, room)
+            last_room = (self.level.player.room_x, self.level.player.room_y)
+            self.level.update(self.input_hand)
 
-            room.update()
-            last_room = (self.player.room_x, self.player.room_y)
-            self.player.update(room)
-
-            room.draw(self.screen, self.img_hand)
-            self.player.draw(self.screen, self.img_hand)
+            self.level.draw(self.screen, self.img_hand)
 
             # Done after drawing to avoid visual glitches on room change
-            if (self.player.room_x, self.player.room_y) != last_room:
+            if (self.level.player.room_x, self.level.player.room_y) != last_room:
                 self.level.rooms[last_room].reset()
         elif self.state is State.editor:
             if self.level is None:
@@ -92,8 +80,7 @@ class GameLoop:
                     self.level = level.Level(self.editor_select_menu.level_name)
                 else:
                     self.level = level.Level(self.level_creation_menu.input_name.txtbox.string)
-                self.player = player.Player(self.level)
-                self.editor = editor.Editor(self.player.room_x, self.player.room_y)
+                self.editor = editor.Editor(self.level.player.room_x, self.level.player.room_y)
             try:
                 self.editor.input(self.level, self.input_hand)
                 self.level.room(self.editor.room_x, self.editor.room_y).draw(self.screen, self.img_hand)

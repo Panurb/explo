@@ -1,8 +1,10 @@
 import pygame
 import animatedsprite
 import enemy
+import gameobject
 import helpers
 import player
+import player_old
 import powerup
 import tile
 
@@ -26,11 +28,13 @@ class Level:
                 continue
 
             if not line.rstrip():
-                self.rooms[coordinates] = Room(room, coordinates[0], coordinates[1])
+                self.rooms[coordinates] = Room(self, room, coordinates[0], coordinates[1])
                 room = []
                 continue
 
             room.append(list(line))
+
+        self.player = player.Player(self)
 
     def room(self, x, y):
         return self.rooms[(x, y)]
@@ -54,13 +58,13 @@ class Level:
                     char = 'M'
                 elif w.path == 'ice':
                     char = 'I'
-                tilemap[w.rect.y // helpers.TILE_SIZE][w.rect.x // helpers.TILE_SIZE] = char
+                tilemap[w.y // helpers.TILE_SIZE][w.x // helpers.TILE_SIZE] = char
             for l in room.ladders:
-                tilemap[l.rect.y // helpers.TILE_SIZE][l.rect.x // helpers.TILE_SIZE] = '#'
+                tilemap[l.y // helpers.TILE_SIZE][l.x // helpers.TILE_SIZE] = '#'
             for s in room.spikes:
-                tilemap[s.rect.y // helpers.TILE_SIZE][s.rect.x // helpers.TILE_SIZE] = '*'
+                tilemap[s.y // helpers.TILE_SIZE][s.x // helpers.TILE_SIZE] = '*'
             for e in room.enemies:
-                y = e.rect.y // helpers.TILE_SIZE
+                y = e.y // helpers.TILE_SIZE
                 char = ''
                 if type(e) is enemy.Crawler:
                     char = 'c'
@@ -72,9 +76,9 @@ class Level:
                     char = 's'
                 elif type(e) is enemy.Charger:
                     char = 'h'
-                tilemap[y][e.rect.x // helpers.TILE_SIZE] = char
+                tilemap[y][e.x // helpers.TILE_SIZE] = char
             for c in room.checkpoints:
-                tilemap[c.rect.y // helpers.TILE_SIZE][c.rect.x // helpers.TILE_SIZE] = 'C'
+                tilemap[c.y // helpers.TILE_SIZE][c.x // helpers.TILE_SIZE] = 'C'
             for p in room.powerups:
                 char = ''
                 if p.ability == powerup.Ability.run:
@@ -93,20 +97,20 @@ class Level:
                     char = '6'
                 elif p.ability == powerup.Ability.gravity:
                     char = '7'
-                tilemap[p.rect.y // helpers.TILE_SIZE][p.rect.x // helpers.TILE_SIZE] = char
+                tilemap[p.y // helpers.TILE_SIZE][p.x // helpers.TILE_SIZE] = char
             for w in room.water:
                 if w.surface:
-                    tilemap[w.rect.y // helpers.TILE_SIZE][w.rect.x // helpers.TILE_SIZE] = '~'
+                    tilemap[w.y // helpers.TILE_SIZE][w.x // helpers.TILE_SIZE] = '~'
                 else:
-                    tilemap[w.rect.y // helpers.TILE_SIZE][w.rect.x // helpers.TILE_SIZE] = '='
-            for d in room.destroyables:
+                    tilemap[w.y // helpers.TILE_SIZE][w.x // helpers.TILE_SIZE] = '='
+            for d in room.dynamic_objects:
                 if type(d) is tile.Destroyable:
-                    tilemap[d.rect.y // helpers.TILE_SIZE][d.rect.x // helpers.TILE_SIZE] = 'D'
+                    tilemap[d.y // helpers.TILE_SIZE][d.x // helpers.TILE_SIZE] = 'D'
                 elif type(d) is tile.Platform:
                     if d.vertical:
-                        tilemap[d.rect.y // helpers.TILE_SIZE][d.rect.x // helpers.TILE_SIZE] = 'V'
+                        tilemap[d.y // helpers.TILE_SIZE][d.x // helpers.TILE_SIZE] = 'V'
                     else:
-                        tilemap[d.rect.y // helpers.TILE_SIZE][d.rect.x // helpers.TILE_SIZE] = 'P'
+                        tilemap[d.y // helpers.TILE_SIZE][d.x // helpers.TILE_SIZE] = 'P'
 
             empty = True
             for row in tilemap:
@@ -123,21 +127,40 @@ class Level:
 
         f.close()
 
+    def update(self, input_hand):
+        try:
+            room = self.room(self.player.room_x, self.player.room_y)
+        except KeyError:
+            room = Room(self, [], self.player.room_x, self.player.room_y)
+            self.rooms[(self.player.room_x, self.player.room_y)] = room
+
+        self.player.input(input_hand, room)
+
+        room.update()
+        self.player.update(room)
+
+    def draw(self, screen, img_hand):
+        room = self.room(self.player.room_x, self.player.room_y)
+        room.draw(screen, img_hand)
+        self.player.draw(screen, img_hand)
+
 
 class Room:
-    def __init__(self, tilemap, x, y):
+    def __init__(self, level, tilemap, x, y):
+        self.level = level
+
         self.bg = 'sky'
         self.bg_sprite = animatedsprite.AnimatedSprite('bg')
         self.bg_sprite.play(self.bg)
 
-        self.walls = animatedsprite.Group()
-        self.ladders = animatedsprite.Group()
-        self.spikes = animatedsprite.Group()
-        self.enemies = animatedsprite.Group()
-        self.checkpoints = animatedsprite.Group()
-        self.powerups = animatedsprite.Group()
-        self.water = animatedsprite.Group()
-        self.dynamic_objects = animatedsprite.Group()
+        self.walls = list()
+        self.ladders = list()
+        self.spikes = list()
+        self.enemies = list()
+        self.checkpoints = list()
+        self.powerups = list()
+        self.water = list()
+        self.dynamic_objects = list()
         self.x = x
         self.y = y
         self.player_x = 0
@@ -161,109 +184,127 @@ class Room:
                         self.player_y = y
 
     def update(self):
-        self.enemies.update(self)
-        self.checkpoints.update(self)
-        self.powerups.update(self)
-        self.dynamic_objects.update(self)
+        for e in self.enemies:
+            e.update(self)
+        for c in self.checkpoints:
+            c.update(self)
+        for p in self.powerups:
+            p.update(self)
+        for d in self.dynamic_objects:
+            d.update(self)
 
-        self.water.animate()
-        self.powerups.animate()
+        for w in self.water:
+            w.animate()
+        for p in self.powerups:
+            p.animate()
 
     def update_visuals(self):
-        self.walls.update(self)
-        self.spikes.update(self)
-        self.ladders.update(self)
+        for w in self.walls:
+            w.update(self)
+        for s in self.spikes:
+            s.update(self)
+        for l in self.ladders:
+            l.update(self)
 
     def reset(self):
-        self.enemies.reset()
-        self.dynamic_objects.reset()
+        for e in self.enemies:
+            e.reset()
+        for d in self.dynamic_objects:
+            d.reset()
 
     def draw(self, screen, img_hand):
         self.bg_sprite.draw(screen, img_hand)
 
-        self.checkpoints.draw(screen, img_hand)
-        self.walls.draw(screen, img_hand)
-        self.ladders.draw(screen, img_hand)
-        self.spikes.draw(screen, img_hand)
-        self.enemies.draw(screen, img_hand)
-        self.powerups.draw(screen, img_hand)
-        self.water.draw(screen, img_hand)
-        self.dynamic_objects.draw(screen, img_hand)
+        for c in self.checkpoints:
+            c.draw(screen, img_hand)
+        for w in self.walls:
+            w.draw(screen, img_hand)
+        for l in self.ladders:
+            l.draw(screen, img_hand)
+        for s in self.spikes:
+            s.draw(screen, img_hand)
+        for e in self.enemies:
+            e.draw(screen, img_hand)
+        for p in self.powerups:
+            p.draw(screen, img_hand)
+        for w in self.water:
+            w.draw(screen, img_hand)
+        for d in self.dynamic_objects:
+            d.draw(screen, img_hand)
 
     def add_object(self, x, y, char):
         if char == 'W':
-            self.walls.add(tile.Wall(x, y, 'wall'))
+            self.walls.append(tile.Wall(x, y, 'wall'))
         elif char == 'G':
-            self.walls.add(tile.Wall(x, y, 'ground'))
+            self.walls.append(tile.Wall(x, y, 'ground'))
         elif char == 'R':
-            self.walls.add(tile.Wall(x, y, 'rock'))
+            self.walls.append(tile.Wall(x, y, 'rock'))
         elif char == 'M':
-            self.walls.add(tile.Wall(x, y, 'metal'))
+            self.walls.append(tile.Wall(x, y, 'metal'))
         elif char == 'I':
-            self.walls.add(tile.Wall(x, y, 'ice'))
+            self.walls.append(tile.Wall(x, y, 'ice'))
         elif char == 'P':
-            self.dynamic_objects.add(tile.Platform(x, y))
+            self.dynamic_objects.append(tile.Platform(x, y))
         elif char == 'V':
-            self.dynamic_objects.add(tile.Platform(x, y, True))
+            self.dynamic_objects.append(tile.Platform(x, y, True))
         elif char == '#':
-            self.ladders.add(tile.Ladder(x, y))
+            self.ladders.append(tile.Ladder(x, y))
         elif char == '~':
-            self.water.add(tile.Water(x, y, True))
+            self.water.append(tile.Water(x, y, True))
         elif char == '=':
-            self.water.add(tile.Water(x, y, False))
+            self.water.append(tile.Water(x, y, False))
         elif char == 'C':
-            self.checkpoints.add(tile.Checkpoint(x, y))
+            self.checkpoints.append(tile.Checkpoint(x, y))
         elif char == '*':
-            self.spikes.add(tile.Spike(x, y, 0))
+            self.spikes.append(tile.Spike(x, y, 0))
         elif char == 'D':
-            self.dynamic_objects.add(tile.Destroyable(x, y))
+            self.dynamic_objects.append(tile.Destroyable(x, y))
         elif char == 'c':
-            self.enemies.add(enemy.Crawler(x, y))
+            self.enemies.append(enemy.Crawler(x, y))
         elif char == 'z':
-            self.enemies.add(enemy.Zombie(x, y))
+            self.enemies.append(enemy.Zombie(x, y))
         elif char == 'f':
-            self.enemies.add(enemy.Flyer(x, y))
+            self.enemies.append(enemy.Flyer(x, y))
         elif char == 's':
-            self.enemies.add(enemy.Spawner(x, y))
+            self.enemies.append(enemy.Spawner(x, y))
         elif char == 'h':
-            self.enemies.add(enemy.Charger(x, y))
+            self.enemies.append(enemy.Charger(x, y))
         elif char == '0':
-            self.powerups.add(powerup.Powerup(x, y, player.Ability.run))
+            self.powerups.append(powerup.Powerup(x, y, player_old.Ability.run))
         elif char == '1':
-            self.powerups.add(powerup.Powerup(x, y, player.Ability.double_jump))
+            self.powerups.append(powerup.Powerup(x, y, player_old.Ability.double_jump))
         elif char == '2':
-            self.powerups.add(powerup.Powerup(x, y, player.Ability.wall_jump))
+            self.powerups.append(powerup.Powerup(x, y, player_old.Ability.wall_jump))
         elif char == '3':
-            self.powerups.add(powerup.Powerup(x, y, player.Ability.gun))
+            self.powerups.append(powerup.Powerup(x, y, player_old.Ability.gun))
         elif char == '4':
-            self.powerups.add(powerup.Powerup(x, y, player.Ability.rebreather))
+            self.powerups.append(powerup.Powerup(x, y, player_old.Ability.rebreather))
         elif char == '5':
-            self.powerups.add(powerup.Powerup(x, y, player.Ability.full_auto))
+            self.powerups.append(powerup.Powerup(x, y, player_old.Ability.full_auto))
         elif char == '6':
-            self.powerups.add(powerup.Powerup(x, y, player.Ability.spread))
+            self.powerups.append(powerup.Powerup(x, y, player_old.Ability.spread))
         elif char == '7':
-            self.powerups.add(powerup.Powerup(x, y, player.Ability.gravity))
+            self.powerups.append(powerup.Powerup(x, y, player_old.Ability.gravity))
 
     def remove_object(self, x, y):
-        collider = pygame.sprite.Sprite()
-        collider.rect = pygame.Rect(x, y, helpers.TILE_SIZE, helpers.TILE_SIZE)
+        collider = pygame.Rect(x, y, helpers.TILE_SIZE, helpers.TILE_SIZE)
 
-        pygame.sprite.spritecollide(collider, self.walls, True)
-        pygame.sprite.spritecollide(collider, self.ladders, True)
-        pygame.sprite.spritecollide(collider, self.spikes, True)
-        pygame.sprite.spritecollide(collider, self.enemies, True)
-        pygame.sprite.spritecollide(collider, self.checkpoints, True)
-        pygame.sprite.spritecollide(collider, self.powerups, True)
-        pygame.sprite.spritecollide(collider, self.water, True)
-        pygame.sprite.spritecollide(collider, self.dynamic_objects, True)
+        self.walls[:] = [w for w in self.walls if not collider.colliderect(w.collider)]
+        self.ladders[:] = [x for x in self.ladders if not collider.colliderect(x.collider)]
+        self.spikes[:] = [x for x in self.spikes if not collider.colliderect(x.collider)]
+        self.enemies[:] = [x for x in self.enemies if not collider.colliderect(x.collider)]
+        self.checkpoints[:] = [x for x in self.checkpoints if not collider.colliderect(x.collider)]
+        self.powerups[:] = [x for x in self.powerups if not collider.colliderect(x.collider)]
+        self.water[:] = [x for x in self.water if not collider.colliderect(x.collider)]
+        self.dynamic_objects[:] = [x for x in self.dynamic_objects if not collider.colliderect(x.collider)]
 
     def clear(self):
-        self.walls.empty()
-        self.ladders.empty()
-        self.spikes.empty()
-        self.spikes.empty()
-        self.enemies.empty()
-        self.checkpoints.empty()
-        self.powerups.empty()
-        self.water.empty()
-        self.dynamic_objects.empty()
+        self.walls.clear()
+        self.ladders.clear()
+        self.spikes.clear()
+        self.spikes.clear()
+        self.enemies.clear()
+        self.checkpoints.clear()
+        self.powerups.clear()
+        self.water.clear()
+        self.dynamic_objects.clear()

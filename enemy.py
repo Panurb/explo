@@ -4,7 +4,7 @@ import bullet
 import helpers
 import physicsobject
 import random
-from player import Direction
+from player_old import Direction
 import math
 
 
