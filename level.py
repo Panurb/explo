@@ -106,7 +106,7 @@ class Level:
             for d in room.dynamic_objects:
                 if type(d) is tile.Destroyable:
                     tilemap[d.y // helpers.TILE_SIZE][d.x // helpers.TILE_SIZE] = 'D'
-                elif type(d) is tile.Platform:
+                elif type(d) is gameobject.Platform:
                     if d.vertical:
                         tilemap[d.y // helpers.TILE_SIZE][d.x // helpers.TILE_SIZE] = 'V'
                     else:
@@ -244,9 +244,9 @@ class Room:
         elif char == 'I':
             self.walls.append(tile.Wall(x, y, 'ice'))
         elif char == 'P':
-            self.dynamic_objects.append(tile.Platform(x, y))
+            self.dynamic_objects.append(gameobject.Platform(x, y))
         elif char == 'V':
-            self.dynamic_objects.append(tile.Platform(x, y, True))
+            self.dynamic_objects.append(gameobject.Platform(x, y, True))
         elif char == '#':
             self.ladders.append(tile.Ladder(x, y))
         elif char == '~':

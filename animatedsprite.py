@@ -10,9 +10,12 @@ class Direction(Enum):
 
 
 class AnimatedSprite(pygame.sprite.Sprite):
-    def __init__(self, path):
+    def __init__(self, path, offset_x=0, offset_y=0):
         pygame.sprite.Sprite.__init__(self)
         self.sprite = pygame.sprite.RenderPlain(self)
+
+        self.offset_x = offset_x
+        self.offset_y = offset_y
 
         self.name = path
         self.action = 'idle'
@@ -37,8 +40,8 @@ class AnimatedSprite(pygame.sprite.Sprite):
         self.animation_finished = False
 
     def set_position(self, x, y):
-        self.rect.x = x
-        self.rect.y = y
+        self.rect.x = x + self.offset_x
+        self.rect.y = y + self.offset_y
 
     def animate(self):
         if self.playing:

@@ -95,16 +95,6 @@ class Debris(PhysicsObject):
     def __init__(self, x, y, dx, dy, part, path):
         PhysicsObject.__init__(self, x, y, path)
 
-        self.dx = dx
-        self.dy = dy
-        self.play(part, 0)
-        self.bounce = 0.5
-        self.friction = 0.5 * helpers.SCALE
-
-    def update(self, room):
-        PhysicsObject.update(self, room)
-        if math.hypot(self.dx, self.dy) > 0.5 * helpers.SCALE:
-            self.animate()
 
 
 class Gib(PhysicsObject):

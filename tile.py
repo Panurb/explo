@@ -6,7 +6,7 @@ import physicsobject
 
 class Wall(gameobject.GameObject):
     def __init__(self, x, y, path):
-        gameobject.GameObject.__init__(self, x, y, helpers.TILE_SIZE, helpers.TILE_SIZE, [path])
+        super().__init__(x, y, helpers.TILE_SIZE, helpers.TILE_SIZE, [path])
         self.index = 0
         for s in self.sprites:
             s.show_frame('idle', self.index)
@@ -123,28 +123,3 @@ class Destroyable(Wall):
     def draw(self, screen, img_hand):
         Wall.draw(self, screen, img_hand)
         self.debris.draw(screen, img_hand)
-
-
-class Platform(gameobject.PhysicsObject):
-    def __init__(self, x, y, vertical=False):
-        gameobject.PhysicsObject.__init__(self, x, y, 3 * helpers.TILE_SIZE, helpers.TILE_SIZE, 0, 0, ['platform'])
-        self.destroyed = False
-        self.gravity_scale = 0
-        self.bounce_scale = 1
-        self.vertical = vertical
-        self.friction = 0.125 * helpers.SCALE
-        self.slide_speed = 0.25 * helpers.SCALE
-        if self.vertical:
-            self.dy = 0.5 * helpers.SCALE
-        else:
-            self.dx = 0.5 * helpers.SCALE
-        self.spawn_x = x
-        self.spawn_y = y
-
-    def reset(self):
-        self.x = self.spawn_x
-        self.y = self.spawn_y
-        if self.vertical:
-            self.dy = 0.5 * helpers.SCALE
-        else:
-            self.dx = 0.5 * helpers.SCALE
