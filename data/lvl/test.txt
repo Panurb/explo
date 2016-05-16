@@ -28,8 +28,8 @@ RRRRRRRRRRRRRRRRRRRR
 --------------------
 ---------------h----
 --------------------
-RRRRRRRRRRRRRRIIIIRR
-RRRRRRRRRRRRRRRRRRRR
+RRR~~~~~~RRRRRIIIIRR
+RRR======RRRRRRRRRRR
 RRRRRRRRRRRRRRRRRRRR
 
 (0, 0)
@@ -40,11 +40,11 @@ R-------------------
 R-------------------
 R-------------------
 R-------------------
-RR------------------
-RR------------------
-RR------------------
-RR--C---------------
-RRR-----0356----RR--
+RR#-----------------
+RR#-----------------
+RR#-----------------
+RR#-C---------------
+RRR-----035624--RR--
 RRRRRRRRRRRRRRRRRRRR
 RRRRRRRRRRRRRRRRRRRR
 RRRRRRRRRRRRRRRRRRRR

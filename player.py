@@ -4,7 +4,6 @@ import random
 import pygame
 
 import bullet
-import enemy
 import gameobject
 import helpers
 import hud
@@ -26,6 +25,8 @@ LADDER_SPEED = 0.75 * helpers.SCALE
 AIR_ACCELERATION = 0.125 * helpers.SCALE
 WEAPON_COOLDOWN = 8
 BULLET_SPEED = 4 * helpers.SCALE
+WATER_SPEED = 0.5 * helpers.SCALE
+WATER_FRICTION = 0.125 * helpers.SCALE
 
 
 class WeaponMod(enum.Enum):
@@ -68,24 +69,29 @@ class Player(livingobject.LivingObject):
         self.cooldown = WEAPON_COOLDOWN
         self.weapon_mods = {}
         for w in WeaponMod:
-            self.weapon_mods[w] = True
+            self.weapon_mods[w] = False
 
         self.bullets = []
 
         self.abilities = {}
         for a in Ability:
-            self.abilities[a] = True
+            self.abilities[a] = False
 
         self.save = save.Save(self.x, self.y, self.room_x, self.room_y,
                               self.direction, self.abilities)
 
-        self.txtbox = textbox.Textbox('', 0.5 * helpers.SCREEN_WIDTH, 4 * helpers.SCALE)
+        self.txtbox = textbox.Textbox('', 0.5 * helpers.SCREEN_WIDTH,
+                                      4 * helpers.SCALE)
         self.map = hud.Map(level)
 
     def update(self, room):
+        self.apply_water(room)
         super().update(room)
 
         self.apply_wall_hugging(room)
+        self.apply_ladders(room)
+
+        self.txtbox.update()
 
         self.cooldown = max(0, self.cooldown - 1)
 
@@ -97,6 +103,53 @@ class Player(livingobject.LivingObject):
                 self.bullets.remove(b)
 
         self.apply_room_change()
+
+    def move_y(self, room):
+        super().move_y(room)
+
+        if not self.climbing_ladder:
+            for l in room.ladders:
+                if not l.top or not l.collider.colliderect(self.collider):
+                    continue
+
+                if self.dy > 0 and \
+                        self.collider.bottom - self.dy <= l.collider.top:
+                    width = 2 * helpers.SCALE
+                    self.friction = 0.125 * helpers.SCALE
+                    if not self.crouched:
+                        self.collider.bottom = l.collider.top
+                        self.y = self.collider.y
+                        self.ground_collision = True
+                        self.dy = 0
+                    elif not l.collider.colliderect(
+                            pygame.Rect(self.collider.centerx - width / 2,
+                                        self.collider.top, width,
+                                        self.collider.height)):
+                        self.collider.bottom = l.collider.top
+                        self.y = self.collider.y
+                        self.ground_collision = True
+                        self.dy = 0
+
+    def apply_ladders(self, room):
+        collided = False
+        for l in room.ladders:
+            width = 2 * helpers.SCALE
+            if l.collider.colliderect(
+                    pygame.Rect(self.collider.centerx - width / 2,
+                                self.collider.top, width,
+                                self.collider.height)):
+                collided = True
+        if not collided:
+            self.climbing_ladder = False
+
+        if self.ground_collision:
+            self.jump_count = 0
+            if self.dy <= 0:
+                self.climbing_ladder = False
+
+        if self.climbing_ladder:
+            if not self.looking_up and not self.sliding:
+                self.dy = 0
 
     def draw(self, screen, img_hand):
         for s in self.sprites:
@@ -114,14 +167,18 @@ class Player(livingobject.LivingObject):
         if self.show_map:
             self.map.draw(screen, img_hand, self.room_x, self.room_y)
 
+        self.txtbox.draw(screen, img_hand)
+
     def apply_wall_hugging(self, room):
         collider = pygame.Rect(self.collider.left - 1, self.collider.y,
                                self.collider.width + 2,
                                self.collider.height / 2)
+
         collisions = self.get_collisions(room, collider)
+        collisions = [c for c in collisions if c.collision_enabled]
 
         for c in collisions:
-            if type(c) is not enemy.Enemy:
+            if isinstance(c, tile.Wall):
                 self.speed_wall = c.slide_speed
 
             if self.dy > 0:
@@ -147,27 +204,28 @@ class Player(livingobject.LivingObject):
             if keys_down[pygame.K_RIGHT]:
                 self.moving = True
                 self.uncrouch(room)
-                if self.abilities[Ability.run] and not keys_down[
-                        pygame.K_LSHIFT]:
+                if self.abilities[Ability.run] and \
+                        not keys_down[pygame.K_LSHIFT]:
                     self.move(RUN_SPEED)
                 else:
                     self.move(WALK_SPEED)
             if keys_down[pygame.K_LEFT]:
                 self.moving = True
                 self.uncrouch(room)
-                if self.abilities[Ability.run] and not keys_down[
-                        pygame.K_LSHIFT]:
+                if self.abilities[Ability.run] and \
+                        not keys_down[pygame.K_LSHIFT]:
                     self.move(-RUN_SPEED)
                 else:
                     self.move(-WALK_SPEED)
             if keys_down[pygame.K_UP]:
                 self.looking_up = True
-                # self.climb(-self.speed['ladder'], room)
+                self.climb(room, -LADDER_SPEED)
             if keys_down[pygame.K_DOWN]:
                 self.sliding = True
-                if not keys_down[pygame.K_LEFT] and not keys_down[pygame.K_RIGHT]:
+                if not keys_down[pygame.K_LEFT] and \
+                        not keys_down[pygame.K_RIGHT]:
                     self.crouch()
-                # self.climb(self.speed['ladder'], room)
+                    self.climb(room, LADDER_SPEED)
             if keys_down[pygame.K_a]:
                 self.jump()
             if not keys_down[pygame.K_a]:
@@ -238,6 +296,24 @@ class Player(livingobject.LivingObject):
             self.jump_count = 2
             self.jump_buffer = False
 
+    def climb(self, room, speed):
+        collider = pygame.sprite.Sprite()
+        width = 2 * helpers.SCALE
+        collider.rect = pygame.Rect(self.collider.centerx - width / 2,
+                                    self.collider.top, width,
+                                    self.collider.height)
+
+        for l in room.ladders:
+            if l.collider.colliderect(self.collider):
+                self.climbing_ladder = True
+                self.collider.centerx = l.collider.centerx
+                self.x = self.collider.x
+                self.dx = 0
+                break
+
+        if self.climbing_ladder:
+            self.dy = speed
+
     def reset(self, room):
         room.reset()
         self.base_dx = self.base_dy = 0
@@ -303,6 +379,27 @@ class Player(livingobject.LivingObject):
 
             self.x = self.collider.x
             self.y = self.collider.y
+
+    def give_powerup(self, p):
+        if self.abilities[p.ability] is False:
+            self.abilities[p.ability] = True
+            self.txtbox.set_string(
+                    p.ability.name.upper() + '\\' + p.text)
+            self.txtbox.time = 120
+            if p.ability.name in self.weapon_mods:
+                self.weapon_mods[p.ability.name] = True
+
+    def apply_water(self, room):
+        for w in room.water:
+            if self.collider.colliderect(w.collider):
+                if not self.abilities[Ability.rebreather]:
+                    self.die()
+
+                self.dx = min(self.dx, WATER_SPEED)
+                self.dx = max(self.dx, -WATER_SPEED)
+
+                if self.dy > WATER_SPEED:
+                    self.dy = max(WATER_SPEED, self.dy - WATER_FRICTION)
 
     def animate(self):
         sprite_body = self.sprites[0]
@@ -386,6 +483,7 @@ class Player(livingobject.LivingObject):
                     sprite_legs.play_once('jump', 0)
                 elif self.dy > 1 * helpers.SCALE:
                     sprite_legs.play_once('jump', 1)
+                    sprite_legs.play_once('jump', 1)
                 else:
                     sprite_legs.play_once('jump', 2)
         else:
@@ -437,14 +535,16 @@ class Player(livingobject.LivingObject):
             if self.weapon_mods[WeaponMod.gravity]:
                 grav = 1
             self.bullets.append(
-                bullet.Bullet(x, y, BULLET_SPEED, angle + spread, grav))
+                    bullet.Bullet(x, y, BULLET_SPEED, angle + spread, grav))
             if self.weapon_mods[WeaponMod.triple]:
                 self.bullets.append(
-                    bullet.Bullet(x, y, BULLET_SPEED, angle + 22.5 + spread,
-                                  grav))
+                        bullet.Bullet(x, y, BULLET_SPEED,
+                                      angle + 22.5 + spread,
+                                      grav))
                 self.bullets.append(
-                    bullet.Bullet(x, y, BULLET_SPEED, angle - 22.5 + spread,
-                                  grav))
+                        bullet.Bullet(x, y, BULLET_SPEED,
+                                      angle - 22.5 + spread,
+                                      grav))
 
             if not self.weapon_mods[WeaponMod.rapid]:
                 self.attack_buffer = False

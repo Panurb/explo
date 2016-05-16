@@ -22,17 +22,18 @@ class ButtonType(enum.Enum):
 
 class Menu:
     def __init__(self):
-        self.buttons = animatedsprite.Group()
+        self.buttons = []
         self.state = None
 
     def add_button(self, x, y, button_type, text=''):
-        self.buttons.add(Button(x * helpers.TILE_SIZE, y * helpers.TILE_SIZE, button_type, text))
+        self.buttons.append(Button(x * helpers.TILE_SIZE, y * helpers.TILE_SIZE, button_type, text))
 
     def draw(self, screen, img_hand):
-        self.buttons.draw(screen, img_hand)
+        for b in self.buttons:
+            b.draw(screen, img_hand)
 
     def input(self, input_hand):
-        for b in self.buttons.sprites():
+        for b in self.buttons:
             if b.rect.collidepoint(input_hand.mouse_x, input_hand.mouse_y):
                 if input_hand.mouse_released[1]:
                     return b.press()
@@ -85,7 +86,7 @@ class LevelSelectMenu(Menu):
         Menu.draw(self, screen, img_hand)
 
     def input(self, input_hand):
-        for b in self.buttons.sprites():
+        for b in self.buttons:
             if b.rect.collidepoint(input_hand.mouse_x, input_hand.mouse_y):
                 if input_hand.mouse_released[1]:
                     if b.type is ButtonType.level:
@@ -116,7 +117,7 @@ class EditorSelectMenu(Menu):
         Menu.draw(self, screen, img_hand)
 
     def input(self, input_hand):
-        for b in self.buttons.sprites():
+        for b in self.buttons:
             if b.rect.collidepoint(input_hand.mouse_x, input_hand.mouse_y):
                 if input_hand.mouse_released[1]:
                     if b.type is ButtonType.edit:

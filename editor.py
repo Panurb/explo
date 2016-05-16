@@ -2,11 +2,17 @@ import pygame
 import helpers
 import textbox
 
-OBJECTS = ['W', 'G', 'R', 'M', 'I', 'P', 'V', 'D', '#', '~', '=', 'C', '*', 'c', 'z', 's', 'f', 'h', '0', '1', '2', '3',
+OBJECTS = ['W', 'G', 'R', 'M', 'I', 'P', 'V', 'F', 'D', '#', '~', '=', 'C',
+           '*',
+           'c', 'z', 's', 'f', 'h', '0', '1', '2', '3',
            '4', '5', '6', '7']
-OBJECT_NAMES = ['WALL', 'GROUND', 'ROCK', 'METAL', 'ICE', 'PLATFORM', 'VERTICAL PLATFORM', 'DESTROYABLE', 'LADDER',
-                'SURFACE', 'WATER', 'CHECKPOINT', 'THORNS', 'CRAWLER', 'ZOMBIE', 'SPAWNER', 'FLYER', 'CHARGER', 'RUN',
-                'DOUBLE JUMP', 'WALL JUMP', 'GUN', 'REBREATHER', 'FULL AUTO', 'SPREAD', 'GRAVITY']
+OBJECT_NAMES = ['WALL', 'GROUND', 'ROCK', 'METAL', 'ICE', 'PLATFORM',
+                'VERTICAL PLATFORM', 'FALLING PLATFORM', 'DESTROYABLE',
+                'LADDER',
+                'SURFACE', 'WATER', 'CHECKPOINT', 'THORNS', 'CRAWLER',
+                'ZOMBIE', 'SPAWNER', 'FLYER', 'CHARGER', 'RUN',
+                'DOUBLE JUMP', 'WALL JUMP', 'GUN', 'REBREATHER', 'FULL AUTO',
+                'SPREAD', 'GRAVITY']
 
 
 class Editor:
@@ -14,7 +20,8 @@ class Editor:
         self.room_x = x
         self.room_y = y
         self.object = 0
-        self.text = textbox.Textbox(OBJECT_NAMES[self.object], 0.5 * helpers.SCREEN_WIDTH, 0)
+        self.text = textbox.Textbox(OBJECT_NAMES[self.object],
+                                    0.5 * helpers.SCREEN_WIDTH, 0)
 
     def input(self, lvl, input_hand):
         room = lvl.room(self.room_x, self.room_y)
@@ -34,13 +41,15 @@ class Editor:
             room.remove_object(x, y)
             room.update_visuals()
 
-        if input_hand.mouse_pressed[4] or input_hand.keys_pressed[pygame.K_COMMA]:
+        if input_hand.mouse_pressed[4] or input_hand.keys_pressed[
+            pygame.K_COMMA]:
             if self.object > 0:
                 self.object -= 1
             else:
                 self.object = len(OBJECTS) - 1
 
-        if input_hand.mouse_pressed[5] or input_hand.keys_pressed[pygame.K_PERIOD]:
+        if input_hand.mouse_pressed[5] or input_hand.keys_pressed[
+            pygame.K_PERIOD]:
             if self.object < len(OBJECTS) - 1:
                 self.object += 1
             else:

@@ -54,7 +54,8 @@ class Wall(gameobject.GameObject):
 
 class Ladder(gameobject.GameObject):
     def __init__(self, x, y):
-        gameobject.GameObject.__init__(self, x, y, helpers.TILE_SIZE, helpers.TILE_SIZE, ['ladder'])
+        gameobject.GameObject.__init__(self, x, y, helpers.TILE_SIZE,
+                                       helpers.TILE_SIZE, ['ladder'])
         self.top = True
         self.destroyed = False
 
@@ -62,7 +63,8 @@ class Ladder(gameobject.GameObject):
         self.top = True
         if self.collider.y > 0:
             for l in room.ladders:
-                if l.collider.x == self.collider.x and l.collider.y == self.collider.y - helpers.TILE_SIZE:
+                if l.collider.x == self.collider.x and \
+                        l.collider.y == self.collider.y - helpers.TILE_SIZE:
                     self.top = False
                     break
 
@@ -70,7 +72,8 @@ class Ladder(gameobject.GameObject):
 class Spike(Wall):
     def __init__(self, x, y, index):
         Wall.__init__(self, x, y, 'thorns')
-        self.show_frame('idle', index)
+        for s in self.sprites:
+            s.show_frame('idle', index)
         self.path = 'spike'
 
 
@@ -100,7 +103,7 @@ class Destroyable(Wall):
     def __init__(self, x, y):
         Wall.__init__(self, x, y, 'destroyable')
         self.destroyed = False
-        self.debris = animatedsprite.Group()
+        self.debris = []
 
     def update(self, room):
         if not self.destroyed:
@@ -109,17 +112,29 @@ class Destroyable(Wall):
             self.play('explode')
             self.debris.update(room)
 
+    def animate(self):
+        for s in self.sprites:
+            if not self.destroyed:
+                s.play('idle')
+            else:
+                s.play('explode')
+
     def destroy(self):
-        self.debris.add(physicsobject.Debris(self.rect.x, self.rect.y, 5, 5, 'idle', 'destroyable_debris'))
-        self.debris.add(physicsobject.Debris(self.rect.x, self.rect.y, 5, -5, 'idle', 'destroyable_debris'))
-        self.debris.add(physicsobject.Debris(self.rect.x, self.rect.y, -5, 5, 'idle', 'destroyable_debris'))
-        self.debris.add(physicsobject.Debris(self.rect.x, self.rect.y, -5, -5, 'idle', 'destroyable_debris'))
+        self.debris.append(physicsobject.Debris(self.x, self.y, 5, 5, 'idle',
+                                                'destroyable_debris'))
+        self.debris.append(physicsobject.Debris(self.x, self.y, 5, -5, 'idle',
+                                                'destroyable_debris'))
+        self.debris.append(physicsobject.Debris(self.x, self.y, -5, 5, 'idle',
+                                                'destroyable_debris'))
+        self.debris.append(physicsobject.Debris(self.x, self.y, -5, -5, 'idle',
+                                                'destroyable_debris'))
         self.destroyed = True
 
     def reset(self):
         self.destroyed = False
-        self.debris.empty()
+        self.debris.clear()
 
     def draw(self, screen, img_hand):
         Wall.draw(self, screen, img_hand)
-        self.debris.draw(screen, img_hand)
+        for d in self.debris:
+            d.draw(screen, img_hand)

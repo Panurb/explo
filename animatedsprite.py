@@ -104,21 +104,3 @@ class AnimatedSprite(pygame.sprite.Sprite):
             self.dir = Direction.left
         else:
             self.dir = Direction.right
-
-
-class Group(pygame.sprite.Group):
-    def draw(self, screen, img_hand):
-        for spr in self.sprites():
-            spr.draw(screen, img_hand)
-
-    def update(self, room):
-        for spr in self.sprites():
-            spr.update(room)
-
-    def animate(self):
-        for spr in self.sprites():
-            spr.animate()
-
-    def reset(self):
-        for spr in self.sprites():
-            spr.reset()

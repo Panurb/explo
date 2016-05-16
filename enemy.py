@@ -1,13 +1,10 @@
-import animatedsprite
 import bullet
 import gameobject
 import helpers
 import livingobject
-import physicsobject
 import random
 
 import tile
-from player_old import Direction
 import math
 
 
@@ -18,21 +15,19 @@ class Enemy(livingobject.LivingObject):
         self.spawn_x = x
         self.spawn_y = y
         self.alive = True
-        self.projectiles = []
+        self.bullets = []
         for s in self.sprites:
             s.play('idle')
         self.max_health = health
         self.health = self.max_health
         self.sees_player = False
+        self.vision = gameobject.GameObject(0, 0, 0, 0)
 
     def reset(self):
-        self.x = self.spawn_x
-        self.y = self.spawn_y
-        self.dx = 0
-        self.dy = 0
+        super().reset()
         self.alive = True
         self.gibs.clear()
-        self.projectiles.clear()
+        self.bullets.clear()
         self.health = self.max_health
 
     def die(self):
@@ -43,7 +38,7 @@ class Enemy(livingobject.LivingObject):
         y = self.y + y * helpers.SCALE
         dx *= helpers.SCALE
         dy *= helpers.SCALE
-        self.gibs.add(physicsobject.Gib(x, y, dx, dy, part, path))
+        self.gibs.append(livingobject.Gib(x, y, dx, dy, part, path))
 
     def on_edge(self, room):
         if not self.ground_collision:
@@ -74,7 +69,7 @@ class Enemy(livingobject.LivingObject):
                 collider.collider.width = width
 
             for c in collider.get_collisions(room):
-                if c.obj is not player:
+                if c is not player and c is not self:
                     self.sees_player = False
                     break
             else:
@@ -88,26 +83,27 @@ class Enemy(livingobject.LivingObject):
                 if type(c.obj) is tile.Spike:
                     self.damage(-self.dx, -self.dy)
 
-        for p in self.projectiles:
+        for p in self.bullets:
             p.update(room)
 
         self.animate()
 
     def animate(self):
-        pass
+        for s in self.sprites:
+            s.animate()
 
     def apply_friction(self):
         pass
 
     def draw(self, screen, img_hand):
         super().draw(screen, img_hand)
-        for p in self.projectiles:
+        for p in self.bullets:
             p.draw(screen, img_hand)
 
 
 class Crawler(Enemy):
     def __init__(self, x, y):
-        super().__init__(x, y, 8 * helpers.SCALE, 8 * helpers.SCALE, 1,
+        super().__init__(x, y, 8 * helpers.SCALE, 8 * helpers.SCALE, 5,
                          ['crawler'])
 
         self.speed = 0.25 * helpers.SCALE
@@ -121,10 +117,14 @@ class Crawler(Enemy):
         if self.alive:
             if self.wall_collision or self.on_edge(room):
                 self.speed = -self.speed
-            for s in self.sprites:
+
+    def animate(self):
+        super().animate()
+
+        for s in self.sprites:
+            if self.alive:
                 s.play('idle')
-        else:
-            for s in self.sprites:
+            else:
                 s.play_once('die')
 
     def die(self):
@@ -134,49 +134,47 @@ class Crawler(Enemy):
             self.add_shrapnel(0, -3.75)
             self.add_shrapnel(0.75, -3.5)
             self.add_shrapnel(1.25, -3)
+
+            self.dx = 0
+            self.dy = 0
             self.alive = False
 
     def add_shrapnel(self, dx, dy):
         dx = random.uniform(dx - 1, dx + 1) * helpers.SCALE
         dy = dy * helpers.SCALE
-        self.projectiles.append(Shrapnel(self.x, self.y, dx, dy))
+        self.bullets.append(Shrapnel(self.x, self.y, dx, dy))
 
     def reset(self):
         super().reset()
         self.speed = 0.25 * helpers.SCALE
 
 
-class Shrapnel(physicsobject.Gib):
+class Shrapnel(livingobject.Gib):
     def __init__(self, x, y, dx, dy):
-        physicsobject.Gib.__init__(self, x, y, dx, dy, 'idle', 'crawler')
-        self.play_once('shrapnel')
-        self.animate()
+        super().__init__(x, y, dx, dy, 'idle', 'crawler')
+        for s in self.sprites:
+            s.play_once('shrapnel')
 
-        self.rect.width = 8 * helpers.SCALE
-        self.rect.height = 8 * helpers.SCALE
+        self.collider.width = 8 * helpers.SCALE
+        self.collider.height = 8 * helpers.SCALE
         self.dx = dx
         self.dy = dy
         self.collision = False
 
-    def update(self, room):
-        physicsobject.Gib.update(self, room)
-        if helpers.outside_screen(self.rect) and not self.trail:
-            self.kill()
-
 
 class Zombie(Enemy):
     def __init__(self, x, y):
-        Enemy.__init__(self, x, y, 5, ['zombie'])
+        super().__init__(self, x, y, 5, ['zombie'])
 
-        self.rect.height = 16 * helpers.SCALE
+        self.collider.height = 16 * helpers.SCALE
         self.speed = 0.25 * helpers.SCALE
-        self.gibs = animatedsprite.Group()
         self.cooldown = 0
-        self.play('armored')
+        for s in self.sprites:
+            s.play('armored')
         self.bullet_speed = 2 * helpers.SCALE
 
     def update(self, room):
-        if self.alive and self.grounded and not self.projectiles:
+        if self.alive and self.ground_collision and not self.bullets:
             self.dx = self.speed
         else:
             self.dx = 0
@@ -184,44 +182,47 @@ class Zombie(Enemy):
         Enemy.update(self, room)
 
         if self.alive:
-            if self.walled or self.on_edge(room):
+            if self.wall_collision or self.on_edge(room):
                 self.speed = -self.speed
                 self.flip()
 
         self.animate()
 
     def animate(self):
-        if self.alive:
-            if self.dx == 0:
-                self.pause()
+        for s in self.sprites:
+            if self.alive:
+                if self.dx == 0:
+                    s.pause()
+                else:
+                    s.play('armored')
             else:
-                self.play('armored')
-        else:
-            self.play_once('die')
+                s.play_once('die')
 
-    def see_player(self, player, room):
-        Enemy.see_player(self, player, room)
+    def see_player(self, room):
+        super().see_player(room)
+        player = room.level.player
 
         if self.sees_player and self.cooldown == 0:
             self.cooldown = 30
-            if player.rect.x > self.rect.x:
-                if self.dir is Direction.left:
+            if player.collider.x > self.collider.x:
+                if self.direction is gameobject.Direction.left:
                     self.flip()
-                x = self.rect.x + 8 * helpers.SCALE
-                y = self.rect.y + 2 * helpers.SCALE
-                self.projectiles.add(bullet.Bullet(x, y, self.bullet_speed, 0))
-            elif player.rect.x < self.rect.x:
-                if self.dir is Direction.right:
+                x = self.collider.x + 8 * helpers.SCALE
+                y = self.collider.y + 2 * helpers.SCALE
+                self.bullets.append(
+                        bullet.Bullet(x, y, self.bullet_speed, 0))
+            elif player.rect.x < self.collider.x:
+                if self.direction is gameobject.Direction.right:
                     self.flip()
-                x = self.rect.x - 8 * helpers.SCALE
-                y = self.rect.y + 2 * helpers.SCALE
-                self.projectiles.add(
+                x = self.collider.x - 8 * helpers.SCALE
+                y = self.collider.y + 2 * helpers.SCALE
+                self.bullets.append(
                         bullet.Bullet(x, y, -self.bullet_speed, 0))
         elif self.cooldown > 0:
             self.cooldown -= 1
 
-    def damage(self, dx, dy):
-        Enemy.damage(self, dx, dy)
+    def damage(self, amt, dx=0, dy=0):
+        super().damage(amt, dx, dy)
         # path = 'zombie_gibs'
         # if self.armored:
         #     self.armored = False
@@ -237,7 +238,7 @@ class Zombie(Enemy):
     def die(self):
         Enemy.die(self)
         path = 'zombie_gibs'
-        if self.dir is Direction.right:
+        if self.direction is gameobject.Direction.right:
             self.add_gib(0, -4, 0.5, -2.5, 'head', path)
         else:
             self.add_gib(0, -4, 0.5, -2.5, 'head', path)
@@ -247,33 +248,31 @@ class Zombie(Enemy):
     def reset(self):
         Enemy.reset(self)
         self.speed = 0.25 * helpers.SCALE
-        if self.dir is Direction.left:
+        if self.direction is gameobject.Direction.left:
             self.flip()
 
 
 class Flyer(Enemy):
     def __init__(self, x, y):
-        Enemy.__init__(self, x, y, -1, 'flyer')
+        Enemy.__init__(self, x, y, helpers.TILE_SIZE, helpers.TILE_SIZE, 1,
+                       'flyer')
         self.speed = 0.5 * helpers.SCALE
         self.dx = self.speed
-        self.gravity = False
+        self.gravity_scale = 0
         self.bounce = 1
 
     def update(self, room):
         Enemy.update(self, room)
 
-        if self.walled:
+        if self.wall_collision:
             self.dy = self.dx
             self.dx = 0
-        if self.grounded:
+        if self.ground_collision:
             self.dx = -self.dy
             self.dy = 0
-        if self.ceilinged:
+        if self.ceiling_collision:
             self.dx = -self.dy
             self.dy = 0
-
-    def damage(self, dx, dy):
-        pass
 
     def reset(self):
         Enemy.reset(self)
@@ -289,9 +288,9 @@ class Spawner(Enemy):
         self.cooldown = 0
 
     def update(self, room):
-        Enemy.update(self, room)
-        if self.alive and len(self.projectiles) < 3 and self.cooldown == 60:
-            self.projectiles.append(
+        super().update(room)
+        if self.alive and len(self.bullets) < 3 and self.cooldown == 60:
+            self.bullets.append(
                     Chaser(self.collider.x + 0.25 * self.collider.width,
                            self.collider.y + 0.25 * self.collider.height))
             self.cooldown = 0
@@ -300,7 +299,7 @@ class Spawner(Enemy):
             self.cooldown += 1
 
     def chase(self, player):
-        for c in self.projectiles.sprites():
+        for c in self.bullets:
             c.chase(player)
 
     def die(self):
@@ -309,7 +308,7 @@ class Spawner(Enemy):
             s.play_once('die')
 
     def reset(self):
-        Enemy.reset(self)
+        super().reset()
         for s in self.sprites:
             s.play('idle')
         self.cooldown = 0
@@ -320,25 +319,30 @@ class Chaser(Enemy):
         super().__init__(x, y, 8 * helpers.SCALE, 8 * helpers.SCALE, 1,
                          ['chaser'])
         self.gravity_scale = 0
-        self.collision = False
+        self.collision_enabled = False
         self.speed = 0.25 * helpers.SCALE
-        for s in self.sprites:
-            s.show_frame('idle', 0)
 
     def update(self, room):
         super().update(room)
+
         if self.collisions:
             self.speed = 0.1 * helpers.SCALE
         else:
             self.speed = 0.25 * helpers.SCALE
 
-        rotation = helpers.rotation(self.dx, self.dy)
         if self.alive:
             self.chase(room)
-            for s in self.sprites:
-                s.show_frame('idle', int((rotation / 360) * 8))
         elif self.sprites[0].animation_finished:
             pass
+
+    def animate(self):
+        if self.alive:
+            rotation = helpers.rotation(self.dx, self.dy)
+            for s in self.sprites:
+                s.show_frame('idle', int((rotation / 360) * 8))
+        else:
+            for s in self.sprites:
+                s.play_once('die')
 
     def chase(self, room):
         player = room.level.player
@@ -347,7 +351,7 @@ class Chaser(Enemy):
             x = player.x - self.x
             y = player.y - self.y
             distance = math.hypot(x, y)
-            if distance > 0:
+            if distance > 1 * helpers.SCALE:
                 self.dx = (x / distance) * self.speed
                 self.dy = (y / distance) * self.speed
             else:
@@ -357,13 +361,8 @@ class Chaser(Enemy):
             self.dx = 0
             self.dy = 0
 
-    def reset(self):
-        Enemy.reset(self)
-
     def die(self):
-        Enemy.die(self)
-        for s in self.sprites:
-            s.play_once('die')
+        super().die()
         self.dx = 0
         self.dy = 0
 
@@ -372,8 +371,6 @@ class Charger(Enemy):
     def __init__(self, x, y):
         super().__init__(x, y, 16 * helpers.SCALE, 16 * helpers.SCALE, 6,
                          ['charger'])
-        for s in self.sprites:
-            s.play('idle')
         self.speed = 1 * helpers.SCALE
         self.goal_dx = 0
 
@@ -392,18 +389,27 @@ class Charger(Enemy):
                     self.dx -= acceleration
                 elif self.goal_dx > self.dx:
                     self.dx += acceleration
-                for s in self.sprites:
+
+    def animate(self):
+        super().animate()
+        for s in self.sprites:
+            if self.alive:
+                if self.goal_dx != 0:
                     s.play('charge')
-            else:
-                for s in self.sprites:
+                else:
                     s.play('idle')
+            else:
+                s.play_once('die')
 
     def die(self):
+        if self.alive:
+            self.add_gib(0, 0, -1, -2, 'left', 'charger_gibs')
+            self.add_gib(0, 0, 1, -2, 'right', 'charger_gibs')
+        self.goal_dx = 0
+        # FIXME: purk fix
+        self.dx = 0
+        self.dy = 0
         super().die()
-        self.add_gib(0, 0, -1, -2, 'left', 'charger_gibs')
-        self.add_gib(0, 0, 1, -2, 'right', 'charger_gibs')
-        for s in self.sprites:
-            s.play_once('die')
 
     def see_player(self, room):
         super().see_player(room)
@@ -412,11 +418,11 @@ class Charger(Enemy):
 
         if self.sees_player:
             if player.x > self.x:
-                if self.direction is Direction.left:
+                if self.direction is gameobject.Direction.left:
                     self.flip()
                 self.goal_dx = self.speed
             elif player.x < self.x:
-                if self.direction is Direction.right:
+                if self.direction is gameobject.Direction.right:
                     self.flip()
                 self.goal_dx = -self.speed
 

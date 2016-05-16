@@ -107,18 +107,20 @@ class Gib(PhysicsObject):
         self.collision = True
         self.bounce = 0.5
         self.friction = 0.75 * helpers.SCALE
-        self.trail = animatedsprite.Group()
+        self.trail = []
 
     def update(self, room):
         PhysicsObject.update(self, room)
         if not helpers.outside_screen(self.rect) and math.hypot(self.dx, self.dy) > 0.5 * helpers.SCALE:
             particle = Particle(self.rect.x, self.rect.y, 0, 0, 'blood', False)
-            self.trail.add(particle)
+            self.trail.append(particle)
             self.animate()
-        self.trail.update(room)
+        for t in self.trail:
+            t.update(room)
 
     def draw(self, screen, img_hand):
-        self.trail.draw(screen, img_hand)
+        for t in self.trail:
+            t.draw(screen, img_hand)
         PhysicsObject.draw(self, screen, img_hand)
 
 

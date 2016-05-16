@@ -24,6 +24,14 @@ class Bullet(gameobject.PhysicsObject):
         for s in self.sprites:
             s.play('idle', 0)
 
+    def get_collisions(self, room, collider=None):
+        collisions = super().get_collisions(room)
+        for c in collisions:
+            if c is room.level.player:
+                collisions.remove(c)
+
+        return collisions
+
     def update(self, room):
         super().update(room)
 
@@ -38,12 +46,12 @@ class Bullet(gameobject.PhysicsObject):
                 if type(c.obj) is tile.Destroyable:
                     c.destroy()
 
-                if type(c.obj) is enemy.Enemy:
-                    c.damage(1, 0, 0)
+                if isinstance(c.obj, enemy.Enemy):
+                    c.obj.damage(1, 0, 0)
                     self.destroy('blood', vert)
-                    for p in c.obj.projectiles:
+                    for p in c.obj.bullets:
                         if p.alive:
-                            p.die()
+                            c.obj.bullets.remove(p)
                             self.destroy('blood', vert)
                 else:
                     self.destroy('spark', vert)

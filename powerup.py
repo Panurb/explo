@@ -1,5 +1,6 @@
 from enum import Enum
-import animatedsprite
+import gameobject
+import helpers
 
 
 class Ability(Enum):
@@ -20,24 +21,41 @@ TEXTS = {
 }
 
 
-class Powerup(animatedsprite.AnimatedSprite):
+class Powerup(gameobject.GameObject):
     def __init__(self, x, y, ability):
-        animatedsprite.AnimatedSprite.__init__(self, 'powerup')
+        super().__init__(x, y, 8 * helpers.SCALE, 8 * helpers.SCALE,
+                         ['powerup'])
 
-        self.rect.x = x
-        self.rect.y = y
+        self.collider.x = x
+        self.collider.y = y
+        self.collision_enabled = False
         self.ability = ability
         self.visible = True
-        self.play('idle')
 
         try:
             self.text = TEXTS[self.ability]
         except KeyError:
             self.text = ''
 
+    def update(self, room):
+        self.animate()
+
+        if room.level.player.abilities[self.ability]:
+            self.visible = False
+        else:
+            self.visible = True
+
+        player = room.level.player
+        if self.collider.colliderect(player.collider):
+            player.give_powerup(self)
+
+    def animate(self):
+        for s in self.sprites:
+            s.play('idle')
+
     def draw(self, screen, img_hand):
         if self.visible:
-            animatedsprite.AnimatedSprite.draw(self, screen, img_hand)
+            super().draw(screen, img_hand)
 
     def reset(self):
         self.visible = True

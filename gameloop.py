@@ -35,9 +35,12 @@ class GameLoop:
         self.level_name = ''
         self.level = None
         self.editor = None
-        self.clock_text = textbox.Textbox('', helpers.SCREEN_WIDTH - 0.5 * helpers.TILE_SIZE, 0)
+        self.clock_text = textbox.Textbox(
+            '', helpers.SCREEN_WIDTH - 0.5 * helpers.TILE_SIZE, 0)
 
         self.state = State.menu
+
+        self.debug_enabled = True
 
     def update(self, clock):
         self.input_hand.update()
@@ -71,6 +74,9 @@ class GameLoop:
 
             self.level.draw(self.screen, self.img_hand)
 
+            if self.debug_enabled:
+                self.level.debug_draw(self.screen)
+
             # Done after drawing to avoid visual glitches on room change
             if (self.level.player.room_x, self.level.player.room_y) != last_room:
                 self.level.rooms[last_room].reset()
@@ -79,11 +85,14 @@ class GameLoop:
                 if self.editor_select_menu.level_name != '':
                     self.level = level.Level(self.editor_select_menu.level_name)
                 else:
-                    self.level = level.Level(self.level_creation_menu.input_name.txtbox.string)
-                self.editor = editor.Editor(self.level.player.room_x, self.level.player.room_y)
+                    self.level = level.Level(
+                            self.level_creation_menu.input_name.txtbox.string)
+                self.editor = editor.Editor(
+                        self.level.player.room_x, self.level.player.room_y)
             try:
                 self.editor.input(self.level, self.input_hand)
-                self.level.room(self.editor.room_x, self.editor.room_y).draw(self.screen, self.img_hand)
+                self.level.room(self.editor.room_x,
+                                self.editor.room_y).draw(self.screen, self.img_hand)
             except KeyError:
                 room = level.Room([], self.editor.room_x, self.editor.room_y)
                 self.level.rooms[(self.editor.room_x, self.editor.room_y)] = room

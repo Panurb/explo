@@ -1,7 +1,7 @@
+import platform
 import pygame
 import animatedsprite
 import enemy
-import gameobject
 import helpers
 import player
 import player_old
@@ -28,7 +28,8 @@ class Level:
                 continue
 
             if not line.rstrip():
-                self.rooms[coordinates] = Room(self, room, coordinates[0], coordinates[1])
+                self.rooms[coordinates] = Room(self, room, coordinates[0],
+                                               coordinates[1])
                 room = []
                 continue
 
@@ -106,11 +107,13 @@ class Level:
             for d in room.dynamic_objects:
                 if type(d) is tile.Destroyable:
                     tilemap[d.y // helpers.TILE_SIZE][d.x // helpers.TILE_SIZE] = 'D'
-                elif type(d) is gameobject.Platform:
+                elif type(d) is platform.Platform:
                     if d.vertical:
                         tilemap[d.y // helpers.TILE_SIZE][d.x // helpers.TILE_SIZE] = 'V'
                     else:
                         tilemap[d.y // helpers.TILE_SIZE][d.x // helpers.TILE_SIZE] = 'P'
+                elif type(d) is platform.FallingPlatform:
+                    tilemap[d.y // helpers.TILE_SIZE][d.x // helpers.TILE_SIZE] = 'F'
 
             empty = True
             for row in tilemap:
@@ -143,6 +146,11 @@ class Level:
         room = self.room(self.player.room_x, self.player.room_y)
         room.draw(screen, img_hand)
         self.player.draw(screen, img_hand)
+
+    def debug_draw(self, screen):
+        room = self.room(self.player.room_x, self.player.room_y)
+        room.debug_draw(screen)
+        self.player.debug_draw(screen)
 
 
 class Room:
@@ -193,11 +201,6 @@ class Room:
         for d in self.dynamic_objects:
             d.update(self)
 
-        for w in self.water:
-            w.animate()
-        for p in self.powerups:
-            p.animate()
-
     def update_visuals(self):
         for w in self.walls:
             w.update(self)
@@ -232,6 +235,24 @@ class Room:
         for d in self.dynamic_objects:
             d.draw(screen, img_hand)
 
+    def debug_draw(self, screen):
+        for c in self.checkpoints:
+            c.debug_draw(screen)
+        for w in self.walls:
+            w.debug_draw(screen)
+        for l in self.ladders:
+            l.debug_draw(screen)
+        for s in self.spikes:
+            s.debug_draw(screen)
+        for e in self.enemies:
+            e.debug_draw(screen)
+        for p in self.powerups:
+            p.debug_draw(screen)
+        for w in self.water:
+            w.debug_draw(screen)
+        for d in self.dynamic_objects:
+            d.debug_draw(screen)
+
     def add_object(self, x, y, char):
         if char == 'W':
             self.walls.append(tile.Wall(x, y, 'wall'))
@@ -244,9 +265,11 @@ class Room:
         elif char == 'I':
             self.walls.append(tile.Wall(x, y, 'ice'))
         elif char == 'P':
-            self.dynamic_objects.append(gameobject.Platform(x, y))
+            self.dynamic_objects.append(platform.Platform(x, y))
         elif char == 'V':
-            self.dynamic_objects.append(gameobject.Platform(x, y, True))
+            self.dynamic_objects.append(platform.Platform(x, y, True))
+        elif char == 'F':
+            self.dynamic_objects.append(platform.FallingPlatform(x, y))
         elif char == '#':
             self.ladders.append(tile.Ladder(x, y))
         elif char == '~':

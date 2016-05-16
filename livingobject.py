@@ -28,6 +28,8 @@ class LivingObject(gameobject.PhysicsObject):
 
         for g in self.gibs:
             g.update(room)
+            if not g.alive:
+                self.gibs.remove(g)
 
     def draw(self, screen, img_hand):
         super().draw(screen, img_hand)
@@ -62,6 +64,7 @@ class Gib(gameobject.PhysicsObject):
         super().__init__(x, y, 0.5 * helpers.TILE_SIZE,
                          0.5 * helpers.TILE_SIZE, dx, dy, [path])
 
+        self.alive = True
         self.dx = dx
         self.dy = dy
         for s in self.sprites:
@@ -73,12 +76,15 @@ class Gib(gameobject.PhysicsObject):
 
     def update(self, room):
         super().update(room)
-        if not helpers.outside_screen(self.collider) and \
-                        math.hypot(self.dx, self.dy) > 0.5 * helpers.SCALE:
-            p = particle.Particle(self.x, self.y, 0, 0, 'blood', False)
-            self.trail.append(p)
-            for s in self.sprites:
-                s.animate()
+        if helpers.outside_screen(self.collider):
+            if not self.trail:
+                self.alive = False
+        else:
+            if math.hypot(self.dx, self.dy) > 0.5 * helpers.SCALE:
+                p = particle.Particle(self.x, self.y, 0, 0, 'blood', False)
+                self.trail.append(p)
+                for s in self.sprites:
+                    s.animate()
 
         for t in self.trail:
             t.update(room)
