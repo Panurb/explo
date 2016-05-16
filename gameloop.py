@@ -40,7 +40,7 @@ class GameLoop:
 
         self.state = State.menu
 
-        self.debug_enabled = True
+        self.debug_enabled = False
 
     def update(self, clock):
         self.input_hand.update()
