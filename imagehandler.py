@@ -3,7 +3,7 @@ import helpers
 
 SIZES = {
     'bg': (160, 120),
-    'bullet': (4, 4),
+    'bullet': (8, 8),
     'charger': (16, 16),
     'charger_gibs': (8, 8),
     'chars': (4, 4),
@@ -19,6 +19,7 @@ SIZES = {
     'map': (14, 12),
     'menu': (32, 8),
     'metal': (8, 8),
+    'mods': (48, 48),
     'particle': (4, 4),
     'platform': (24, 8),
     'player_body': (16, 16),
@@ -40,7 +41,7 @@ ACTIONS = {
         ['cave', 1]
     ],
     'bullet': [
-        ['idle', 1]
+        ['idle', 3]
     ],
     'charger': [
         ['idle', 4],
@@ -96,6 +97,12 @@ ACTIONS = {
     ],
     'menu': [
         ['button', 1]
+    ],
+    'mods': [
+        ['up', 2],
+        ['right', 2],
+        ['down', 2],
+        ['left', 2],
     ],
     'particle': [
         ['blood', 4],

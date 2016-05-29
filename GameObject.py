@@ -58,6 +58,8 @@ class GameObject:
                 if d is not self:
                     collisions.append(d)
 
+        player = room.level.player
+
         # allow crushing enemies by platforms
         if type(self) is not platform.Platform and \
                 self is not room.level.player:
@@ -70,6 +72,9 @@ class GameObject:
                     if collider.colliderect(b.collider):
                         if b is not self and b.alive:
                             collisions.append(b)
+
+        if self is not player and collider.colliderect(player.collider):
+            collisions.append(player)
 
         return collisions
 

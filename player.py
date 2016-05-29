@@ -4,6 +4,7 @@ import random
 import pygame
 
 import bullet
+import enemy
 import gameobject
 import helpers
 import hud
@@ -26,7 +27,7 @@ AIR_ACCELERATION = 0.125 * helpers.SCALE
 WEAPON_COOLDOWN = 8
 BULLET_SPEED = 4 * helpers.SCALE
 WATER_SPEED = 0.5 * helpers.SCALE
-WATER_FRICTION = 0.125 * helpers.SCALE
+WATER_FRICTION = 0.05 * helpers.SCALE
 
 
 class WeaponMod(enum.Enum):
@@ -83,6 +84,8 @@ class Player(livingobject.LivingObject):
         self.txtbox = textbox.Textbox('', 0.5 * helpers.SCREEN_WIDTH,
                                       4 * helpers.SCALE)
         self.map = hud.Map(level)
+        self.mods = hud.Mods()
+        self.modifying_weapon = False
 
     def update(self, room):
         self.apply_water(room)
@@ -113,7 +116,7 @@ class Player(livingobject.LivingObject):
                     continue
 
                 if self.dy > 0 and \
-                        self.collider.bottom - self.dy <= l.collider.top:
+                                        self.collider.bottom - self.dy <= l.collider.top:
                     width = 2 * helpers.SCALE
                     self.friction = 0.125 * helpers.SCALE
                     if not self.crouched:
@@ -167,6 +170,9 @@ class Player(livingobject.LivingObject):
         if self.show_map:
             self.map.draw(screen, img_hand, self.room_x, self.room_y)
 
+        if self.modifying_weapon:
+            self.mods.draw(screen, img_hand, self.weapon_mods)
+
         self.txtbox.draw(screen, img_hand)
 
     def apply_wall_hugging(self, room):
@@ -199,8 +205,12 @@ class Player(livingobject.LivingObject):
 
         if self.alive:
             if keys_down[pygame.K_d]:
+                self.modifying_weapon = True
                 self.modify_weapon(input_hand.keys_pressed)
                 return
+            else:
+                self.modifying_weapon = False
+
             if keys_down[pygame.K_RIGHT]:
                 self.moving = True
                 self.uncrouch(room)
@@ -226,6 +236,7 @@ class Player(livingobject.LivingObject):
                         not keys_down[pygame.K_RIGHT]:
                     self.crouch()
                     self.climb(room, LADDER_SPEED)
+
             if keys_down[pygame.K_a]:
                 self.jump()
             if not keys_down[pygame.K_a]:
@@ -384,7 +395,7 @@ class Player(livingobject.LivingObject):
         if self.abilities[p.ability] is False:
             self.abilities[p.ability] = True
             self.txtbox.set_string(
-                    p.ability.name.upper() + '\\' + p.text)
+                p.ability.name.upper() + '\\' + p.text)
             self.txtbox.time = 120
             if p.ability.name in self.weapon_mods:
                 self.weapon_mods[p.ability.name] = True
@@ -395,8 +406,12 @@ class Player(livingobject.LivingObject):
                 if not self.abilities[Ability.rebreather]:
                     self.die()
 
-                self.dx = min(self.dx, WATER_SPEED)
-                self.dx = max(self.dx, -WATER_SPEED)
+                if self.moving:
+                    self.dx = min(self.dx, WATER_SPEED)
+                    self.dx = max(self.dx, -WATER_SPEED)
+                else:
+                    self.dx = min(0, self.dx + WATER_FRICTION)
+                    self.dx = max(0, self.dx - WATER_FRICTION)
 
                 if self.dy > WATER_SPEED:
                     self.dy = max(WATER_SPEED, self.dy - WATER_FRICTION)
@@ -502,13 +517,15 @@ class Player(livingobject.LivingObject):
             return
 
         if self.attack_buffer and self.cooldown == 0:
-            if self.crouched:
-                if self.direction is gameobject.Direction.right:
-                    spread = random.uniform(-self.spread, 0)
+            spread = 0
+            if self.weapon_mods[WeaponMod.rapid]:
+                if self.crouched:
+                    if self.direction is gameobject.Direction.right:
+                        spread = random.uniform(-self.spread, 0)
+                    else:
+                        spread = random.uniform(0, self.spread)
                 else:
-                    spread = random.uniform(0, self.spread)
-            else:
-                spread = random.uniform(-self.spread, self.spread)
+                    spread = random.uniform(-self.spread, self.spread)
 
             x = self.x
             y = self.y
@@ -517,7 +534,6 @@ class Player(livingobject.LivingObject):
                 x += 1.25 * helpers.SCALE
                 angle = 270
             else:
-                y += 0.5 * imagehandler.SIZES['bullet'][1] * helpers.SCALE
                 if self.direction is gameobject.Direction.left:
                     if self.hugging_wall:
                         if self.ground_collision:
@@ -534,17 +550,23 @@ class Player(livingobject.LivingObject):
             grav = 0
             if self.weapon_mods[WeaponMod.gravity]:
                 grav = 1
-            self.bullets.append(
-                    bullet.Bullet(x, y, BULLET_SPEED, angle + spread, grav))
+
+            dist = -1
+            size = 0
             if self.weapon_mods[WeaponMod.triple]:
-                self.bullets.append(
-                        bullet.Bullet(x, y, BULLET_SPEED,
-                                      angle + 22.5 + spread,
-                                      grav))
-                self.bullets.append(
-                        bullet.Bullet(x, y, BULLET_SPEED,
-                                      angle - 22.5 + spread,
-                                      grav))
+                dist = 10
+                size = 0
+            elif self.weapon_mods[WeaponMod.gravity]:
+                dist = 120
+                size = 2
+
+            self.bullets.append(
+                bullet.Bullet(x, y, BULLET_SPEED, angle + spread, grav, dist, size))
+            if self.weapon_mods[WeaponMod.triple]:
+                self.bullets.append(bullet.Bullet(x, y, BULLET_SPEED,
+                                    angle + 22.5 + spread, grav, dist, size))
+                self.bullets.append(bullet.Bullet(x, y, BULLET_SPEED,
+                                    angle - 22.5 + spread, grav, dist, size))
 
             if not self.weapon_mods[WeaponMod.rapid]:
                 self.attack_buffer = False

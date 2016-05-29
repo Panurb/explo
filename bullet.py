@@ -9,7 +9,7 @@ import particle
 
 
 class Bullet(gameobject.PhysicsObject):
-    def __init__(self, x, y, speed, angle, gravity_scale=0):
+    def __init__(self, x, y, speed, angle, gravity_scale=0, dist=-1, size=0):
         dx = speed * math.cos(math.radians(angle))
         dy = speed * math.sin(math.radians(angle))
 
@@ -20,9 +20,11 @@ class Bullet(gameobject.PhysicsObject):
         self.particles = []
         self.bounce_scale = 1
         self.gravity_scale = gravity_scale
+        self.dist = dist
+        self.lifetime = 0
 
         for s in self.sprites:
-            s.play('idle', 0)
+            s.show_frame('idle', size)
 
     def get_collisions(self, room, collider=None):
         collisions = super().get_collisions(room)
@@ -34,6 +36,12 @@ class Bullet(gameobject.PhysicsObject):
 
     def update(self, room):
         super().update(room)
+
+        if self.dist != -1:
+            self.lifetime += 1
+
+        if self.lifetime == self.dist:
+            self.alive = False
 
         if self.alive:
             for c in self.collisions:

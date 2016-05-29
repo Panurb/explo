@@ -83,6 +83,9 @@ class Enemy(livingobject.LivingObject):
                 if type(c.obj) is tile.Spike:
                     self.damage(-self.dx, -self.dy)
 
+                if c.obj is room.level.player:
+                    c.obj.damage(0, 0)
+
         for p in self.bullets:
             p.update(room)
 
@@ -210,14 +213,14 @@ class Zombie(Enemy):
                 x = self.collider.x + 8 * helpers.SCALE
                 y = self.collider.y + 2 * helpers.SCALE
                 self.bullets.append(
-                        bullet.Bullet(x, y, self.bullet_speed, 0))
+                    bullet.Bullet(x, y, self.bullet_speed, 0))
             elif player.rect.x < self.collider.x:
                 if self.direction is gameobject.Direction.right:
                     self.flip()
                 x = self.collider.x - 8 * helpers.SCALE
                 y = self.collider.y + 2 * helpers.SCALE
                 self.bullets.append(
-                        bullet.Bullet(x, y, -self.bullet_speed, 0))
+                    bullet.Bullet(x, y, -self.bullet_speed, 0))
         elif self.cooldown > 0:
             self.cooldown -= 1
 
@@ -225,7 +228,7 @@ class Zombie(Enemy):
         super().damage(amt, dx, dy)
         # path = 'zombie_gibs'
         # if self.armored:
-        #     self.armored = False
+        # self.armored = False
         #     self.add_gib(0, 4, 0.5, -2.5, 'armor', path)
         #     self.add_gib(0, 0, -0.5, -2.5, 'armor', path)
         #     self.add_gib(0, 6, -0.25, -2.5, 'armor', path)
@@ -254,7 +257,7 @@ class Zombie(Enemy):
 
 class Flyer(Enemy):
     def __init__(self, x, y):
-        Enemy.__init__(self, x, y, helpers.TILE_SIZE, helpers.TILE_SIZE, 1,
+        super().__init__(x, y, helpers.TILE_SIZE, helpers.TILE_SIZE, 1,
                        'flyer')
         self.speed = 0.5 * helpers.SCALE
         self.dx = self.speed
@@ -262,7 +265,7 @@ class Flyer(Enemy):
         self.bounce = 1
 
     def update(self, room):
-        Enemy.update(self, room)
+        super().update(room)
 
         if self.wall_collision:
             self.dy = self.dx
@@ -275,7 +278,7 @@ class Flyer(Enemy):
             self.dy = 0
 
     def reset(self):
-        Enemy.reset(self)
+        super().reset()
         self.dx = self.speed
         self.dy = 0
 
@@ -291,8 +294,8 @@ class Spawner(Enemy):
         super().update(room)
         if self.alive and len(self.bullets) < 3 and self.cooldown == 60:
             self.bullets.append(
-                    Chaser(self.collider.x + 0.25 * self.collider.width,
-                           self.collider.y + 0.25 * self.collider.height))
+                Chaser(self.collider.x + 0.25 * self.collider.width,
+                       self.collider.y + 0.25 * self.collider.height))
             self.cooldown = 0
 
         if self.cooldown < 60:
