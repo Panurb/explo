@@ -84,10 +84,10 @@ class AnimatedSprite(pygame.sprite.Sprite):
             self.timer = self.delay
 
     def play_once(self, name, index=0):
-        self.animation_finished = False
         self.playing = True
         self.loop = False
         if self.action != name:
+            self.animation_finished = False
             self.action = name
             self.frame = index
             self.timer = self.delay

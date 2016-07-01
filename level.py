@@ -38,7 +38,14 @@ class Level:
         self.player = player.Player(self)
 
     def room(self, x, y):
-        return self.rooms[(x, y)]
+        try:
+            room = self.rooms[(x, y)]
+        except KeyError:
+            tilemap = 14 * [20 * "-"]
+            self.rooms[(x, y)] = Room(self, tilemap, x, y)
+            room = self.rooms[(x, y)]
+
+        return room
 
     def write(self):
         f = open(self.path, 'w')
@@ -200,6 +207,8 @@ class Room:
             p.update(self)
         for d in self.dynamic_objects:
             d.update(self)
+        for w in self.water:
+            w.update(self)
 
     def update_visuals(self):
         for w in self.walls:

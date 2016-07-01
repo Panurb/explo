@@ -5,7 +5,8 @@ import helpers
 
 class Particle(gameobject.PhysicsObject):
     def __init__(self, x, y, dx, dy, action, gravity_scale):
-        super().__init__(x, y, 0.5 * helpers.TILE_SIZE, 0.5 * helpers.TILE_SIZE, dx, dy, ['particle'])
+        super().__init__(x, y, 0.5 * helpers.TILE_SIZE,
+                         0.5 * helpers.TILE_SIZE, dx, dy, ['particle'])
 
         self.alive = True
         self.dx = dx
@@ -19,7 +20,7 @@ class Particle(gameobject.PhysicsObject):
         super().update(room)
         self.animate()
         for s in self.sprites:
-            if s.frame == 3:
+            if s.animation_finished:
                 self.alive = False
 
     def animate(self):

@@ -8,17 +8,28 @@ import math
 import platform
 
 
+class CollisionGroup:
+    none = 1
+    player = 2
+    bullets = 3
+    enemies = 4
+    walls = 5
+    debris = 6
+    chaser = 7
+
+
 class Direction(Enum):
     right = 1
     left = 2
 
 
 class GameObject:
-    def __init__(self, x, y, width, height, sprite_paths=()):
+    def __init__(self, x, y, width, height, sprite_paths=(),
+                 group=CollisionGroup.none):
         self.x = x
         self.y = y
         self.collider = pygame.rect.Rect(x, y, width, height)
-        self.collision_enabled = True
+        self.group = group
         self.direction = Direction.right
         self.sprites = []
         for path in sprite_paths:
@@ -32,6 +43,34 @@ class GameObject:
 
     def update(self, room):
         pass
+
+    def animate(self):
+        for s in self.sprites:
+            s.animate()
+
+    def collides_with(self, obj):
+        # COLLISION MATRIX
+        #
+        #           p   b   e   w   d   c
+        # player    -   -   -   X   -   X
+        # bullets   -   -   X   X   -   X
+        # enemies   X   X   -   X   -   -
+        # walls     -   X   X   X   X   -
+        # debris    -   -   -   X   -   -
+        # chaser    X   X   -   -   -   -
+
+        matrix = [[False, False, True,  True,  False, True],
+                  [False, False, True,  True,  False, True],
+                  [True,  True,  False, True,  False, False],
+                  [False, True,  True,  True,  True,  False],
+                  [False, False, False, True,  False, False],
+                  [True,  True,  False, False, False, False]]
+
+        if self.group is CollisionGroup.none:
+            return False
+        else:
+            # off by 2 because enums start at 1 and first is none
+            return matrix[self.group - 2][obj.group - 2]
 
     def draw(self, screen, img_hand):
         for s in self.sprites:
@@ -58,37 +97,29 @@ class GameObject:
                 if d is not self:
                     collisions.append(d)
 
-        player = room.level.player
+        for e in room.enemies:
+            if collider.colliderect(e.collider):
+                if e is not self and e.alive:
+                    collisions.append(e)
 
-        # allow crushing enemies by platforms
-        if type(self) is not platform.Platform and \
-                self is not room.level.player:
-            for e in room.enemies:
-                if collider.colliderect(e.collider):
-                    if e is not self and e.alive:
-                        collisions.append(e)
-
-                for b in e.bullets:
-                    if collider.colliderect(b.collider):
-                        if b is not self and b.alive:
-                            collisions.append(b)
-
-        if self is not player and collider.colliderect(player.collider):
-            collisions.append(player)
+            for b in e.bullets:
+                if collider.colliderect(b.collider):
+                    if b is not self and b.alive:
+                        collisions.append(b)
 
         return collisions
 
 
 class PhysicsObject(GameObject):
-    def __init__(self, x, y, width, height, dx, dy, sprite_paths):
-        GameObject.__init__(self, x, y, width, height, sprite_paths)
+    def __init__(self, x, y, width, height, dx, dy, sprite_paths,
+                 group=CollisionGroup.none):
+        super().__init__(x, y, width, height, sprite_paths, group)
         self.base_dx = 0
         self.base_dy = 0
         self.dx = dx
         self.dy = dy
         self.collisions = []
 
-        self.collision_enabled = True
         self.gravity_scale = 1.0
         self.bounce_scale = 0.5
         self.friction = 0
@@ -111,93 +142,76 @@ class PhysicsObject(GameObject):
         self.apply_gravity()
 
         for c in self.collisions:
-            if type(c.obj) is platform.Platform:
-                if c.direction is not collision.Direction.up:
-                    self.base_dx = c.obj.dx
-                    self.base_dy = c.obj.dy
-                    break
-            else:
+            if type(c.obj) is not platform.Platform:
                 self.base_dx = 0
                 self.base_dy = 0
+            elif c.direction is not collision.Direction.up:
+                self.base_dx = c.obj.dx
+                self.base_dy = c.obj.dy
+                break
 
     def move_x(self, room):
         self.x += self.base_dx + self.dx
         self.collider.x = self.x
 
         collisions = self.get_collisions(room)
-        collisions = [c for c in collisions if c.collision_enabled]
+        collisions = [c for c in collisions if self.collides_with(c)]
 
-        if self.collision_enabled:
-            for c in collisions:
-                if type(c) is PhysicsObject:
-                    relative_vel = c.dx - self.base_dx - self.dx
-                else:
-                    relative_vel = self.base_dx + self.dx
-
-                if relative_vel > 0:
-                    self.collider.right = c.collider.left
-                    self.x = self.collider.x
-                    self.collisions.append(
-                        collision.Collision(c, collision.Direction.right))
-                elif relative_vel < 0:
-                    self.collider.left = c.collider.right
-                    self.x = self.collider.x
-                    self.collisions.append(
-                        collision.Collision(c, collision.Direction.left))
-
-            if collisions:
-                self.dx *= -self.bounce_scale
-                self.wall_collision = True
+        for c in collisions:
+            if type(c) is PhysicsObject:
+                relative_vel = c.dx - self.base_dx - self.dx
             else:
-                self.wall_collision = False
+                relative_vel = self.base_dx + self.dx
 
-        player = room.level.player
-        if type(self) is platform.Platform:
-            if self.collider.colliderect(player.collider):
-                if self.dx > 0:
-                    player.dx = max(0, player.dx)
-                elif self.dx < 0:
-                    player.dx = min(0, player.dx)
-                player.base_dx = self.dx
+            if relative_vel > 0:
+                self.collider.right = c.collider.left
+                self.x = self.collider.x
+                self.collisions.append(
+                    collision.Collision(c, collision.Direction.right))
+            elif relative_vel < 0:
+                self.collider.left = c.collider.right
+                self.x = self.collider.x
+                self.collisions.append(
+                    collision.Collision(c, collision.Direction.left))
+
+        if collisions:
+            self.dx *= -self.bounce_scale
+            self.wall_collision = True
+        else:
+            self.wall_collision = False
 
     def move_y(self, room):
         self.y += self.base_dy + self.dy
         self.collider.y = self.y
 
         collisions = self.get_collisions(room)
-        collisions = [c for c in collisions if c.collision_enabled]
+        collisions = [c for c in collisions if self.collides_with(c)]
 
-        if self.collision_enabled:
-            for c in collisions:
-                if type(c) is PhysicsObject:
-                    relative_vel = c.dy - self.base_dy - self.dy
-                else:
-                    relative_vel = self.base_dy + self.dy
-
-                if relative_vel > 0:
-                    self.collider.bottom = c.collider.top
-                    self.y = self.collider.y
-                    self.ground_collision = True
-                    self.friction = c.friction
-                    self.collisions.append(
-                        collision.Collision(c, collision.Direction.down))
-                elif relative_vel < 0:
-                    self.collider.top = c.collider.bottom
-                    self.y = self.collider.y
-                    self.ceiling_collision = True
-                    self.collisions.append(
-                        collision.Collision(c, collision.Direction.up))
-
-            if collisions:
-                self.dy *= -self.bounce_scale
+        for c in collisions:
+            if type(c) is PhysicsObject:
+                relative_vel = c.dy - self.base_dy - self.dy
             else:
-                self.ground_collision = False
-                self.ceiling_collision = False
+                relative_vel = self.base_dy + self.dy
 
-        player = room.level.player
-        if type(self) is platform.Platform:
-            if self.collider.colliderect(player.collider):
-                player.base_dy = self.dy
+            if relative_vel > 0:
+                self.collider.bottom = c.collider.top
+                self.y = self.collider.y
+                self.ground_collision = True
+                self.friction = c.friction
+                self.collisions.append(
+                    collision.Collision(c, collision.Direction.down))
+            elif relative_vel < 0:
+                self.collider.top = c.collider.bottom
+                self.y = self.collider.y
+                self.ceiling_collision = True
+                self.collisions.append(
+                    collision.Collision(c, collision.Direction.up))
+
+        if collisions:
+            self.dy *= -self.bounce_scale
+        else:
+            self.ground_collision = False
+            self.ceiling_collision = False
 
     def apply_friction(self):
         if self.ground_collision:
@@ -227,7 +241,7 @@ class PhysicsObject(GameObject):
 class Debris(PhysicsObject):
     def __init__(self, x, y, dx, dy, part, path):
         super().__init__(x, y, 4 * helpers.SCALE, 4 * helpers.SCALE, 0, 0,
-                         path)
+                         path, CollisionGroup.debris)
 
         self.dx = dx
         self.dy = dy
@@ -237,7 +251,7 @@ class Debris(PhysicsObject):
         self.friction = 0.5 * helpers.SCALE
 
     def update(self, room):
-        PhysicsObject.update(self, room)
+        super().update(room)
         if math.hypot(self.dx, self.dy) > 0.5 * helpers.SCALE:
             for s in self.sprites:
                 s.animate()

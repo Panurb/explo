@@ -4,11 +4,9 @@ import random
 import pygame
 
 import bullet
-import enemy
 import gameobject
 import helpers
 import hud
-import imagehandler
 import livingobject
 import save
 import textbox
@@ -49,7 +47,8 @@ class Player(livingobject.LivingObject):
             self.x = self.y = 0
 
         paths = ['player_body', 'player_legs']
-        super().__init__(self.x, self.y, WIDTH, HEIGHT, paths)
+        super().__init__(self.x, self.y, WIDTH, HEIGHT, paths,
+                         gameobject.CollisionGroup.player)
         self.bounce_scale = 0
 
         self.alive = True
@@ -91,6 +90,8 @@ class Player(livingobject.LivingObject):
         self.apply_water(room)
         super().update(room)
 
+        self.apply_saving(room)
+
         self.apply_wall_hugging(room)
         self.apply_ladders(room)
 
@@ -106,6 +107,18 @@ class Player(livingobject.LivingObject):
                 self.bullets.remove(b)
 
         self.apply_room_change()
+
+    def apply_saving(self, room):
+        for cp in room.checkpoints:
+            if self.collider.colliderect(cp.collider):
+                self.save.room_x = room.x
+                self.save.room_y = room.y
+                self.save.x = cp.collider.x
+                self.save.y = cp.collider.y
+                self.save.direction = self.direction
+                self.save.abilities = self.abilities.copy()
+
+                cp.active = True
 
     def move_y(self, room):
         super().move_y(room)
@@ -181,7 +194,7 @@ class Player(livingobject.LivingObject):
                                self.collider.height / 2)
 
         collisions = self.get_collisions(room, collider)
-        collisions = [c for c in collisions if c.collision_enabled]
+        collisions = [c for c in collisions if self.collides_with(c)]
 
         for c in collisions:
             if isinstance(c, tile.Wall):
@@ -332,7 +345,7 @@ class Player(livingobject.LivingObject):
         self.y = self.save.y
         self.room_x = self.save.room_x
         self.room_y = self.save.room_y
-        if self.direction is not self.save.dir:
+        if self.direction is not self.save.direction:
             self.flip()
         self.abilities = self.save.abilities.copy()
         self.dx = 0

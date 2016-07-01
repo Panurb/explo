@@ -14,7 +14,7 @@ class Bullet(gameobject.PhysicsObject):
         dy = speed * math.sin(math.radians(angle))
 
         super().__init__(x, y, 4 * helpers.SCALE, 4 * helpers.SCALE, dx, dy,
-                         ['bullet'])
+                         ['bullet'], gameobject.CollisionGroup.bullets)
 
         self.alive = True
         self.particles = []

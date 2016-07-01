@@ -5,8 +5,8 @@ import math
 
 
 class LivingObject(gameobject.PhysicsObject):
-    def __init__(self, x, y, width, height, path, health=1):
-        super().__init__(x, y, width, height, 0, 0, path)
+    def __init__(self, x, y, width, height, path, group, health=1):
+        super().__init__(x, y, width, height, 0, 0, path, group)
         self.health = health
         self.alive = True
         self.gibs = []

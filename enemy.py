@@ -9,8 +9,9 @@ import math
 
 
 class Enemy(livingobject.LivingObject):
-    def __init__(self, x, y, width, height, health, path):
-        super().__init__(x, y, width, height, path)
+    def __init__(self, x, y, width, height, health, path,
+                 group=gameobject.CollisionGroup.enemies):
+        super().__init__(x, y, width, height, path, group)
 
         self.spawn_x = x
         self.spawn_y = y
@@ -84,7 +85,7 @@ class Enemy(livingobject.LivingObject):
                     self.damage(-self.dx, -self.dy)
 
                 if c.obj is room.level.player:
-                    c.obj.damage(0, 0)
+                    c.obj.damage(1, 0, 0)
 
         for p in self.bullets:
             p.update(room)
@@ -167,7 +168,9 @@ class Shrapnel(livingobject.Gib):
 
 class Zombie(Enemy):
     def __init__(self, x, y):
-        super().__init__(self, x, y, 5, ['zombie'])
+        width = helpers.TILE_SIZE
+        height = 2 * helpers.TILE_SIZE
+        super().__init__(x, y, width, height, 5, ['zombie'])
 
         self.collider.height = 16 * helpers.SCALE
         self.speed = 0.25 * helpers.SCALE
@@ -182,7 +185,7 @@ class Zombie(Enemy):
         else:
             self.dx = 0
 
-        Enemy.update(self, room)
+        super().update(room)
 
         if self.alive:
             if self.wall_collision or self.on_edge(room):
@@ -258,7 +261,7 @@ class Zombie(Enemy):
 class Flyer(Enemy):
     def __init__(self, x, y):
         super().__init__(x, y, helpers.TILE_SIZE, helpers.TILE_SIZE, 1,
-                       'flyer')
+                       ['flyer'])
         self.speed = 0.5 * helpers.SCALE
         self.dx = self.speed
         self.gravity_scale = 0
@@ -292,6 +295,14 @@ class Spawner(Enemy):
 
     def update(self, room):
         super().update(room)
+
+        for b in self.bullets:
+            if not b.alive:
+                for s in b.sprites:
+                    if s.animation_finished:
+                        self.bullets.remove(b)
+                        break
+
         if self.alive and len(self.bullets) < 3 and self.cooldown == 60:
             self.bullets.append(
                 Chaser(self.collider.x + 0.25 * self.collider.width,
@@ -320,7 +331,7 @@ class Spawner(Enemy):
 class Chaser(Enemy):
     def __init__(self, x, y):
         super().__init__(x, y, 8 * helpers.SCALE, 8 * helpers.SCALE, 1,
-                         ['chaser'])
+                         ['chaser'], gameobject.CollisionGroup.chaser)
         self.gravity_scale = 0
         self.collision_enabled = False
         self.speed = 0.25 * helpers.SCALE
@@ -339,6 +350,8 @@ class Chaser(Enemy):
             pass
 
     def animate(self):
+        super().animate()
+
         if self.alive:
             rotation = helpers.rotation(self.dx, self.dy)
             for s in self.sprites:
@@ -351,6 +364,9 @@ class Chaser(Enemy):
         player = room.level.player
 
         if self.alive and player.alive:
+            if self.collider.colliderect(player.collider):
+                player.damage(1, 0, 0)
+
             x = player.x - self.x
             y = player.y - self.y
             distance = math.hypot(x, y)
@@ -360,6 +376,7 @@ class Chaser(Enemy):
             else:
                 self.dx = 0
                 self.dy = 0
+
         else:
             self.dx = 0
             self.dy = 0

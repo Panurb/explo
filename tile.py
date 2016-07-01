@@ -6,7 +6,8 @@ import physicsobject
 
 class Wall(gameobject.GameObject):
     def __init__(self, x, y, path):
-        super().__init__(x, y, helpers.TILE_SIZE, helpers.TILE_SIZE, [path])
+        super().__init__(x, y, helpers.TILE_SIZE, helpers.TILE_SIZE, [path],
+                         gameobject.CollisionGroup.walls)
         self.index = 0
         for s in self.sprites:
             s.show_frame('idle', self.index)
@@ -88,7 +89,8 @@ class Checkpoint(gameobject.GameObject):
 
 class Water(gameobject.GameObject):
     def __init__(self, x, y, surface):
-        gameobject.GameObject.__init__(self, x, y, helpers.TILE_SIZE, helpers.TILE_SIZE, ['water'])
+        gameobject.GameObject.__init__(self, x, y, helpers.TILE_SIZE,
+                                       helpers.TILE_SIZE, ['water'])
         self.surface = surface
 
         if self.surface:
@@ -97,6 +99,9 @@ class Water(gameobject.GameObject):
         else:
             for s in self.sprites:
                 s.play('idle')
+
+    def update(self, room):
+        self.animate()
 
 
 class Destroyable(Wall):
