@@ -70,7 +70,7 @@ class LevelSelectMenu(Menu):
     def __init__(self):
         Menu.__init__(self)
 
-        dy = 2
+        dy = 4
         for filename in os.listdir('data/lvl'):
             self.add_button(0, dy, ButtonType.level, filename.replace('.txt', ''))
             dy += 2

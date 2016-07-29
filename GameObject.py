@@ -52,7 +52,7 @@ class GameObject:
         # COLLISION MATRIX
         #
         #           p   b   e   w   d   c
-        # player    -   -   -   X   -   X
+        # player    -   -   X   X   -   X
         # bullets   -   -   X   X   -   X
         # enemies   X   X   -   X   -   -
         # walls     -   X   X   X   X   -
@@ -88,9 +88,12 @@ class GameObject:
         collisions = []
 
         for w in room.walls:
-            if collider.colliderect(w.collider):
-                if w is not self:
-                    collisions.append(w)
+            if w is not self and collider.colliderect(w.collider):
+                collisions.append(w)
+
+        for s in room.spikes:
+            if s is not self and collider.colliderect(s.collider):
+                collisions.append(s)
 
         for d in room.dynamic_objects:
             if collider.colliderect(d.collider):
@@ -106,6 +109,11 @@ class GameObject:
                 if collider.colliderect(b.collider):
                     if b is not self and b.alive:
                         collisions.append(b)
+
+        player = room.level.player
+        if player is not self and collider.colliderect(player.collider):
+            if player.alive:
+                collisions.append(player)
 
         return collisions
 

@@ -4,10 +4,11 @@ import random
 import pygame
 
 import bullet
+import enemy
 import gameobject
 import helpers
 import hud
-import livingobject
+import creature
 import save
 import textbox
 import tile
@@ -34,7 +35,7 @@ class WeaponMod(enum.Enum):
     gravity = 3
 
 
-class Player(livingobject.LivingObject):
+class Player(creature.Creature):
     def __init__(self, level):
         self.room_x = 0
         self.room_y = 0
@@ -78,7 +79,7 @@ class Player(livingobject.LivingObject):
             self.abilities[a] = False
 
         self.save = save.Save(self.x, self.y, self.room_x, self.room_y,
-                              self.direction, self.abilities)
+                              self.direction, self.abilities, self.weapon_mods)
 
         self.txtbox = textbox.Textbox('', 0.5 * helpers.SCREEN_WIDTH,
                                       4 * helpers.SCALE)
@@ -106,7 +107,16 @@ class Player(livingobject.LivingObject):
             if not b.alive and not b.particles:
                 self.bullets.remove(b)
 
+        self.apply_damage(room)
+
         self.apply_room_change()
+
+    def apply_damage(self, room):
+        for c in self.collisions:
+            if isinstance(c.obj, enemy.Enemy):
+                self.damage(1, 0, 0)
+            elif isinstance(c.obj, tile.Spike):
+                self.damage(1, 0, 0)
 
     def apply_saving(self, room):
         for cp in room.checkpoints:
@@ -123,13 +133,14 @@ class Player(livingobject.LivingObject):
     def move_y(self, room):
         super().move_y(room)
 
-        if not self.climbing_ladder:
-            for l in room.ladders:
-                if not l.top or not l.collider.colliderect(self.collider):
-                    continue
+        if self.climbing_ladder:
+            return
 
-                if self.dy > 0 and \
-                                        self.collider.bottom - self.dy <= l.collider.top:
+        for l in room.ladders:
+            if not l.top or not l.collider.colliderect(self.collider):
+                continue
+
+            if self.dy > 0 and self.collider.bottom - self.dy <= l.collider.top:
                     width = 2 * helpers.SCALE
                     self.friction = 0.125 * helpers.SCALE
                     if not self.crouched:
@@ -227,16 +238,16 @@ class Player(livingobject.LivingObject):
             if keys_down[pygame.K_RIGHT]:
                 self.moving = True
                 self.uncrouch(room)
-                if self.abilities[Ability.run] and \
-                        not keys_down[pygame.K_LSHIFT]:
+                if self.abilities[Ability.run] and not keys_down[
+                    pygame.K_LSHIFT]:
                     self.move(RUN_SPEED)
                 else:
                     self.move(WALK_SPEED)
             if keys_down[pygame.K_LEFT]:
                 self.moving = True
                 self.uncrouch(room)
-                if self.abilities[Ability.run] and \
-                        not keys_down[pygame.K_LSHIFT]:
+                if self.abilities[Ability.run] and not keys_down[
+                        pygame.K_LSHIFT]:
                     self.move(-RUN_SPEED)
                 else:
                     self.move(-WALK_SPEED)
@@ -245,8 +256,8 @@ class Player(livingobject.LivingObject):
                 self.climb(room, -LADDER_SPEED)
             if keys_down[pygame.K_DOWN]:
                 self.sliding = True
-                if not keys_down[pygame.K_LEFT] and \
-                        not keys_down[pygame.K_RIGHT]:
+                if not keys_down[pygame.K_LEFT] and not keys_down[
+                        pygame.K_RIGHT]:
                     self.crouch()
                     self.climb(room, LADDER_SPEED)
 
@@ -267,7 +278,8 @@ class Player(livingobject.LivingObject):
             if not keys_down[pygame.K_s]:
                 self.attack_buffer = True
         if input_hand.keys_pressed[pygame.K_r]:
-            self.reset(room)
+            room.reset()
+            self.reset()
 
     def move(self, velocity):
         if not self.climbing_ladder:
@@ -338,16 +350,18 @@ class Player(livingobject.LivingObject):
         if self.climbing_ladder:
             self.dy = speed
 
-    def reset(self, room):
-        room.reset()
+    def reset(self):
         self.base_dx = self.base_dy = 0
         self.x = self.save.x
         self.y = self.save.y
+        self.collider.x = self.x
+        self.collider.y = self.y
         self.room_x = self.save.room_x
         self.room_y = self.save.room_y
         if self.direction is not self.save.direction:
             self.flip()
         self.abilities = self.save.abilities.copy()
+        self.weapon_mods = self.save.weapon_mods.copy()
         self.dx = 0
         self.dy = 0
         self.bullets.clear()
@@ -408,7 +422,7 @@ class Player(livingobject.LivingObject):
         if self.abilities[p.ability] is False:
             self.abilities[p.ability] = True
             self.txtbox.set_string(
-                p.ability.name.upper() + '\\' + p.text)
+                    p.ability.name.upper() + '\\' + p.text)
             self.txtbox.time = 120
             if p.ability.name in self.weapon_mods:
                 self.weapon_mods[p.ability.name] = True
@@ -574,12 +588,15 @@ class Player(livingobject.LivingObject):
                 size = 2
 
             self.bullets.append(
-                bullet.Bullet(x, y, BULLET_SPEED, angle + spread, grav, dist, size))
+                    bullet.Bullet(x, y, BULLET_SPEED, angle + spread, grav,
+                                  dist, size))
             if self.weapon_mods[WeaponMod.triple]:
                 self.bullets.append(bullet.Bullet(x, y, BULLET_SPEED,
-                                    angle + 22.5 + spread, grav, dist, size))
+                                                  angle + 22.5 + spread, grav,
+                                                  dist, size))
                 self.bullets.append(bullet.Bullet(x, y, BULLET_SPEED,
-                                    angle - 22.5 + spread, grav, dist, size))
+                                                  angle - 22.5 + spread, grav,
+                                                  dist, size))
 
             if not self.weapon_mods[WeaponMod.rapid]:
                 self.attack_buffer = False

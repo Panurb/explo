@@ -52,7 +52,7 @@ class Bullet(gameobject.PhysicsObject):
                     vert = False
 
                 if type(c.obj) is tile.Destroyable:
-                    c.destroy()
+                    c.obj.destroy()
 
                 if isinstance(c.obj, enemy.Enemy):
                     c.obj.damage(1, 0, 0)

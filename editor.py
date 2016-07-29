@@ -1,18 +1,36 @@
 import pygame
 import helpers
 import textbox
+import collections
 
-OBJECTS = ['W', 'G', 'R', 'M', 'I', 'P', 'V', 'F', 'D', '#', '~', '=', 'C',
-           '*',
-           'c', 'z', 's', 'f', 'h', '0', '1', '2', '3',
-           '4', '5', '6', '7']
-OBJECT_NAMES = ['WALL', 'GROUND', 'ROCK', 'METAL', 'ICE', 'PLATFORM',
-                'VERTICAL PLATFORM', 'FALLING PLATFORM', 'DESTROYABLE',
-                'LADDER',
-                'SURFACE', 'WATER', 'CHECKPOINT', 'THORNS', 'CRAWLER',
-                'ZOMBIE', 'SPAWNER', 'FLYER', 'CHARGER', 'RUN',
-                'DOUBLE JUMP', 'WALL JUMP', 'GUN', 'REBREATHER', 'FULL AUTO',
-                'SPREAD', 'GRAVITY']
+OBJECTS = (('W', 'WALL'),
+           ('G', 'GROUND'),
+           ('R', 'ROCK'),
+           ('M', 'METAL'),
+           ('I', 'ICE'),
+           ('P', 'PLATFORM'),
+           ('V', 'VERTICAL PLATFORM'),
+           ('F', 'FALLING PLATFORM'),
+           ('D', 'DESTROYABLE'),
+           ('#', 'LADDER'),
+           ('~', 'SURFACE'),
+           ('=', 'WATER'),
+           ('C', 'CHECKPOINT'),
+           ('*', 'THORNS'),
+           ('c', 'CRAWLER'),
+           ('z', 'ZOMBIE'),
+           ('s', 'SPWANER'),
+           ('f', 'FLYER'),
+           ('h', 'CHARGER'),
+           ('d', 'DROPPER'),
+           ('0', 'RUN'),
+           ('1', 'DOUBLE JUMP'),
+           ('2', 'WALL JUMP'),
+           ('3', 'GUN'),
+           ('4', 'REBREATHER'),
+           ('5', 'FULL AUTO'),
+           ('6', 'SPREAD'),
+           ('7', 'GRAVITY'))
 
 
 class Editor:
@@ -20,7 +38,7 @@ class Editor:
         self.room_x = x
         self.room_y = y
         self.object = 0
-        self.text = textbox.Textbox(OBJECT_NAMES[self.object],
+        self.text = textbox.Textbox(OBJECTS[self.object][1],
                                     0.5 * helpers.SCREEN_WIDTH, 0)
 
     def input(self, lvl, input_hand):
@@ -30,7 +48,7 @@ class Editor:
 
             # TODO: Remove objects according to object size
             room.remove_object(x, y)
-            char = OBJECTS[self.object]
+            char = OBJECTS[self.object][0]
 
             room.add_object(x, y, char)
             room.update_visuals()
@@ -49,13 +67,13 @@ class Editor:
                 self.object = len(OBJECTS) - 1
 
         if input_hand.mouse_pressed[5] or input_hand.keys_pressed[
-            pygame.K_PERIOD]:
+                pygame.K_PERIOD]:
             if self.object < len(OBJECTS) - 1:
                 self.object += 1
             else:
                 self.object = 0
 
-        self.text.set_string(OBJECT_NAMES[self.object])
+        self.text.set_string(OBJECTS[self.object][1])
 
         if input_hand.keys_pressed[pygame.K_UP]:
             self.room_y -= 1

@@ -55,8 +55,8 @@ class Wall(gameobject.GameObject):
 
 class Ladder(gameobject.GameObject):
     def __init__(self, x, y):
-        gameobject.GameObject.__init__(self, x, y, helpers.TILE_SIZE,
-                                       helpers.TILE_SIZE, ['ladder'])
+        super().__init__(x, y, helpers.TILE_SIZE, helpers.TILE_SIZE,
+                         ['ladder'])
         self.top = True
         self.destroyed = False
 
@@ -72,7 +72,7 @@ class Ladder(gameobject.GameObject):
 
 class Spike(Wall):
     def __init__(self, x, y, index):
-        Wall.__init__(self, x, y, 'thorns')
+        super().__init__(x, y, 'thorns')
         for s in self.sprites:
             s.show_frame('idle', index)
         self.path = 'spike'
@@ -80,7 +80,8 @@ class Spike(Wall):
 
 class Checkpoint(gameobject.GameObject):
     def __init__(self, x, y):
-        gameobject.GameObject.__init__(self, x, y, helpers.TILE_SIZE, 2 * helpers.TILE_SIZE, ['checkpoint'])
+        super().__init__(x, y, helpers.TILE_SIZE, 2 * helpers.TILE_SIZE,
+                         ['checkpoint'])
         for s in self.sprites:
             s.show_frame('idle', 0)
 
@@ -89,8 +90,7 @@ class Checkpoint(gameobject.GameObject):
 
 class Water(gameobject.GameObject):
     def __init__(self, x, y, surface):
-        gameobject.GameObject.__init__(self, x, y, helpers.TILE_SIZE,
-                                       helpers.TILE_SIZE, ['water'])
+        super().__init__(x, y, helpers.TILE_SIZE, helpers.TILE_SIZE, ['water'])
         self.surface = surface
 
         if self.surface:
@@ -106,16 +106,19 @@ class Water(gameobject.GameObject):
 
 class Destroyable(Wall):
     def __init__(self, x, y):
-        Wall.__init__(self, x, y, 'destroyable')
+        super().__init__(x, y, 'destroyable')
         self.destroyed = False
         self.debris = []
 
     def update(self, room):
         if not self.destroyed:
-            self.play('idle')
+            for s in self.sprites:
+                s.play('idle')
         else:
-            self.play('explode')
-            self.debris.update(room)
+            for s in self.sprites:
+                s.play('explode')
+            for d in self.debris:
+                d.update(room)
 
     def animate(self):
         for s in self.sprites:
@@ -125,21 +128,29 @@ class Destroyable(Wall):
                 s.play('explode')
 
     def destroy(self):
-        self.debris.append(physicsobject.Debris(self.x, self.y, 5, 5, 'idle',
-                                                'destroyable_debris'))
-        self.debris.append(physicsobject.Debris(self.x, self.y, 5, -5, 'idle',
-                                                'destroyable_debris'))
-        self.debris.append(physicsobject.Debris(self.x, self.y, -5, 5, 'idle',
-                                                'destroyable_debris'))
-        self.debris.append(physicsobject.Debris(self.x, self.y, -5, -5, 'idle',
-                                                'destroyable_debris'))
+        self.add_debris(5, 5)
+        self.add_debris(5, -5)
+        self.add_debris(-5, 5)
+        self.add_debris(-5, -5)
+
         self.destroyed = True
+
+    def add_debris(self, dx, dy):
+        debris = physicsobject.Debris(self.x, self.y, dx, dy, 'idle',
+                                      'destroyable_debris')
+        self.debris.append(debris)
 
     def reset(self):
         self.destroyed = False
         self.debris.clear()
 
     def draw(self, screen, img_hand):
-        Wall.draw(self, screen, img_hand)
+        super().draw(screen, img_hand)
         for d in self.debris:
             d.draw(screen, img_hand)
+
+
+class Spring(Wall):
+    def __init__(self, x, y):
+        super().__init__(x, y, 'spring')
+        self.bounce_scale = 1

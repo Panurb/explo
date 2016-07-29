@@ -4,7 +4,7 @@ import particle
 import math
 
 
-class LivingObject(gameobject.PhysicsObject):
+class Creature(gameobject.PhysicsObject):
     def __init__(self, x, y, width, height, path, group, health=1):
         super().__init__(x, y, width, height, 0, 0, path, group)
         self.health = health
@@ -61,8 +61,9 @@ class LivingObject(gameobject.PhysicsObject):
 
 class Gib(gameobject.PhysicsObject):
     def __init__(self, x, y, dx, dy, part, path):
-        super().__init__(x, y, 0.5 * helpers.TILE_SIZE,
-                         0.5 * helpers.TILE_SIZE, dx, dy, [path])
+        width = 4 * helpers.SCALE
+        height = 4 * helpers.SCALE
+        super().__init__(x, y, width, height, dx, dy, [path])
 
         self.alive = True
         self.dx = dx
