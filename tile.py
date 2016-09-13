@@ -1,7 +1,5 @@
-import animatedsprite
 import gameobject
 import helpers
-import physicsobject
 
 
 class Wall(gameobject.GameObject):
@@ -136,7 +134,7 @@ class Destroyable(Wall):
         self.destroyed = True
 
     def add_debris(self, dx, dy):
-        debris = physicsobject.Debris(self.x, self.y, dx, dy, 'idle',
+        debris = gameobject.Debris(self.x, self.y, dx, dy, 'idle',
                                       'destroyable_debris')
         self.debris.append(debris)
 
@@ -152,5 +150,9 @@ class Destroyable(Wall):
 
 class Spring(Wall):
     def __init__(self, x, y):
-        super().__init__(x, y, 'spring')
+        super().__init__(x, y, 'ladder')
+        self.group = gameobject.CollisionGroup.springs
         self.bounce_scale = 1
+
+    def reset(self):
+        pass

@@ -82,7 +82,7 @@ class Enemy(creature.Creature):
         if self.alive:
             for c in self.collisions:
                 if type(c.obj) is tile.Spike:
-                    self.damage(-self.dx, -self.dy)
+                    self.damage(1, -self.dx, -self.dy)
 
                 player = room.level.player
                 if c.obj is player:
@@ -267,7 +267,6 @@ class Flyer(Enemy):
         self.speed = 0.5 * helpers.SCALE
         self.dx = self.speed
         self.gravity_scale = 0
-        self.bounce = 1
 
     def update(self, room):
         super().update(room)

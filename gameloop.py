@@ -44,7 +44,11 @@ class GameLoop:
 
     def update(self, clock):
         self.input_hand.update()
+        old_state = self.state
         self.change_state()
+        if self.state is not old_state:
+            self.level_select_menu.update()
+            self.editor_select_menu.update()
 
         if self.state is State.menu:
             self.level = None
@@ -82,13 +86,14 @@ class GameLoop:
                 self.level.rooms[last_room].reset()
         elif self.state is State.editor:
             if self.level is None:
-                if self.editor_select_menu.level_name != '':
-                    self.level = level.Level(self.editor_select_menu.level_name)
+                if self.editor_select_menu.level_name:
+                    name = self.editor_select_menu.level_name
+                    self.level = level.Level(name)
                 else:
-                    self.level = level.Level(
-                            self.level_creation_menu.input_name.txtbox.string)
-                self.editor = editor.Editor(
-                        self.level.player.room_x, self.level.player.room_y)
+                    name = self.level_creation_menu.input_name.txtbox.string
+                    self.level = level.Level(name)
+                self.editor = editor.Editor(self.level.player.room_x,
+                                            self.level.player.room_y)
             try:
                 self.editor.input(self.level, self.input_hand)
                 self.level.room(self.editor.room_x,

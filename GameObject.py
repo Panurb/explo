@@ -1,11 +1,50 @@
 from enum import Enum
+import math
 
 import pygame
+
 import animatedsprite
 import collision
 import helpers
-import math
 import platform
+
+# COLLISION MATRIX
+#
+#           p   b   e   w   d   c   s
+# player    -   -   X   X   -   X   X
+# bullets   -   -   X   X   -   X   -
+# enemies   X   X   -   X   -   -   X
+# walls     -   -   -   X   -   -   -
+# debris    -   -   -   X   -   -   -
+# chaser    X   X   -   -   -   -   -
+# springs   -   -   -   -   -   -   -
+
+COLLISION_MATRIX = [[False, False, True, True, False, True, True],
+                    [False, False, True, True, False, True, False],
+                    [True, True, False, True, False, False, True],
+                    [False, True, True, True, True, False, False],
+                    [False, False, False, True, False, False, False],
+                    [True, True, False, False, False, False, False],
+                    [False, False, False, False, False, False, False]]
+
+# BOUNCE MATRIX
+#
+#           p   b   e   w   d   c   s
+# player    0   0   0   0   0   0   1
+# bullets   0   0   0   1   0   0   0
+# enemies   0   0   0  0.5  0   0   1
+# walls     0   0   0   1   0   0   0
+# debris    0   0   0  0.5  0   0   0
+# chaser    0   0   0   0   0   0   0
+# springs   0   0   0   0   0   0   0
+
+BOUNCE_MATRIX = [[0, 0, 0, 0, 0, 0, 1],
+                 [0, 0, 0, 1, 0, 0, 0],
+                 [0, 0, 0, 0.5, 0, 0, 1],
+                 [0, 0, 0, 1, 0, 0, 0],
+                 [0, 0, 0, 0.5, 0, 0, 1],
+                 [0, 0, 0, 0, 0, 0, 0],
+                 [0, 0, 0, 0, 0, 0, 0]]
 
 
 class CollisionGroup:
@@ -16,6 +55,7 @@ class CollisionGroup:
     walls = 5
     debris = 6
     chaser = 7
+    springs = 8
 
 
 class Direction(Enum):
@@ -48,30 +88,6 @@ class GameObject:
         for s in self.sprites:
             s.animate()
 
-    def collides_with(self, obj):
-        # COLLISION MATRIX
-        #
-        #           p   b   e   w   d   c
-        # player    -   -   X   X   -   X
-        # bullets   -   -   X   X   -   X
-        # enemies   X   X   -   X   -   -
-        # walls     -   X   X   X   X   -
-        # debris    -   -   -   X   -   -
-        # chaser    X   X   -   -   -   -
-
-        matrix = [[False, False, True,  True,  False, True],
-                  [False, False, True,  True,  False, True],
-                  [True,  True,  False, True,  False, False],
-                  [False, True,  True,  True,  True,  False],
-                  [False, False, False, True,  False, False],
-                  [True,  True,  False, False, False, False]]
-
-        if self.group is CollisionGroup.none:
-            return False
-        else:
-            # off by 2 because enums start at 1 and first is none
-            return matrix[self.group - 2][obj.group - 2]
-
     def draw(self, screen, img_hand):
         for s in self.sprites:
             s.set_position(self.x, self.y)
@@ -91,9 +107,10 @@ class GameObject:
             if w is not self and collider.colliderect(w.collider):
                 collisions.append(w)
 
-        for s in room.spikes:
-            if s is not self and collider.colliderect(s.collider):
-                collisions.append(s)
+        if not collisions:
+            for s in room.spikes:
+                if s is not self and collider.colliderect(s.collider):
+                    collisions.append(s)
 
         for d in room.dynamic_objects:
             if collider.colliderect(d.collider):
@@ -129,7 +146,6 @@ class PhysicsObject(GameObject):
         self.collisions = []
 
         self.gravity_scale = 1.0
-        self.bounce_scale = 0.5
         self.friction = 0
 
         self.wall_collision = False
@@ -158,6 +174,20 @@ class PhysicsObject(GameObject):
                 self.base_dy = c.obj.dy
                 break
 
+    def collides_with(self, obj):
+        if self.group is CollisionGroup.none:
+            return False
+        else:
+            # off by 2 because enums start at 1 and first is none
+            return COLLISION_MATRIX[self.group - 2][obj.group - 2]
+
+    def bounce_scale(self, obj):
+        if self.group is CollisionGroup.none:
+            return -1
+        else:
+            # off by 2 because enums start at 1 and first is none
+            return BOUNCE_MATRIX[self.group - 2][obj.group - 2]
+
     def move_x(self, room):
         self.x += self.base_dx + self.dx
         self.collider.x = self.x
@@ -165,25 +195,29 @@ class PhysicsObject(GameObject):
         collisions = self.get_collisions(room)
         collisions = [c for c in collisions if self.collides_with(c)]
 
+        bounce_scale = 0
+
         for c in collisions:
-            if type(c) is PhysicsObject:
-                relative_vel = c.dx - self.base_dx - self.dx
-            else:
-                relative_vel = self.base_dx + self.dx
+            relative_vel = self.base_dx + self.dx
+            if isinstance(c, PhysicsObject):
+                relative_vel -= c.dx
 
             if relative_vel > 0:
                 self.collider.right = c.collider.left
                 self.x = self.collider.x
                 self.collisions.append(
-                    collision.Collision(c, collision.Direction.right))
+                        collision.Collision(c, collision.Direction.right))
             elif relative_vel < 0:
                 self.collider.left = c.collider.right
                 self.x = self.collider.x
                 self.collisions.append(
-                    collision.Collision(c, collision.Direction.left))
+                        collision.Collision(c, collision.Direction.left))
+
+            if c.group is not CollisionGroup.springs:
+                bounce_scale = self.bounce_scale(c)
 
         if collisions:
-            self.dx *= -self.bounce_scale
+            self.dx *= -bounce_scale
             self.wall_collision = True
         else:
             self.wall_collision = False
@@ -195,11 +229,12 @@ class PhysicsObject(GameObject):
         collisions = self.get_collisions(room)
         collisions = [c for c in collisions if self.collides_with(c)]
 
+        bounce_scale = 0
+
         for c in collisions:
-            if type(c) is PhysicsObject:
-                relative_vel = c.dy - self.base_dy - self.dy
-            else:
-                relative_vel = self.base_dy + self.dy
+            relative_vel = self.base_dy + self.dy
+            if isinstance(c, PhysicsObject):
+                relative_vel -= c.dy
 
             if relative_vel > 0:
                 self.collider.bottom = c.collider.top
@@ -207,16 +242,21 @@ class PhysicsObject(GameObject):
                 self.ground_collision = True
                 self.friction = c.friction
                 self.collisions.append(
-                    collision.Collision(c, collision.Direction.down))
+                        collision.Collision(c, collision.Direction.down))
             elif relative_vel < 0:
                 self.collider.top = c.collider.bottom
                 self.y = self.collider.y
                 self.ceiling_collision = True
                 self.collisions.append(
-                    collision.Collision(c, collision.Direction.up))
+                        collision.Collision(c, collision.Direction.up))
+
+            if c.group is CollisionGroup.springs:
+                bounce_scale = 3 * helpers.SCALE / self.dy
+            else:
+                bounce_scale = self.bounce_scale(c)
 
         if collisions:
-            self.dy *= -self.bounce_scale
+            self.dy *= -bounce_scale
         else:
             self.ground_collision = False
             self.ceiling_collision = False

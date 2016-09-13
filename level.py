@@ -4,7 +4,6 @@ import animatedsprite
 import enemy
 import helpers
 import player
-import player_old
 import powerup
 import tile
 
@@ -12,9 +11,10 @@ import tile
 class Level:
     def __init__(self, filename):
         self.path = 'data/lvl/' + filename + '.txt'
-        file = open(self.path, 'a+')
-        file.seek(0)
-        lines = file.readlines()
+        f = open(self.path, 'a+')
+        f.seek(0)
+        lines = f.readlines()
+        f.close()
 
         self.rooms = {}
         room = []
@@ -112,6 +112,7 @@ class Level:
                 else:
                     tilemap[w.y // helpers.TILE_SIZE][w.x // helpers.TILE_SIZE] = '='
             for d in room.dynamic_objects:
+                # TODO: separate lists for all of these
                 if type(d) is tile.Destroyable:
                     tilemap[d.y // helpers.TILE_SIZE][d.x // helpers.TILE_SIZE] = 'D'
                 elif type(d) is platform.Platform:
@@ -121,6 +122,10 @@ class Level:
                         tilemap[d.y // helpers.TILE_SIZE][d.x // helpers.TILE_SIZE] = 'P'
                 elif type(d) is platform.FallingPlatform:
                     tilemap[d.y // helpers.TILE_SIZE][d.x // helpers.TILE_SIZE] = 'F'
+                elif type(d) is tile.Spring:
+                    tilemap[d.y // helpers.TILE_SIZE][d.x // helpers.TILE_SIZE] = 'Z'
+
+
 
             empty = True
             for row in tilemap:
@@ -289,6 +294,8 @@ class Room:
             self.checkpoints.append(tile.Checkpoint(x, y))
         elif char == '*':
             self.spikes.append(tile.Spike(x, y, 0))
+        elif char == 'Z':
+            self.dynamic_objects.append(tile.Spring(x, y))
         elif char == 'D':
             self.dynamic_objects.append(tile.Destroyable(x, y))
         elif char == 'c':
@@ -302,21 +309,21 @@ class Room:
         elif char == 'h':
             self.enemies.append(enemy.Charger(x, y))
         elif char == '0':
-            self.powerups.append(powerup.Powerup(x, y, player_old.Ability.run))
+            self.powerups.append(powerup.Powerup(x, y, player.Ability.run))
         elif char == '1':
-            self.powerups.append(powerup.Powerup(x, y, player_old.Ability.double_jump))
+            self.powerups.append(powerup.Powerup(x, y, player.Ability.double_jump))
         elif char == '2':
-            self.powerups.append(powerup.Powerup(x, y, player_old.Ability.wall_jump))
+            self.powerups.append(powerup.Powerup(x, y, player.Ability.wall_jump))
         elif char == '3':
-            self.powerups.append(powerup.Powerup(x, y, player_old.Ability.gun))
+            self.powerups.append(powerup.Powerup(x, y, player.Ability.gun))
         elif char == '4':
-            self.powerups.append(powerup.Powerup(x, y, player_old.Ability.rebreather))
+            self.powerups.append(powerup.Powerup(x, y, player.Ability.rebreather))
         elif char == '5':
-            self.powerups.append(powerup.Powerup(x, y, player_old.Ability.full_auto))
+            self.powerups.append(powerup.Powerup(x, y, player.Ability.full_auto))
         elif char == '6':
-            self.powerups.append(powerup.Powerup(x, y, player_old.Ability.spread))
+            self.powerups.append(powerup.Powerup(x, y, player.Ability.spread))
         elif char == '7':
-            self.powerups.append(powerup.Powerup(x, y, player_old.Ability.gravity))
+            self.powerups.append(powerup.Powerup(x, y, player.Ability.gravity))
 
     def remove_object(self, x, y):
         collider = pygame.Rect(x, y, helpers.TILE_SIZE, helpers.TILE_SIZE)

@@ -21,12 +21,13 @@ class ButtonType(enum.Enum):
 
 
 class Menu:
-    def __init__(self):
+    def __init__(self, state):
+        self.state = state
         self.buttons = []
-        self.state = None
 
     def add_button(self, x, y, button_type, text=''):
-        self.buttons.append(Button(x * helpers.TILE_SIZE, y * helpers.TILE_SIZE, button_type, text))
+        self.buttons.append(Button(x * helpers.TILE_SIZE,
+                                   y * helpers.TILE_SIZE, button_type, text))
 
     def draw(self, screen, img_hand):
         for b in self.buttons:
@@ -43,7 +44,7 @@ class Menu:
 
 class MainMenu(Menu):
     def __init__(self):
-        Menu.__init__(self)
+        super().__init__(gameloop.State.menu)
         self.add_button(0, 4, ButtonType.play)
         self.add_button(0, 6, ButtonType.editor)
         self.add_button(0, 8, ButtonType.options)
@@ -51,24 +52,22 @@ class MainMenu(Menu):
 
         self.bg_sprite = animatedsprite.AnimatedSprite('bg')
         self.bg_sprite.play('sky')
-        self.state = gameloop.State.menu
 
     def draw(self, screen, img_hand):
         self.bg_sprite.draw(screen, img_hand)
-        Menu.draw(self, screen, img_hand)
+        super().draw(screen, img_hand)
 
 
 class PauseMenu(Menu):
     def __init__(self):
-        Menu.__init__(self)
+        super().__init__(gameloop.State.paused)
         self.add_button(0, 6, ButtonType.resume)
         self.add_button(0, 8, ButtonType.menu)
-        self.state = gameloop.State.paused
 
 
 class LevelSelectMenu(Menu):
     def __init__(self):
-        Menu.__init__(self)
+        super().__init__(gameloop.State.level_select)
 
         dy = 4
         for filename in os.listdir('data/lvl'):
@@ -78,12 +77,18 @@ class LevelSelectMenu(Menu):
 
         self.bg_sprite = animatedsprite.AnimatedSprite('bg')
         self.bg_sprite.play('sky')
-        self.state = gameloop.State.level_select
         self.level_name = ''
+
+    def update(self):
+        dy = 4
+        for filename in os.listdir('data/lvl'):
+            self.add_button(0, dy, ButtonType.level, filename.replace('.txt', ''))
+            dy += 2
+        self.add_button(0, dy, ButtonType.menu)
 
     def draw(self, screen, img_hand):
         self.bg_sprite.draw(screen, img_hand)
-        Menu.draw(self, screen, img_hand)
+        super().draw(screen, img_hand)
 
     def input(self, input_hand):
         for b in self.buttons:
@@ -98,7 +103,7 @@ class LevelSelectMenu(Menu):
 
 class EditorSelectMenu(Menu):
     def __init__(self):
-        Menu.__init__(self)
+        super().__init__(gameloop.State.editor_select)
         self.add_button(0, 10, ButtonType.menu)
         dy = 2
         for filename in os.listdir('data/lvl'):
@@ -109,12 +114,20 @@ class EditorSelectMenu(Menu):
 
         self.bg_sprite = animatedsprite.AnimatedSprite('bg')
         self.bg_sprite.play('cave')
-        self.state = gameloop.State.editor_select
         self.level_name = ''
+
+    def update(self):
+        self.buttons = []
+        self.add_button(0, 10, ButtonType.menu)
+        dy = 2
+        for filename in os.listdir('data/lvl'):
+            self.add_button(0, 2 * dy, ButtonType.edit, filename.replace('.txt', ''))
+            dy += 1
+        self.add_button(0, 2 * dy, ButtonType.new)
 
     def draw(self, screen, img_hand):
         self.bg_sprite.draw(screen, img_hand)
-        Menu.draw(self, screen, img_hand)
+        super().draw(screen, img_hand)
 
     def input(self, input_hand):
         for b in self.buttons:
@@ -124,25 +137,44 @@ class EditorSelectMenu(Menu):
                         self.level_name = b.txtbox.string
                     return b.press()
 
+        self.level_name = ''
         return self.state
 
 
 class OptionsMenu(Menu):
     def __init__(self):
-        Menu.__init__(self)
+        super().__init__(gameloop.State.options)
         self.bg_sprite = animatedsprite.AnimatedSprite('bg')
         self.bg_sprite.play('sky')
-        self.state = gameloop.State.options
         self.add_button(0, 10, ButtonType.menu)
 
     def draw(self, screen, img_hand):
         self.bg_sprite.draw(screen, img_hand)
-        Menu.draw(self, screen, img_hand)
+        super().draw(screen, img_hand)
+
+
+class LevelCreationMenu(Menu):
+    def __init__(self):
+        super().__init__(gameloop.State.level_creation)
+        self.input_name = TextInput(0, 6)
+        self.add_button(0, 8, ButtonType.create)
+        self.add_button(0, 10, ButtonType.editor, 'BACK')
+        self.bg_sprite = animatedsprite.AnimatedSprite('bg')
+        self.bg_sprite.play('sky')
+
+    def draw(self, screen, img_hand):
+        self.bg_sprite.draw(screen, img_hand)
+        self.input_name.draw(screen, img_hand)
+        super().draw(screen, img_hand)
+
+    def input(self, input_hand):
+        self.input_name.input(input_hand)
+        return super().input(input_hand)
 
 
 class Button(animatedsprite.AnimatedSprite):
     def __init__(self, x, y, button_type, text=''):
-        animatedsprite.AnimatedSprite.__init__(self, 'menu')
+        super().__init__('menu')
         self.rect.x = x + 0.5 * helpers.SCREEN_WIDTH - 16 * helpers.SCALE
         self.rect.y = y
         if text == '':
@@ -154,7 +186,7 @@ class Button(animatedsprite.AnimatedSprite):
         self.play('button')
 
     def draw(self, screen, img_hand):
-        animatedsprite.AnimatedSprite.draw(self, screen, img_hand)
+        super().draw(screen, img_hand)
         self.txtbox.draw(screen, img_hand)
 
     def press(self):
@@ -180,30 +212,9 @@ class Button(animatedsprite.AnimatedSprite):
             return gameloop.State.editor
 
 
-class LevelCreationMenu(Menu):
-    def __init__(self):
-        Menu.__init__(self)
-        self.input_name = TextInput(0, 6)
-        self.add_button(0, 8, ButtonType.create)
-        self.add_button(0, 10, ButtonType.editor, 'BACK')
-        self.state = gameloop.State.level_creation
-        self.bg_sprite = animatedsprite.AnimatedSprite('bg')
-        self.bg_sprite.play('sky')
-
-    def draw(self, screen, img_hand):
-        self.bg_sprite.draw(screen, img_hand)
-        self.input_name.draw(screen, img_hand)
-        Menu.draw(self, screen, img_hand)
-
-    def input(self, input_hand):
-        self.input_name.input(input_hand)
-        Menu.input(self, input_hand)
-        return self.state
-
-
 class TextInput(animatedsprite.AnimatedSprite):
     def __init__(self, x, y):
-        animatedsprite.AnimatedSprite.__init__(self, 'menu')
+        super().__init__('menu')
         self.rect.x = x + 0.5 * helpers.SCREEN_WIDTH - 16 * helpers.SCALE
         self.rect.y = y * helpers.TILE_SIZE
         self.txtbox = textbox.Textbox('', self.rect.centerx, self.rect.y)
@@ -212,7 +223,7 @@ class TextInput(animatedsprite.AnimatedSprite):
         self.play('button')
 
     def draw(self, screen, img_hand):
-        animatedsprite.AnimatedSprite.draw(self, screen, img_hand)
+        super().draw(screen, img_hand)
         self.txtbox.draw(screen, img_hand)
 
     def input(self, input_hand):

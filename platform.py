@@ -8,7 +8,6 @@ class Platform(gameobject.PhysicsObject):
         super().__init__(x, y, 3 * helpers.TILE_SIZE, helpers.TILE_SIZE, 0, 0,
                          ['platform'], gameobject.CollisionGroup.walls)
         self.gravity_scale = 0
-        self.bounce_scale = 1
         self.vertical = vertical
         self.friction = 0.125 * helpers.SCALE
         self.slide_speed = 0.25 * helpers.SCALE

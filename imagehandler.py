@@ -28,6 +28,7 @@ SIZES = {
     'powerup': (8, 8),
     'rock': (8, 8),
     'spawner': (16, 16),
+    # 'spring': (8, 16),
     'thorns': (8, 8),
     'wall': (8, 8),
     'water': (8, 8),
@@ -154,6 +155,10 @@ ACTIONS = {
         ['idle', 1],
         ['die', 2]
     ],
+    # 'spring': [
+    #     ['idle', 1],
+    #     ['bounce', 4]
+    # ],
     'thorns': [
         ['idle', 16]
     ],

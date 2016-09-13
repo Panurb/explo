@@ -50,7 +50,6 @@ class Player(creature.Creature):
         paths = ['player_body', 'player_legs']
         super().__init__(self.x, self.y, WIDTH, HEIGHT, paths,
                          gameobject.CollisionGroup.player)
-        self.bounce_scale = 0
 
         self.alive = True
         self.moving = False
@@ -115,7 +114,7 @@ class Player(creature.Creature):
         for c in self.collisions:
             if isinstance(c.obj, enemy.Enemy):
                 self.damage(1, 0, 0)
-            elif isinstance(c.obj, tile.Spike):
+            elif type(c.obj) is tile.Spike:
                 self.damage(1, 0, 0)
 
     def apply_saving(self, room):
@@ -380,6 +379,8 @@ class Player(creature.Creature):
                 self.dy += helpers.GRAVITY
                 self.dy = min(self.dy, helpers.TERMINAL_VELOCITY)
         elif not self.jump_buffer and self.dy < 0:
+            # jump higher when holding down
+            # TODO: disable when bouncing on spring
             self.dy += helpers.GRAVITY / 2
         else:
             self.dy += helpers.GRAVITY

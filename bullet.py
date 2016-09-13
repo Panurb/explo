@@ -18,7 +18,6 @@ class Bullet(gameobject.PhysicsObject):
 
         self.alive = True
         self.particles = []
-        self.bounce_scale = 1
         self.gravity_scale = gravity_scale
         self.dist = dist
         self.lifetime = 0

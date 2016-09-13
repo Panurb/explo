@@ -17,14 +17,16 @@ class Creature(gameobject.PhysicsObject):
 
         super().update(room)
 
-        if abs(self.x - last_x) > 0.5 * self.collider.width:
-            self.x = last_x
-            self.collider.x = self.x
-            self.die()
-        if abs(self.y - last_y) > 0.5 * self.collider.height:
-            self.y = last_y
-            self.collider.y = self.y
-            self.die()
+        for c in self.collisions:
+            if c.obj.group is not gameobject.CollisionGroup.springs:
+                if abs(self.x - last_x) > 0.5 * self.collider.width:
+                    #self.x = last_x
+                    #self.collider.x = self.x
+                    self.die()
+                if abs(self.y - last_y) > 0.5 * self.collider.height:
+                    #self.y = last_y
+                    #self.collider.y = self.y
+                    self.die()
 
         for g in self.gibs:
             g.update(room)
@@ -71,7 +73,6 @@ class Gib(gameobject.PhysicsObject):
         for s in self.sprites:
             s.play(part, 0)
         self.collision_enabled = False
-        self.bounce = 0.5
         self.friction = 0.75 * helpers.SCALE
         self.trail = []
 

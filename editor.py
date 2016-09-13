@@ -1,7 +1,6 @@
 import pygame
 import helpers
 import textbox
-import collections
 
 OBJECTS = (('W', 'WALL'),
            ('G', 'GROUND'),
@@ -17,6 +16,7 @@ OBJECTS = (('W', 'WALL'),
            ('=', 'WATER'),
            ('C', 'CHECKPOINT'),
            ('*', 'THORNS'),
+           ('Z', 'SPRING'),
            ('c', 'CRAWLER'),
            ('z', 'ZOMBIE'),
            ('s', 'SPWANER'),
