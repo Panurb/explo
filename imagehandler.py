@@ -2,7 +2,7 @@ import helpers
 
 
 SIZES = {
-    'bg': (160, 120),
+    'bg': (8, 8),
     'bullet': (8, 8),
     'charger': (16, 16),
     'charger_gibs': (8, 8),
@@ -15,6 +15,7 @@ SIZES = {
     'flyer': (8, 8),
     'ground': (8, 8),
     'ice': (8, 8),
+    'image': (160, 120),
     'ladder': (8, 8),
     'map': (14, 12),
     'menu': (32, 8),
@@ -28,7 +29,7 @@ SIZES = {
     'powerup': (8, 8),
     'rock': (8, 8),
     'spawner': (16, 16),
-    # 'spring': (8, 16),
+    'spring': (8, 16),
     'thorns': (8, 8),
     'wall': (8, 8),
     'water': (8, 8),
@@ -39,7 +40,9 @@ SIZES = {
 ACTIONS = {
     'bg': [
         ['sky', 1],
-        ['cave', 1]
+        ['metal', 3],
+        ['ground', 3],
+        ['rock', 3],
     ],
     'bullet': [
         ['idle', 3]
@@ -68,7 +71,8 @@ ACTIONS = {
     'crawler': [
         ['idle', 4],
         ['die', 4],
-        ['shrapnel', 1]
+        ['shrapnel', 1],
+        ['damage', 2]
     ],
     'destroyable': [
         ['idle', 1],
@@ -85,6 +89,10 @@ ACTIONS = {
     ],
     'ice': [
         ['idle', 16]
+    ],
+    'image': [
+        ['menu', 1],
+        ['game', 1]
     ],
     'ladder': [
         ['idle', 1]
@@ -155,10 +163,10 @@ ACTIONS = {
         ['idle', 1],
         ['die', 2]
     ],
-    # 'spring': [
-    #     ['idle', 1],
-    #     ['bounce', 4]
-    # ],
+    'spring': [
+        ['idle', 1],
+        ['bounce', 5]
+    ],
     'thorns': [
         ['idle', 16]
     ],
@@ -194,7 +202,9 @@ class ImageHandler:
             row = 0
             for animation in ACTIONS[name]:
                 length = animation[1]
-                animations[animation[0]] = helpers.row_to_tiles(image, SIZES[name][0], SIZES[name][1], row, length)
+                tiles = helpers.row_to_tiles(image, SIZES[name][0],
+                                             SIZES[name][1], row, length)
+                animations[animation[0]] = tiles
                 row += 1
 
             self.animations[name] = animations

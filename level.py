@@ -169,11 +169,17 @@ class Room:
     def __init__(self, level, tilemap, x, y):
         self.level = level
 
-        self.bg = 'sky'
-        self.bg_sprite = animatedsprite.AnimatedSprite('bg')
-        self.bg_sprite.play(self.bg)
+        self.bg = []
+        for i in range(0, helpers.SCREEN_WIDTH, helpers.TILE_SIZE):
+            row = []
+            for j in range(0, helpers.SCREEN_HEIGHT, helpers.TILE_SIZE):
+                sprite = animatedsprite.AnimatedSprite('bg')
+                sprite.set_position(i, j)
+                sprite.show_frame('sky', 0)
+                row.append(sprite)
+            self.bg.append(row)
 
-        self.walls = list()
+        self.walls = [[None] * helpers.ROOM_WIDTH for i in range(helpers.ROOM_HEIGHT)]
         self.ladders = list()
         self.spikes = list()
         self.enemies = list()
@@ -181,6 +187,7 @@ class Room:
         self.powerups = list()
         self.water = list()
         self.dynamic_objects = list()
+
         self.x = x
         self.y = y
         self.player_x = 0
@@ -203,6 +210,41 @@ class Room:
                         self.player_x = x
                         self.player_y = y
 
+        for row in self.walls:
+            for wall in row:
+                if wall is None:
+                    continue
+
+                x = int(wall.x / helpers.TILE_SIZE)
+                y = int(wall.y / helpers.TILE_SIZE)
+
+                for i in range(-2, 3):
+                    for j in range(-2, 3):
+                        if x + i < 0 or x + i >= helpers.ROOM_WIDTH:
+                            break
+                        if y + j < 0 or y + j >= helpers.ROOM_HEIGHT:
+                            continue
+
+                        if i < 0 and self.walls[y][x - 1] is not None:
+                            break
+                        if i > 0 and self.walls[y][x + 1] is not None:
+                            break
+                        if j < 0 and self.walls[y - 1][x] is not None:
+                            continue
+                        if j > 0 and self.walls[y + 1][x] is not None:
+                            continue
+
+                        action = wall.path
+                        frame = self.bg[x + i][y + j].frame
+                        if abs(i) == 2 and abs(j) == 2:
+                            continue
+                        else:
+                            dist = 2 - max(abs(i), abs(j))
+                        frame = max(frame, dist)
+                        if self.bg[x + i][y + j].action == 'sky' \
+                                or self.bg[x + i][y + j].action == action:
+                            self.bg[x + i][y + j].show_frame(action, frame)
+
     def update(self):
         for e in self.enemies:
             e.update(self)
@@ -216,8 +258,10 @@ class Room:
             w.update(self)
 
     def update_visuals(self):
-        for w in self.walls:
-            w.update(self)
+        for row in self.walls:
+            for w in row:
+                if w is not None:
+                    w.update(self)
         for s in self.spikes:
             s.update(self)
         for l in self.ladders:
@@ -230,12 +274,16 @@ class Room:
             d.reset()
 
     def draw(self, screen, img_hand):
-        self.bg_sprite.draw(screen, img_hand)
+        for row in self.bg:
+            for sprite in row:
+                sprite.draw(screen, img_hand)
 
         for c in self.checkpoints:
             c.draw(screen, img_hand)
-        for w in self.walls:
-            w.draw(screen, img_hand)
+        for row in self.walls:
+            for w in row:
+                if w is not None:
+                    w.draw(screen, img_hand)
         for l in self.ladders:
             l.draw(screen, img_hand)
         for s in self.spikes:
@@ -252,8 +300,10 @@ class Room:
     def debug_draw(self, screen):
         for c in self.checkpoints:
             c.debug_draw(screen)
-        for w in self.walls:
-            w.debug_draw(screen)
+        for row in self.walls:
+            for w in row:
+                if w is not None:
+                    w.debug_draw(screen)
         for l in self.ladders:
             l.debug_draw(screen)
         for s in self.spikes:
@@ -268,16 +318,19 @@ class Room:
             d.debug_draw(screen)
 
     def add_object(self, x, y, char):
+        tile_x = int(x / helpers.TILE_SIZE)
+        tile_y = int(y / helpers.TILE_SIZE)
+
         if char == 'W':
-            self.walls.append(tile.Wall(x, y, 'wall'))
+            self.walls[tile_y][tile_x] = tile.Wall(x, y, 'wall')
         elif char == 'G':
-            self.walls.append(tile.Wall(x, y, 'ground'))
+            self.walls[tile_y][tile_x] = tile.Wall(x, y, 'ground')
         elif char == 'R':
-            self.walls.append(tile.Wall(x, y, 'rock'))
+            self.walls[tile_y][tile_x] = tile.Wall(x, y, 'rock')
         elif char == 'M':
-            self.walls.append(tile.Wall(x, y, 'metal'))
+            self.walls[tile_y][tile_x] = tile.Wall(x, y, 'metal')
         elif char == 'I':
-            self.walls.append(tile.Wall(x, y, 'ice'))
+            self.walls[tile_y][tile_x] = tile.Wall(x, y, 'ice')
         elif char == 'P':
             self.dynamic_objects.append(platform.Platform(x, y))
         elif char == 'V':
@@ -328,7 +381,7 @@ class Room:
     def remove_object(self, x, y):
         collider = pygame.Rect(x, y, helpers.TILE_SIZE, helpers.TILE_SIZE)
 
-        self.walls[:] = [w for w in self.walls if not collider.colliderect(w.collider)]
+        self.walls[int(y / helpers.TILE_SIZE)][int(x / helpers.TILE_SIZE)] = None
         self.ladders[:] = [x for x in self.ladders if not collider.colliderect(x.collider)]
         self.spikes[:] = [x for x in self.spikes if not collider.colliderect(x.collider)]
         self.enemies[:] = [x for x in self.enemies if not collider.colliderect(x.collider)]

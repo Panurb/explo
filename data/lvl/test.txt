@@ -40,12 +40,12 @@ R--------RRRR-------
 R------RRR----------
 R------RR-----------
 R---RRRR------------
-RR#-----------------
+RR#---R-------------
 RR#-----------------
 RR#-----------------
 RR#-C---------------
 RRR-----0356247-RR--
-RRRRRRRRRRRRRRRRRRRR
+RRRRRRRRRRRRRRRZRRRR
 RRRRRRRRRRRRRRRRRRRR
 RRRRRRRRRRRRRRRRRRRR
 

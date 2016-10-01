@@ -19,31 +19,42 @@ class Wall(gameobject.GameObject):
 
     def update(self, room):
         up = right = down = left = 0
-        for w in room.walls:
-            if self.path != 'spike':
-                if w.path != self.path:
-                    continue
 
-            if w.collider.x == self.collider.x:
-                if w.collider.y == self.collider.y - helpers.TILE_SIZE:
-                    up = 1
-                if w.collider.y == self.collider.y + helpers.TILE_SIZE:
-                    down = 1
+        x = int(self.x / helpers.TILE_SIZE)
+        y = int(self.y / helpers.TILE_SIZE)
 
-            if w.collider.y == self.collider.y:
-                if w.collider.x == self.collider.x + helpers.TILE_SIZE:
-                    right = 1
-                if w.collider.x == self.collider.x - helpers.TILE_SIZE:
-                    left = 1
+        try:
+            if room.walls[y - 1][x].path == self.path:
+                up = 1
+        except (IndexError, AttributeError):
+            pass
 
-        if self.collider.y - helpers.TILE_SIZE < 0:
+        try:
+            if room.walls[y + 1][x].path == self.path:
+                down = 1
+        except (IndexError, AttributeError):
+            pass
+
+        try:
+            if room.walls[y][x + 1].path == self.path:
+                right = 1
+        except (IndexError, AttributeError):
+            pass
+
+        try:
+            if room.walls[y][x - 1].path == self.path:
+                left = 1
+        except (IndexError, AttributeError):
+            pass
+
+        if self.y - helpers.TILE_SIZE < 0:
             up = 1
-        elif self.collider.y + helpers.TILE_SIZE >= helpers.SCREEN_HEIGHT:
+        elif self.y + helpers.TILE_SIZE >= helpers.SCREEN_HEIGHT:
             down = 1
 
-        if self.collider.x + helpers.TILE_SIZE >= helpers.SCREEN_WIDTH:
+        if self.x + helpers.TILE_SIZE >= helpers.SCREEN_WIDTH:
             right = 1
-        elif self.collider.x - helpers.TILE_SIZE < 0:
+        elif self.x - helpers.TILE_SIZE < 0:
             left = 1
 
         self.index = int(str(up) + str(right) + str(down) + str(left), 2)
@@ -71,6 +82,10 @@ class Ladder(gameobject.GameObject):
 class Spike(Wall):
     def __init__(self, x, y, index):
         super().__init__(x, y, 'thorns')
+        self.collider.x = x + helpers.SCALE
+        self.collider.y = y + helpers.SCALE
+        self.collider.width = 6 * helpers.SCALE
+        self.collider.height = 6 * helpers.SCALE
         for s in self.sprites:
             s.show_frame('idle', index)
         self.path = 'spike'
@@ -135,7 +150,7 @@ class Destroyable(Wall):
 
     def add_debris(self, dx, dy):
         debris = gameobject.Debris(self.x, self.y, dx, dy, 'idle',
-                                      'destroyable_debris')
+                                   'destroyable_debris')
         self.debris.append(debris)
 
     def reset(self):
@@ -150,9 +165,19 @@ class Destroyable(Wall):
 
 class Spring(Wall):
     def __init__(self, x, y):
-        super().__init__(x, y, 'ladder')
+        super().__init__(x, y, 'spring')
+        for s in self.sprites:
+            s.offset_y = -8 * helpers.SCALE
         self.group = gameobject.CollisionGroup.springs
         self.bounce_scale = 1
+
+    def update(self, room):
+        self.animate()
+
+    def bounce(self):
+        for s in self.sprites:
+            s.frame = 0
+            s.play_once('bounce')
 
     def reset(self):
         pass

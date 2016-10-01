@@ -46,13 +46,16 @@ class Enemy(creature.Creature):
             return False
 
         on_edge = True
-        for wall in room.walls:
-            if self.dx > 0:
-                if wall.collider.collidepoint(self.collider.bottomright):
-                    on_edge = False
-            elif self.dx < 0:
-                if wall.collider.collidepoint(self.collider.bottomleft):
-                    on_edge = False
+        for row in room.walls:
+            for w in row:
+                if w is None:
+                    continue
+                if self.dx > 0:
+                    if w.collider.collidepoint(self.collider.bottomright):
+                        on_edge = False
+                elif self.dx < 0:
+                    if w.collider.collidepoint(self.collider.bottomleft):
+                        on_edge = False
         return on_edge
 
     def see_player(self, room):
@@ -114,23 +117,35 @@ class Crawler(Enemy):
                          ['crawler'])
 
         self.speed = 0.25 * helpers.SCALE
+        self.stun = 0
 
     def update(self, room):
-        if self.alive:
-            self.dx = self.speed
-
         super().update(room)
 
         if self.alive:
+            if self.stun == 0:
+                self.dx = self.speed
+            else:
+                self.dx = 0
             if self.wall_collision or self.on_edge(room):
                 self.speed = -self.speed
+                self.dx = self.speed
+            if self.stun > 0:
+                self.stun -= 1
+
+    def damage(self, amount, dx=0, dy=0):
+        super().damage(amount, dx, dy)
+        self.stun = 10
 
     def animate(self):
         super().animate()
 
         for s in self.sprites:
             if self.alive:
-                s.play('idle')
+                if self.stun > 0:
+                    s.play('damage')
+                else:
+                    s.play('idle')
             else:
                 s.play_once('die')
 

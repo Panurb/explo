@@ -19,11 +19,13 @@ class Creature(gameobject.PhysicsObject):
 
         for c in self.collisions:
             if c.obj.group is not gameobject.CollisionGroup.springs:
-                if abs(self.x - last_x) > 0.5 * self.collider.width:
+                dx = abs(self.x - last_x)
+                dy = abs(self.y - last_y)
+                if 0.5 * self.collider.width < dx:
                     #self.x = last_x
                     #self.collider.x = self.x
                     self.die()
-                if abs(self.y - last_y) > 0.5 * self.collider.height:
+                if 0.5 * self.collider.height < dy:
                     #self.y = last_y
                     #self.collider.y = self.y
                     self.die()

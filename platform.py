@@ -40,9 +40,12 @@ class Platform(gameobject.PhysicsObject):
 
         collisions = []
 
-        for w in room.walls:
-            if collider.colliderect(w.collider):
-                collisions.append(w)
+        for row in room.walls:
+            for w in row:
+                if w is None:
+                    continue
+                if collider.colliderect(w.collider):
+                    collisions.append(w)
 
         for d in room.dynamic_objects:
             if collider.colliderect(d.collider):

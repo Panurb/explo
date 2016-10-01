@@ -50,8 +50,8 @@ class MainMenu(Menu):
         self.add_button(0, 8, ButtonType.options)
         self.add_button(0, 10, ButtonType.quit)
 
-        self.bg_sprite = animatedsprite.AnimatedSprite('bg')
-        self.bg_sprite.play('sky')
+        self.bg_sprite = animatedsprite.AnimatedSprite('image')
+        self.bg_sprite.play('menu')
 
     def draw(self, screen, img_hand):
         self.bg_sprite.draw(screen, img_hand)
@@ -75,8 +75,8 @@ class LevelSelectMenu(Menu):
             dy += 2
         self.add_button(0, dy, ButtonType.menu)
 
-        self.bg_sprite = animatedsprite.AnimatedSprite('bg')
-        self.bg_sprite.play('sky')
+        self.bg_sprite = animatedsprite.AnimatedSprite('image')
+        self.bg_sprite.play('menu')
         self.level_name = ''
 
     def update(self):
@@ -112,8 +112,8 @@ class EditorSelectMenu(Menu):
 
         self.add_button(0, 2 * dy, ButtonType.new)
 
-        self.bg_sprite = animatedsprite.AnimatedSprite('bg')
-        self.bg_sprite.play('cave')
+        self.bg_sprite = animatedsprite.AnimatedSprite('image')
+        self.bg_sprite.play('menu')
         self.level_name = ''
 
     def update(self):
@@ -144,8 +144,8 @@ class EditorSelectMenu(Menu):
 class OptionsMenu(Menu):
     def __init__(self):
         super().__init__(gameloop.State.options)
-        self.bg_sprite = animatedsprite.AnimatedSprite('bg')
-        self.bg_sprite.play('sky')
+        self.bg_sprite = animatedsprite.AnimatedSprite('image')
+        self.bg_sprite.play('menu')
         self.add_button(0, 10, ButtonType.menu)
 
     def draw(self, screen, img_hand):
@@ -159,8 +159,8 @@ class LevelCreationMenu(Menu):
         self.input_name = TextInput(0, 6)
         self.add_button(0, 8, ButtonType.create)
         self.add_button(0, 10, ButtonType.editor, 'BACK')
-        self.bg_sprite = animatedsprite.AnimatedSprite('bg')
-        self.bg_sprite.play('sky')
+        self.bg_sprite = animatedsprite.AnimatedSprite('image')
+        self.bg_sprite.play('menu')
 
     def draw(self, screen, img_hand):
         self.bg_sprite.draw(screen, img_hand)

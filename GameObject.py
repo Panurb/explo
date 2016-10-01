@@ -10,7 +10,7 @@ import platform
 
 # COLLISION MATRIX
 #
-#           p   b   e   w   d   c   s
+# p   b   e   w   d   c   s
 # player    -   -   X   X   -   X   X
 # bullets   -   -   X   X   -   X   -
 # enemies   X   X   -   X   -   -   X
@@ -103,9 +103,12 @@ class GameObject:
 
         collisions = []
 
-        for w in room.walls:
-            if w is not self and collider.colliderect(w.collider):
-                collisions.append(w)
+        for row in room.walls:
+            for w in row:
+                if w is None:
+                    continue
+                if w is not self and collider.colliderect(w.collider):
+                    collisions.append(w)
 
         if not collisions:
             for s in room.spikes:
@@ -206,12 +209,12 @@ class PhysicsObject(GameObject):
                 self.collider.right = c.collider.left
                 self.x = self.collider.x
                 self.collisions.append(
-                        collision.Collision(c, collision.Direction.right))
+                    collision.Collision(c, collision.Direction.right))
             elif relative_vel < 0:
                 self.collider.left = c.collider.right
                 self.x = self.collider.x
                 self.collisions.append(
-                        collision.Collision(c, collision.Direction.left))
+                    collision.Collision(c, collision.Direction.left))
 
             if c.group is not CollisionGroup.springs:
                 bounce_scale = self.bounce_scale(c)
@@ -242,15 +245,16 @@ class PhysicsObject(GameObject):
                 self.ground_collision = True
                 self.friction = c.friction
                 self.collisions.append(
-                        collision.Collision(c, collision.Direction.down))
+                    collision.Collision(c, collision.Direction.down))
             elif relative_vel < 0:
                 self.collider.top = c.collider.bottom
                 self.y = self.collider.y
                 self.ceiling_collision = True
                 self.collisions.append(
-                        collision.Collision(c, collision.Direction.up))
+                    collision.Collision(c, collision.Direction.up))
 
             if c.group is CollisionGroup.springs:
+                c.bounce()
                 bounce_scale = 3 * helpers.SCALE / self.dy
             else:
                 bounce_scale = self.bounce_scale(c)

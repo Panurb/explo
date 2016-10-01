@@ -82,7 +82,8 @@ class GameLoop:
                 self.level.debug_draw(self.screen)
 
             # Done after drawing to avoid visual glitches on room change
-            if (self.level.player.room_x, self.level.player.room_y) != last_room:
+            if (self.level.player.room_x,
+                    self.level.player.room_y) != last_room:
                 self.level.rooms[last_room].reset()
         elif self.state is State.editor:
             if self.level is None:
@@ -96,16 +97,19 @@ class GameLoop:
                                             self.level.player.room_y)
             try:
                 self.editor.input(self.level, self.input_hand)
-                self.level.room(self.editor.room_x,
-                                self.editor.room_y).draw(self.screen, self.img_hand)
+                room = self.level.room(self.editor.room_x, self.editor.room_y)
+                room.draw(self.screen, self.img_hand)
             except KeyError:
-                room = level.Room([], self.editor.room_x, self.editor.room_y)
-                self.level.rooms[(self.editor.room_x, self.editor.room_y)] = room
+                room = level.Room(self, [], self.editor.room_x,
+                                  self.editor.room_y)
+                self.level.rooms[(self.editor.room_x,
+                                  self.editor.room_y)] = room
 
             self.editor.draw(self.screen, self.img_hand)
 
-        self.clock_text.set_string(str(int(clock.get_fps())))
-        self.clock_text.draw(self.screen, self.img_hand)
+        if self.debug_enabled:
+            self.clock_text.set_string(str(int(clock.get_fps())))
+            self.clock_text.draw(self.screen, self.img_hand)
 
         pygame.display.update()
 

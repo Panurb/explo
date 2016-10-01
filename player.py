@@ -2,8 +2,10 @@ import enum
 import random
 
 import pygame
+import animatedsprite
 
 import bullet
+import collision
 import enemy
 import gameobject
 import helpers
@@ -47,7 +49,7 @@ class Player(creature.Creature):
         except KeyError:
             self.x = self.y = 0
 
-        paths = ['player_body', 'player_legs']
+        paths = ['player_legs', 'player_body']
         super().__init__(self.x, self.y, WIDTH, HEIGHT, paths,
                          gameobject.CollisionGroup.player)
 
@@ -140,30 +142,30 @@ class Player(creature.Creature):
                 continue
 
             if self.dy > 0 and self.collider.bottom - self.dy <= l.collider.top:
-                    width = 2 * helpers.SCALE
-                    self.friction = 0.125 * helpers.SCALE
-                    if not self.crouched:
-                        self.collider.bottom = l.collider.top
-                        self.y = self.collider.y
-                        self.ground_collision = True
-                        self.dy = 0
-                    elif not l.collider.colliderect(
-                            pygame.Rect(self.collider.centerx - width / 2,
-                                        self.collider.top, width,
-                                        self.collider.height)):
-                        self.collider.bottom = l.collider.top
-                        self.y = self.collider.y
-                        self.ground_collision = True
-                        self.dy = 0
+                width = 2 * helpers.SCALE
+                self.friction = 0.125 * helpers.SCALE
+                if not self.crouched:
+                    self.collider.bottom = l.collider.top
+                    self.y = self.collider.y
+                    self.ground_collision = True
+                    self.dy = 0
+                elif not l.collider.colliderect(
+                        pygame.Rect(self.collider.centerx - width / 2,
+                                    self.collider.top, width,
+                                    self.collider.height)):
+                    self.collider.bottom = l.collider.top
+                    self.y = self.collider.y
+                    self.ground_collision = True
+                    self.dy = 0
 
     def apply_ladders(self, room):
         collided = False
         for l in room.ladders:
             width = 2 * helpers.SCALE
-            if l.collider.colliderect(
-                    pygame.Rect(self.collider.centerx - width / 2,
-                                self.collider.top, width,
-                                self.collider.height)):
+            collider = pygame.Rect(self.collider.centerx - width / 2,
+                                   self.collider.top, width,
+                                   self.collider.height)
+            if l.collider.colliderect(collider):
                 collided = True
         if not collided:
             self.climbing_ladder = False
@@ -207,7 +209,7 @@ class Player(creature.Creature):
         collisions = [c for c in collisions if self.collides_with(c)]
 
         for c in collisions:
-            if isinstance(c, tile.Wall):
+            if c.group is gameobject.CollisionGroup.walls:
                 self.speed_wall = c.slide_speed
 
             if self.dy > 0:
@@ -238,7 +240,7 @@ class Player(creature.Creature):
                 self.moving = True
                 self.uncrouch(room)
                 if self.abilities[Ability.run] and not keys_down[
-                    pygame.K_LSHIFT]:
+                        pygame.K_LSHIFT]:
                     self.move(RUN_SPEED)
                 else:
                     self.move(WALK_SPEED)
@@ -411,8 +413,8 @@ class Player(creature.Creature):
                 self.collider.centerx = helpers.SCREEN_WIDTH - helpers.SCALE
             if self.collider.centery >= helpers.SCREEN_HEIGHT:
                 self.room_y += 1
-                self.collider.centery = helpers.SCALE
-            if self.collider.centery <= 0:
+                self.collider.centery = 0
+            if self.collider.centery < 0:
                 self.room_y -= 1
                 self.collider.centery = helpers.SCREEN_HEIGHT - helpers.SCALE
 
@@ -423,7 +425,7 @@ class Player(creature.Creature):
         if self.abilities[p.ability] is False:
             self.abilities[p.ability] = True
             self.txtbox.set_string(
-                    p.ability.name.upper() + '\\' + p.text)
+                p.ability.name.upper() + '\\' + p.text)
             self.txtbox.time = 120
             if p.ability.name in self.weapon_mods:
                 self.weapon_mods[p.ability.name] = True
@@ -445,12 +447,24 @@ class Player(creature.Creature):
                     self.dy = max(WATER_SPEED, self.dy - WATER_FRICTION)
 
     def animate(self):
-        sprite_body = self.sprites[0]
-        sprite_legs = self.sprites[1]
+        sprite_legs = self.sprites[0]
+        sprite_body = self.sprites[1]
 
         if self.alive:
+            if self.direction is gameobject.Direction.left:
+                if sprite_body.dir is animatedsprite.Direction.right:
+                    sprite_body.flip()
+            elif self.direction is gameobject.Direction.right:
+                if sprite_body.dir is animatedsprite.Direction.left:
+                    sprite_body.flip()
+
             # BODY
-            if not self.abilities[Ability.gun] or self.climbing_ladder:
+            if self.climbing_ladder:
+                if abs(self.dy) == LADDER_SPEED:
+                    sprite_body.play('climb')
+                else:
+                    sprite_body.pause()
+            elif not self.abilities[Ability.gun]:
                 if self.ground_collision:
                     if self.crouched:
                         sprite_body.play('crouch')
@@ -461,11 +475,6 @@ class Player(creature.Creature):
                             sprite_body.play('walk')
                     else:
                         sprite_body.play('idle')
-                elif self.climbing_ladder:
-                    if abs(self.dy) == LADDER_SPEED:
-                        sprite_body.play('climb')
-                    else:
-                        sprite_body.pause()
                 elif self.hugging_wall and self.abilities[Ability.wall_jump]:
                     sprite_body.play_once('wall_hug')
                 else:
@@ -492,6 +501,13 @@ class Player(creature.Creature):
                                 sprite_body.play('gun_idle')
                             else:
                                 sprite_body.play('gun_walk')
+                elif self.hugging_wall and self.abilities[Ability.wall_jump]:
+                    if self.direction is gameobject.Direction.left:
+                        if sprite_body.dir is animatedsprite.Direction.left:
+                            sprite_body.flip()
+                    elif self.direction is gameobject.Direction.right:
+                        if sprite_body.dir is animatedsprite.Direction.right:
+                            sprite_body.flip()
                 else:
                     if self.cooldown > 0:
                         sprite_body.play('gun_attack')
@@ -589,8 +605,8 @@ class Player(creature.Creature):
                 size = 2
 
             self.bullets.append(
-                    bullet.Bullet(x, y, BULLET_SPEED, angle + spread, grav,
-                                  dist, size))
+                bullet.Bullet(x, y, BULLET_SPEED, angle + spread, grav,
+                              dist, size))
             if self.weapon_mods[WeaponMod.triple]:
                 self.bullets.append(bullet.Bullet(x, y, BULLET_SPEED,
                                                   angle + 22.5 + spread, grav,
