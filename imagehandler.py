@@ -12,6 +12,7 @@ SIZES = {
     'crawler': (8, 8),
     'destroyable': (8, 8),
     'destroyable_debris': (4, 4),
+    'end': (16, 32),
     'flyer': (8, 8),
     'ground': (8, 8),
     'ice': (8, 8),
@@ -29,6 +30,7 @@ SIZES = {
     'powerup': (8, 8),
     'rock': (8, 8),
     'spawner': (16, 16),
+    'spike': (8, 8),
     'spring': (8, 16),
     'thorns': (8, 8),
     'wall': (8, 8),
@@ -80,6 +82,9 @@ ACTIONS = {
     ],
     'destroyable_debris': [
         ['idle', 4]
+    ],
+    'end': [
+        ['idle', 1]
     ],
     'flyer': [
         ['idle', 5]
@@ -162,6 +167,9 @@ ACTIONS = {
     'spawner': [
         ['idle', 1],
         ['die', 2]
+    ],
+    'spike': [
+        ['idle', 16]
     ],
     'spring': [
         ['idle', 1],

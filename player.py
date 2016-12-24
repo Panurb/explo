@@ -131,6 +131,11 @@ class Player(creature.Creature):
 
                 cp.active = True
 
+        if room.end is not None:
+            if self.collider.colliderect(room.end.collider):
+                # TODO: back to menu
+                pass
+
     def move_y(self, room):
         super().move_y(room)
 

@@ -81,7 +81,7 @@ class Ladder(gameobject.GameObject):
 
 class Spike(Wall):
     def __init__(self, x, y, index):
-        super().__init__(x, y, 'thorns')
+        super().__init__(x, y, 'spike')
         self.collider.x = x + helpers.SCALE
         self.collider.y = y + helpers.SCALE
         self.collider.width = 6 * helpers.SCALE
@@ -89,6 +89,50 @@ class Spike(Wall):
         for s in self.sprites:
             s.show_frame('idle', index)
         self.path = 'spike'
+
+    def update(self, room):
+        up = right = down = left = 0
+
+        x = int(self.x / helpers.TILE_SIZE)
+        y = int(self.y / helpers.TILE_SIZE)
+
+        try:
+            if room.walls[y - 1][x] is not None:
+                up = 1
+        except (IndexError, AttributeError):
+            pass
+
+        try:
+            if room.walls[y + 1][x] is not None:
+                down = 1
+        except (IndexError, AttributeError):
+            pass
+
+        try:
+            if room.walls[y][x + 1] is not None:
+                right = 1
+        except (IndexError, AttributeError):
+            pass
+
+        try:
+            if room.walls[y][x - 1] is not None:
+                left = 1
+        except (IndexError, AttributeError):
+            pass
+
+        if self.y - helpers.TILE_SIZE < 0:
+            up = 1
+        elif self.y + helpers.TILE_SIZE >= helpers.SCREEN_HEIGHT:
+            down = 1
+
+        if self.x + helpers.TILE_SIZE >= helpers.SCREEN_WIDTH:
+            right = 1
+        elif self.x - helpers.TILE_SIZE < 0:
+            left = 1
+
+        self.index = int(str(up) + str(right) + str(down) + str(left), 2)
+        for s in self.sprites:
+            s.show_frame('idle', self.index)
 
 
 class Checkpoint(gameobject.GameObject):
@@ -99,6 +143,14 @@ class Checkpoint(gameobject.GameObject):
             s.show_frame('idle', 0)
 
         self.active = False
+
+
+class End(gameobject.GameObject):
+    def __init__(self, x, y):
+        super().__init__(x, y, helpers.TILE_SIZE, 2 * helpers.TILE_SIZE,
+                         ['end'])
+        for s in self.sprites:
+            s.show_frame('idle', 0)
 
 
 class Water(gameobject.GameObject):

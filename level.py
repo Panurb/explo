@@ -54,19 +54,22 @@ class Level:
             room.reset()
             tilemap = [['-' for _ in range(helpers.ROOM_WIDTH)] for _ in range(helpers.ROOM_HEIGHT)]
 
-            for w in room.walls:
-                char = ''
-                if w.path == 'wall':
-                    char = 'W'
-                elif w.path == 'ground':
-                    char = 'G'
-                elif w.path == 'rock':
-                    char = 'R'
-                elif w.path == 'metal':
-                    char = 'M'
-                elif w.path == 'ice':
-                    char = 'I'
-                tilemap[w.y // helpers.TILE_SIZE][w.x // helpers.TILE_SIZE] = char
+            for row in room.walls:
+                for w in row:
+                    if w is None:
+                        continue
+                    char = ''
+                    if w.path == 'wall':
+                        char = 'W'
+                    elif w.path == 'ground':
+                        char = 'G'
+                    elif w.path == 'rock':
+                        char = 'R'
+                    elif w.path == 'metal':
+                        char = 'M'
+                    elif w.path == 'ice':
+                        char = 'I'
+                    tilemap[w.y // helpers.TILE_SIZE][w.x // helpers.TILE_SIZE] = char
             for l in room.ladders:
                 tilemap[l.y // helpers.TILE_SIZE][l.x // helpers.TILE_SIZE] = '#'
             for s in room.spikes:
@@ -87,6 +90,9 @@ class Level:
                 tilemap[y][e.x // helpers.TILE_SIZE] = char
             for c in room.checkpoints:
                 tilemap[c.y // helpers.TILE_SIZE][c.x // helpers.TILE_SIZE] = 'C'
+            if room.end is not None:
+                tilemap[room.end.y // helpers.TILE_SIZE][
+                    room.end.x // helpers.TILE_SIZE] = 'E'
             for p in room.powerups:
                 char = ''
                 if p.ability == powerup.Ability.run:
@@ -124,8 +130,6 @@ class Level:
                     tilemap[d.y // helpers.TILE_SIZE][d.x // helpers.TILE_SIZE] = 'F'
                 elif type(d) is tile.Spring:
                     tilemap[d.y // helpers.TILE_SIZE][d.x // helpers.TILE_SIZE] = 'Z'
-
-
 
             empty = True
             for row in tilemap:
@@ -179,7 +183,7 @@ class Room:
                 row.append(sprite)
             self.bg.append(row)
 
-        self.walls = [[None] * helpers.ROOM_WIDTH for i in range(helpers.ROOM_HEIGHT)]
+        self.walls = [[None] * helpers.ROOM_WIDTH for _ in range(helpers.ROOM_HEIGHT)]
         self.ladders = list()
         self.spikes = list()
         self.enemies = list()
@@ -187,6 +191,7 @@ class Room:
         self.powerups = list()
         self.water = list()
         self.dynamic_objects = list()
+        self.end = None
 
         self.x = x
         self.y = y
@@ -218,6 +223,13 @@ class Room:
                 x = int(wall.x / helpers.TILE_SIZE)
                 y = int(wall.y / helpers.TILE_SIZE)
 
+                # TODO
+                values = [[0, 1, 1, 1, 0],
+                          [1, 2, 3, 2, 1],
+                          [1, 3, 3, 3, 1],
+                          [1, 2, 3, 2, 1],
+                          [0, 1, 1, 1, 0]]
+
                 for i in range(-2, 3):
                     for j in range(-2, 3):
                         if x + i < 0 or x + i >= helpers.ROOM_WIDTH:
@@ -234,12 +246,17 @@ class Room:
                         if j > 0 and self.walls[y + 1][x] is not None:
                             continue
 
-                        action = wall.path
+                        # FIXME
+                        if wall.path in ['ground', 'metal', 'rock']:
+                            action = wall.path
+                        else:
+                            action = 'ground'
                         frame = self.bg[x + i][y + j].frame
                         if abs(i) == 2 and abs(j) == 2:
                             continue
                         else:
                             dist = 2 - max(abs(i), abs(j))
+                        #dist = values[j][i]
                         frame = max(frame, dist)
                         if self.bg[x + i][y + j].action == 'sky' \
                                 or self.bg[x + i][y + j].action == action:
@@ -296,6 +313,8 @@ class Room:
             w.draw(screen, img_hand)
         for d in self.dynamic_objects:
             d.draw(screen, img_hand)
+        if self.end is not None:
+            self.end.draw(screen, img_hand)
 
     def debug_draw(self, screen):
         for c in self.checkpoints:
@@ -345,6 +364,8 @@ class Room:
             self.water.append(tile.Water(x, y, False))
         elif char == 'C':
             self.checkpoints.append(tile.Checkpoint(x, y))
+        elif char == 'E':
+            self.end = tile.End(x, y)
         elif char == '*':
             self.spikes.append(tile.Spike(x, y, 0))
         elif char == 'Z':
@@ -389,6 +410,8 @@ class Room:
         self.powerups[:] = [x for x in self.powerups if not collider.colliderect(x.collider)]
         self.water[:] = [x for x in self.water if not collider.colliderect(x.collider)]
         self.dynamic_objects[:] = [x for x in self.dynamic_objects if not collider.colliderect(x.collider)]
+        if self.end is not None and collider.colliderect(self.end.collider):
+            self.end = None
 
     def clear(self):
         self.walls.clear()
@@ -400,3 +423,4 @@ class Room:
         self.powerups.clear()
         self.water.clear()
         self.dynamic_objects.clear()
+        self.end = None

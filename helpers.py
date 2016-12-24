@@ -56,3 +56,9 @@ def limit_speed(dx, dy):
         dx *= (TERMINAL_VELOCITY / speed)
         dy *= (TERMINAL_VELOCITY / speed)
     return dx, dy
+
+def mouse_to_grid(mouse_x, mouse_y):
+    x = mouse_x - mouse_x % TILE_SIZE
+    y = mouse_y - mouse_y % TILE_SIZE
+
+    return x, y

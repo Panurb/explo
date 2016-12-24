@@ -15,6 +15,7 @@ OBJECTS = (('W', 'WALL'),
            ('~', 'SURFACE'),
            ('=', 'WATER'),
            ('C', 'CHECKPOINT'),
+           ('E', 'END'),
            ('*', 'THORNS'),
            ('Z', 'SPRING'),
            ('c', 'CRAWLER'),
@@ -44,7 +45,7 @@ class Editor:
     def input(self, lvl, input_hand):
         room = lvl.room(self.room_x, self.room_y)
         if input_hand.mouse_down[0]:
-            x, y = mouse_to_grid(input_hand.mouse_x, input_hand.mouse_y)
+            x, y = helpers.mouse_to_grid(input_hand.mouse_x, input_hand.mouse_y)
 
             # TODO: Remove objects according to object size
             room.remove_object(x, y)
@@ -54,13 +55,13 @@ class Editor:
             room.update_visuals()
 
         if input_hand.mouse_down[2]:
-            x, y = mouse_to_grid(input_hand.mouse_x, input_hand.mouse_y)
+            x, y = helpers.mouse_to_grid(input_hand.mouse_x, input_hand.mouse_y)
 
             room.remove_object(x, y)
             room.update_visuals()
 
         if input_hand.mouse_pressed[4] or input_hand.keys_pressed[
-            pygame.K_COMMA]:
+                pygame.K_COMMA]:
             if self.object > 0:
                 self.object -= 1
             else:
@@ -90,10 +91,3 @@ class Editor:
 
     def draw(self, screen, img_hand):
         self.text.draw(screen, img_hand)
-
-
-def mouse_to_grid(mouse_x, mouse_y):
-    x = mouse_x - mouse_x % helpers.TILE_SIZE
-    y = mouse_y - mouse_y % helpers.TILE_SIZE
-
-    return x, y
