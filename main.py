@@ -11,8 +11,8 @@ class Main:
         pygame.mixer.init()
         self.screen = pygame.display.set_mode((width, height))
         self.img_hand = imagehandler.ImageHandler()
-        self.input_hand = inputhandler.InputHandler()
-        self.loop = gameloop.GameLoop(self.screen, self.img_hand, self.input_hand)
+        self.inp_hand = inputhandler.InputHandler()
+        self.loop = gameloop.GameLoop(self.screen, self.img_hand, self.inp_hand)
         self.clock = pygame.time.Clock()
         self.fps = 60
 

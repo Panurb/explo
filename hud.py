@@ -7,6 +7,9 @@ class Map():
     def __init__(self, level):
         self.sprite = animatedsprite.AnimatedSprite('map')
         self.rooms = level.rooms
+        self.rooms_visited = {}
+        for key in self.rooms:
+            self.rooms_visited[key] = False
 
     def draw(self, screen, img_hand, x, y):
         max_x = 0
@@ -23,8 +26,7 @@ class Map():
         width = abs(max_x - min_x) + 1
         height = abs(max_y - min_y) + 1
 
-        for key in self.rooms:
-            room = self.rooms[key]
+        for key, room in self.rooms.items():
             self.sprite.rect.x = 0.5 * helpers.SCREEN_WIDTH - ((width / 2 - room.x + min_x) * 14) * helpers.SCALE
             self.sprite.rect.y = 0.5 * helpers.SCREEN_HEIGHT - ((height / 2 - room.y + min_y) * 12) * helpers.SCALE
 
@@ -33,7 +35,8 @@ class Map():
             else:
                 self.sprite.play('idle')
 
-            self.sprite.draw(screen, img_hand)
+            if self.rooms_visited[key]:
+                self.sprite.draw(screen, img_hand)
 
 
 class Mods():

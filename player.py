@@ -88,6 +88,8 @@ class Player(creature.Creature):
         self.mods = hud.Mods()
         self.modifying_weapon = False
 
+        self.level_over = False
+
     def update(self, room):
         self.apply_water(room)
         super().update(room)
@@ -102,6 +104,10 @@ class Player(creature.Creature):
         self.cooldown = max(0, self.cooldown - 1)
 
         self.animate()
+
+        if room.end is not None:
+            if self.collider.colliderect(room.end.collider):
+                self.level_over = True
 
         for b in self.bullets:
             b.update(room)
@@ -425,6 +431,8 @@ class Player(creature.Creature):
 
             self.x = self.collider.x
             self.y = self.collider.y
+
+        self.map.rooms_visited[(self.room_x, self.room_y)] = True
 
     def give_powerup(self, p):
         if self.abilities[p.ability] is False:

@@ -17,6 +17,8 @@ class State(enum.Enum):
     level_select = 7
     editor_select = 8
     level_creation = 9
+    level_start = 10
+    level_end = 11
 
 
 class GameLoop:
@@ -76,6 +78,9 @@ class GameLoop:
             last_room = (self.level.player.room_x, self.level.player.room_y)
             self.level.update(self.input_hand)
 
+            if self.level.player.level_over:
+                self.state = State.level_end
+
             self.level.draw(self.screen, self.img_hand)
 
             if self.debug_enabled:
@@ -106,6 +111,10 @@ class GameLoop:
                                   self.editor.room_y)] = room
 
             self.editor.draw(self.screen, self.img_hand)
+        elif self.state is State.level_end:
+            text = textbox.Textbox('YOU WON', 0.5 * helpers.SCREEN_WIDTH,
+                                   0.5 * helpers.SCREEN_HEIGHT)
+            text.draw(self.screen, self.img_hand)
 
         if self.debug_enabled:
             self.clock_text.set_string(str(int(clock.get_fps())))

@@ -147,7 +147,7 @@ class Checkpoint(gameobject.GameObject):
 
 class End(gameobject.GameObject):
     def __init__(self, x, y):
-        super().__init__(x, y, helpers.TILE_SIZE, 2 * helpers.TILE_SIZE,
+        super().__init__(x, y, 2 * helpers.TILE_SIZE, 4 * helpers.TILE_SIZE,
                          ['end'])
         for s in self.sprites:
             s.show_frame('idle', 0)
