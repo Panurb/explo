@@ -9,7 +9,9 @@ import particle
 
 
 class Bullet(gameobject.PhysicsObject):
-    def __init__(self, x, y, speed, angle, gravity_scale=0, dist=-1, size=0):
+    def __init__(self, parent, x, y, speed, angle, gravity_scale=0, dist=-1, size=0):
+        self.parent = parent
+
         dx = speed * math.cos(math.radians(angle))
         dy = speed * math.sin(math.radians(angle))
 
@@ -28,7 +30,7 @@ class Bullet(gameobject.PhysicsObject):
     def get_collisions(self, room, collider=None):
         collisions = super().get_collisions(room)
         for c in collisions:
-            if c is room.level.player:
+            if c is self.parent:
                 collisions.remove(c)
 
         return collisions
@@ -49,6 +51,9 @@ class Bullet(gameobject.PhysicsObject):
                     vert = True
                 else:
                     vert = False
+
+                if c.obj is room.level.player:
+                    room.level.player.damage(1, 0, 0)
 
                 if type(c.obj) is tile.Destroyable:
                     c.obj.destroy()

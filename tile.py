@@ -1,3 +1,4 @@
+import bullet
 import gameobject
 import helpers
 
@@ -23,29 +24,21 @@ class Wall(gameobject.GameObject):
         x = int(self.x / helpers.TILE_SIZE)
         y = int(self.y / helpers.TILE_SIZE)
 
-        try:
+        if y - 1 >= 0 and room.walls[y - 1][x] is not None:
             if room.walls[y - 1][x].path == self.path:
                 up = 1
-        except (IndexError, AttributeError):
-            pass
 
-        try:
+        if y + 1 < len(room.walls) and room.walls[y + 1][x] is not None:
             if room.walls[y + 1][x].path == self.path:
                 down = 1
-        except (IndexError, AttributeError):
-            pass
 
-        try:
+        if x + 1 < len(room.walls[y]) and room.walls[y][x + 1] is not None:
             if room.walls[y][x + 1].path == self.path:
                 right = 1
-        except (IndexError, AttributeError):
-            pass
 
-        try:
+        if x - 1 >= 0 and room.walls[y][x - 1] is not None:
             if room.walls[y][x - 1].path == self.path:
                 left = 1
-        except (IndexError, AttributeError):
-            pass
 
         if self.y - helpers.TILE_SIZE < 0:
             up = 1
@@ -96,29 +89,21 @@ class Spike(Wall):
         x = int(self.x / helpers.TILE_SIZE)
         y = int(self.y / helpers.TILE_SIZE)
 
-        try:
+        if y - 1 >= 0:
             if room.walls[y - 1][x] is not None:
                 up = 1
-        except (IndexError, AttributeError):
-            pass
 
-        try:
+        if y + 1 < len(room.walls):
             if room.walls[y + 1][x] is not None:
                 down = 1
-        except (IndexError, AttributeError):
-            pass
 
-        try:
+        if x + 1 < len(room.walls[y]):
             if room.walls[y][x + 1] is not None:
                 right = 1
-        except (IndexError, AttributeError):
-            pass
 
-        try:
+        if x - 1 >= 0:
             if room.walls[y][x - 1] is not None:
                 left = 1
-        except (IndexError, AttributeError):
-            pass
 
         if self.y - helpers.TILE_SIZE < 0:
             up = 1
@@ -233,3 +218,43 @@ class Spring(Wall):
 
     def reset(self):
         pass
+
+
+class Cannon(Wall):
+    def __init__(self, x, y):
+        super().__init__(x, y, 'destroyable')
+        self.group = gameobject.CollisionGroup.walls
+        self.bullets = list()
+        self.cooldown = 30
+        self.timer = 0
+
+    def update(self, room):
+        self.animate()
+
+        for b in self.bullets:
+            b.update(room)
+            if not b.alive and not b.particles:
+                self.bullets.remove(b)
+
+        if self.timer == 0:
+            angles = (0, 90, 180, 270)
+            dx = (7, 0, -7, 0)
+            dy = (0, 7, 0, -7)
+            for i in range(len(angles)):
+                angle = angles[i]
+                x = self.x + dx[i] * helpers.SCALE
+                y = self.y + dy[i] * helpers.SCALE
+                b = bullet.Bullet(self, x, y, 1 * helpers.SCALE, angle)
+                b.group = gameobject.CollisionGroup.enemies
+                self.bullets.append(b)
+            self.timer = self.cooldown
+        else:
+            self.timer -= 1
+
+    def draw(self, screen, img_hand):
+        super().draw(screen, img_hand)
+        for b in self.bullets:
+            b.draw(screen, img_hand)
+
+    def reset(self):
+        self.bullets.clear()

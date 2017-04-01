@@ -10,8 +10,8 @@ import platform
 
 # COLLISION MATRIX
 #
-# p   b   e   w   d   c   s
-# player    -   -   X   X   -   X   X
+#           p   b   e   w   d   c   s
+# player    -   X   X   X   -   X   X
 # bullets   -   -   X   X   -   X   -
 # enemies   X   X   -   X   -   -   X
 # walls     -   -   -   X   -   -   -
@@ -68,7 +68,7 @@ class GameObject:
                  group=CollisionGroup.none):
         self.x = x
         self.y = y
-        self.collider = pygame.rect.Rect(x, y, width, height)
+        self.collider = pygame.Rect(x, y, width, height)
         self.group = group
         self.direction = Direction.right
         self.sprites = []

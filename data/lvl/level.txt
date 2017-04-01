@@ -5,13 +5,13 @@
 --------------------
 --------------------
 --------------------
+------------N-------
 --------------------
------E--------------
 --------------------
 -C------------------
 --------------------
-IIIIIII~~~~~~~~~IIII
-IIIIIII=========IIII
+IIIIIIIIIIIIIIIIIIII
+IIIIIIIIIIIIIIIIIIII
 IIIIIIIIIIIIIIIIIIII
 IIIIIIIIIIIIIIIIIIII
 

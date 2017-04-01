@@ -617,16 +617,16 @@ class Player(creature.Creature):
                 dist = 120
                 size = 2
 
-            self.bullets.append(
-                bullet.Bullet(x, y, BULLET_SPEED, angle + spread, grav,
-                              dist, size))
+            b = bullet.Bullet(self, x, y, BULLET_SPEED, angle + spread, grav,
+                              dist, size)
+            self.bullets.append(b)
             if self.weapon_mods[WeaponMod.triple]:
-                self.bullets.append(bullet.Bullet(x, y, BULLET_SPEED,
-                                                  angle + 22.5 + spread, grav,
-                                                  dist, size))
-                self.bullets.append(bullet.Bullet(x, y, BULLET_SPEED,
-                                                  angle - 22.5 + spread, grav,
-                                                  dist, size))
+                b = bullet.Bullet(self, x, y, BULLET_SPEED,
+                                  angle + 22.5 + spread, grav, dist, size)
+                self.bullets.append(b)
+                b = bullet.Bullet(self, x, y, BULLET_SPEED,
+                                  angle - 22.5 + spread, grav, dist, size)
+                self.bullets.append(b)
 
             if not self.weapon_mods[WeaponMod.rapid]:
                 self.attack_buffer = False

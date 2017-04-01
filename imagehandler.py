@@ -3,6 +3,7 @@ import helpers
 
 SIZES = {
     'bg': (8, 8),
+    'boss': (24, 24),
     'bullet': (8, 8),
     'charger': (16, 16),
     'charger_gibs': (8, 8),
@@ -45,6 +46,9 @@ ACTIONS = {
         ['metal', 3],
         ['ground', 3],
         ['rock', 3],
+    ],
+    'boss': [
+        ['idle', 1]
     ],
     'bullet': [
         ['idle', 3]

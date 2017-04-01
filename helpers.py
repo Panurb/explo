@@ -10,7 +10,7 @@ TILE_SIZE = 8 * SCALE
 SCREEN_WIDTH = ROOM_WIDTH * TILE_SIZE
 SCREEN_HEIGHT = ROOM_HEIGHT * TILE_SIZE
 GRAVITY = 0.25 * SCALE
-TERMINAL_VELOCITY = 8 * SCALE
+TERMINAL_VELOCITY = 7 * SCALE
 
 
 def load_image(name):
@@ -56,6 +56,7 @@ def limit_speed(dx, dy):
         dx *= (TERMINAL_VELOCITY / speed)
         dy *= (TERMINAL_VELOCITY / speed)
     return dx, dy
+
 
 def mouse_to_grid(mouse_x, mouse_y):
     x = mouse_x - mouse_x % TILE_SIZE

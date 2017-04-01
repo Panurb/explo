@@ -500,3 +500,10 @@ class Dropper(Enemy):
 
     def reset(self):
         self.gravity_scale = 0
+
+
+class Boss(Enemy):
+    def __init__(self, x, y):
+        width = 24 * helpers.SCALE
+        height = 16 * helpers.SCALE
+        super().__init__(x, y, width, height, 100, ['boss'])

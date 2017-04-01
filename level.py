@@ -130,6 +130,8 @@ class Level:
                     tilemap[d.y // helpers.TILE_SIZE][d.x // helpers.TILE_SIZE] = 'F'
                 elif type(d) is tile.Spring:
                     tilemap[d.y // helpers.TILE_SIZE][d.x // helpers.TILE_SIZE] = 'Z'
+                elif type(d) is tile.Cannon:
+                    tilemap[d.y // helpers.TILE_SIZE][d.x // helpers.TILE_SIZE] = 'N'
 
             empty = True
             for row in tilemap:
@@ -370,6 +372,8 @@ class Room:
             self.spikes.append(tile.Spike(x, y, 0))
         elif char == 'Z':
             self.dynamic_objects.append(tile.Spring(x, y))
+        elif char == 'N':
+            self.dynamic_objects.append(tile.Cannon(x, y))
         elif char == 'D':
             self.dynamic_objects.append(tile.Destroyable(x, y))
         elif char == 'c':
