@@ -2,7 +2,6 @@ import os
 import math
 import pygame
 
-
 SCALE = 4
 ROOM_WIDTH = 20
 ROOM_HEIGHT = 15
