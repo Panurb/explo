@@ -5,7 +5,6 @@ import pygame
 import animatedsprite
 
 import bullet
-import collision
 import enemy
 import gameobject
 import helpers
@@ -61,6 +60,7 @@ class Player(creature.Creature):
         self.climbing_ladder = False
         self.hugging_wall = False
         self.show_map = False
+        self.submerged = False
 
         self.jump_buffer = False
         self.jump_count = 0
@@ -384,7 +384,11 @@ class Player(creature.Creature):
         if not self.alive or self.climbing_ladder:
             return
 
-        if self.hugging_wall and self.abilities[Ability.wall_jump]:
+        if self.submerged:
+            # TODO low gravity
+            self.dy += helpers.GRAVITY
+            self.dy = min(self.dy, helpers.TERMINAL_VELOCITY)
+        elif self.hugging_wall and self.abilities[Ability.wall_jump]:
             if not self.sliding:
                 self.dy += helpers.GRAVITY / 2
                 self.dy = min(self.dy, self.speed_wall)
@@ -407,6 +411,9 @@ class Player(creature.Creature):
             if not self.crouched:
                 self.add_gib(-0.5, 4, -0.5, -1.25, path, 'leg')
                 self.add_gib(0.5, 4, 0.5, -1.25, path, 'leg')
+
+            self.sounds.add('squish')
+
         super().die()
 
     def apply_room_change(self):
@@ -442,12 +449,20 @@ class Player(creature.Creature):
             self.txtbox.time = 120
             if p.ability.name in self.weapon_mods:
                 self.weapon_mods[p.ability.name] = True
+            self.sounds.add('powerup')
 
     def apply_water(self, room):
         for w in room.water:
             if self.collider.colliderect(w.collider):
                 if not self.abilities[Ability.rebreather]:
                     self.die()
+
+                if type(w) is tile.Lava:
+                    self.die()
+
+                if not self.submerged:
+                    self.submerged = True
+                    self.sounds.add('splash')
 
                 if self.moving:
                     self.dx = min(self.dx, WATER_SPEED)
@@ -458,6 +473,10 @@ class Player(creature.Creature):
 
                 if self.dy > WATER_SPEED:
                     self.dy = max(WATER_SPEED, self.dy - WATER_FRICTION)
+
+                return
+
+        self.submerged = False
 
     def animate(self):
         sprite_legs = self.sprites[0]
@@ -632,6 +651,7 @@ class Player(creature.Creature):
                 self.attack_buffer = False
 
             self.cooldown = WEAPON_COOLDOWN
+            self.sounds.add('shoot')
 
     def modify_weapon(self, keys):
         if keys[pygame.K_UP]:

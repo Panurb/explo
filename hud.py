@@ -27,8 +27,8 @@ class Map():
         height = abs(max_y - min_y) + 1
 
         for key, room in self.rooms.items():
-            self.sprite.rect.x = 0.5 * helpers.SCREEN_WIDTH - ((width / 2 - room.x + min_x) * 14) * helpers.SCALE
-            self.sprite.rect.y = 0.5 * helpers.SCREEN_HEIGHT - ((height / 2 - room.y + min_y) * 12) * helpers.SCALE
+            self.sprite.rect.x = 0.5 * helpers.SCREEN_WIDTH - ((width / 2 - room.x + min_x) * 7) * helpers.SCALE
+            self.sprite.rect.y = 0.5 * helpers.SCREEN_HEIGHT - ((height / 2 - room.y + min_y) * 6) * helpers.SCALE
 
             if room.x == x and room.y == y:
                 self.sprite.play('active')

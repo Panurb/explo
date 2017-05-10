@@ -154,6 +154,22 @@ class Water(gameobject.GameObject):
         self.animate()
 
 
+class Lava(gameobject.GameObject):
+    def __init__(self, x, y, surface):
+        super().__init__(x, y, helpers.TILE_SIZE, helpers.TILE_SIZE, ['lava'])
+        self.surface = surface
+
+        if self.surface:
+            for s in self.sprites:
+                s.play('surface')
+        else:
+            for s in self.sprites:
+                s.play('idle')
+
+    def update(self, room):
+        self.animate()
+
+
 class Destroyable(Wall):
     def __init__(self, x, y):
         super().__init__(x, y, 'destroyable')
@@ -216,6 +232,9 @@ class Spring(Wall):
             s.frame = 0
             s.play_once('bounce')
 
+    def play_sounds(self, snd_hand):
+        pass
+
     def reset(self):
         pass
 
@@ -225,8 +244,9 @@ class Cannon(Wall):
         super().__init__(x, y, 'destroyable')
         self.group = gameobject.CollisionGroup.walls
         self.bullets = list()
-        self.cooldown = 30
+        self.cooldown = 60
         self.timer = 0
+        self.sounds = set()
 
     def update(self, room):
         self.animate()
@@ -248,6 +268,7 @@ class Cannon(Wall):
                 b.group = gameobject.CollisionGroup.enemies
                 self.bullets.append(b)
             self.timer = self.cooldown
+            self.sounds.add('shoot')
         else:
             self.timer -= 1
 
@@ -258,3 +279,9 @@ class Cannon(Wall):
 
     def reset(self):
         self.bullets.clear()
+
+    def play_sounds(self, snd_hand):
+        for sound in self.sounds:
+            snd_hand.sounds[sound].play()
+
+        self.sounds.clear()

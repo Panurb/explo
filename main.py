@@ -3,21 +3,29 @@ import gameloop
 import helpers
 import imagehandler
 import inputhandler
+import soundhandler
 
 
 class Main:
     def __init__(self, width, height):
-        pygame.init()
+        # init mixer first to prevent audio delay
+        pygame.mixer.pre_init(44100, -16, 2, 2048)
         pygame.mixer.init()
+        pygame.init()
+
         self.screen = pygame.display.set_mode((width, height))
         self.img_hand = imagehandler.ImageHandler()
+        self.snd_hand = soundhandler.SoundHandler()
         self.inp_hand = inputhandler.InputHandler()
-        self.loop = gameloop.GameLoop(self.screen, self.img_hand, self.inp_hand)
+        self.loop = gameloop.GameLoop(self.screen, self.img_hand, self.snd_hand,
+                                      self.inp_hand)
         self.clock = pygame.time.Clock()
         self.fps = 60
 
-        pygame.mixer.music.load('data/music/gaym.wav')
-        #pygame.mixer.music.play(-1)
+        pygame.mixer.music.load('data/msc/menu.wav')
+        pygame.mixer.music.play(-1)
+        pygame.mixer.music.set_volume(0)
+        self.snd_hand.set_volume(0.1)
 
     def main_loop(self):
         while self.loop.state != gameloop.State.quit:

@@ -27,7 +27,7 @@ class Level:
                 coordinates = (int(line[0]), int(line[1]))
                 continue
 
-            if not line.rstrip():
+            if not line.rstrip('\n'):
                 self.rooms[coordinates] = Room(self, room, coordinates[0],
                                                coordinates[1])
                 room = []
@@ -41,7 +41,7 @@ class Level:
         try:
             room = self.rooms[(x, y)]
         except KeyError:
-            tilemap = 14 * [20 * "-"]
+            tilemap = 14 * [20 * ' ']
             self.rooms[(x, y)] = Room(self, tilemap, x, y)
             room = self.rooms[(x, y)]
 
@@ -52,7 +52,7 @@ class Level:
 
         for room in self.rooms.values():
             room.reset()
-            tilemap = [['-' for _ in range(helpers.ROOM_WIDTH)] for _ in range(helpers.ROOM_HEIGHT)]
+            tilemap = [[' ' for _ in range(helpers.ROOM_WIDTH)] for _ in range(helpers.ROOM_HEIGHT)]
 
             for row in room.walls:
                 for w in row:
@@ -113,10 +113,16 @@ class Level:
                     char = '7'
                 tilemap[p.y // helpers.TILE_SIZE][p.x // helpers.TILE_SIZE] = char
             for w in room.water:
-                if w.surface:
-                    tilemap[w.y // helpers.TILE_SIZE][w.x // helpers.TILE_SIZE] = '~'
+                if type(w) is tile.Lava:
+                    if w.surface:
+                        tilemap[w.y // helpers.TILE_SIZE][w.x // helpers.TILE_SIZE] = '-'
+                    else:
+                        tilemap[w.y // helpers.TILE_SIZE][w.x // helpers.TILE_SIZE] = '§'
                 else:
-                    tilemap[w.y // helpers.TILE_SIZE][w.x // helpers.TILE_SIZE] = '='
+                    if w.surface:
+                        tilemap[w.y // helpers.TILE_SIZE][w.x // helpers.TILE_SIZE] = '~'
+                    else:
+                        tilemap[w.y // helpers.TILE_SIZE][w.x // helpers.TILE_SIZE] = '='
             for d in room.dynamic_objects:
                 # TODO: separate lists for all of these
                 if type(d) is tile.Destroyable:
@@ -136,7 +142,7 @@ class Level:
             empty = True
             for row in tilemap:
                 for char in row:
-                    if char != '-':
+                    if char != ' ':
                         empty = False
                         break
 
@@ -169,6 +175,12 @@ class Level:
         room = self.room(self.player.room_x, self.player.room_y)
         room.debug_draw(screen)
         self.player.debug_draw(screen)
+
+    def play_sounds(self, snd_hand):
+        self.player.play_sounds(snd_hand)
+
+        room = self.room(self.player.room_x, self.player.room_y)
+        room.play_sounds(snd_hand)
 
 
 class Room:
@@ -297,6 +309,8 @@ class Room:
             for sprite in row:
                 sprite.draw(screen, img_hand)
 
+        for w in self.water:
+            w.draw(screen, img_hand)
         for c in self.checkpoints:
             c.draw(screen, img_hand)
         for row in self.walls:
@@ -311,8 +325,6 @@ class Room:
             e.draw(screen, img_hand)
         for p in self.powerups:
             p.draw(screen, img_hand)
-        for w in self.water:
-            w.draw(screen, img_hand)
         for d in self.dynamic_objects:
             d.draw(screen, img_hand)
         if self.end is not None:
@@ -337,6 +349,15 @@ class Room:
             w.debug_draw(screen)
         for d in self.dynamic_objects:
             d.debug_draw(screen)
+
+    def play_sounds(self, snd_hand):
+        for e in self.enemies:
+            e.play_sounds(snd_hand)
+        for d in self.dynamic_objects:
+            d.play_sounds(snd_hand)
+            # play only for once for cannons
+            if type(d) is tile.Cannon:
+                break
 
     def add_object(self, x, y, char):
         tile_x = int(x / helpers.TILE_SIZE)
@@ -364,6 +385,10 @@ class Room:
             self.water.append(tile.Water(x, y, True))
         elif char == '=':
             self.water.append(tile.Water(x, y, False))
+        elif char == '-':
+            self.water.append(tile.Lava(x, y, True))
+        elif char == '§':
+            self.water.append(tile.Lava(x, y, False))
         elif char == 'C':
             self.checkpoints.append(tile.Checkpoint(x, y))
         elif char == 'E':

@@ -19,7 +19,8 @@ SIZES = {
     'ice': (8, 8),
     'image': (160, 120),
     'ladder': (8, 8),
-    'map': (14, 12),
+    'lava': (8, 8),
+    'map': (7, 6),
     'menu': (32, 8),
     'metal': (8, 8),
     'mods': (48, 48),
@@ -78,7 +79,7 @@ ACTIONS = {
         ['idle', 4],
         ['die', 4],
         ['shrapnel', 1],
-        ['damage', 2]
+        ['damage', 1]
     ],
     'destroyable': [
         ['idle', 1],
@@ -105,6 +106,10 @@ ACTIONS = {
     ],
     'ladder': [
         ['idle', 1]
+    ],
+    'lava': [
+        ['surface', 8],
+        ['idle', 8]
     ],
     'map': [
         ['idle', 1],

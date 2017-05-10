@@ -17,11 +17,20 @@ def load_image(name):
     try:
         image = pygame.image.load(fullname)
     except pygame.error as message:
-        print('Cannot load image:', name)
         raise SystemExit(message)
     image = image.convert_alpha()
 
     return image
+
+
+def load_sound(name):
+    path = os.path.join('data', 'snd', name)
+    try:
+        sound = pygame.mixer.Sound(path)
+    except pygame.error as message:
+        raise SystemExit(message)
+
+    return sound
 
 
 def row_to_tiles(image, width, height, row, length):

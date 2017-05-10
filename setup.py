@@ -37,9 +37,9 @@ setup(
     data_files=find_data_files('data','data',[
         'img/*',
         'lvl/*',
-        'music/*',
-        'sfx/*'
-    ]),
+        'msc/*',
+        'snd/*'
+    ]), requires=['pygame']
 )
 
 # Will copy data/README to dist/README, and all files in data/images/ to dist/images/

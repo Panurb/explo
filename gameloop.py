@@ -5,6 +5,7 @@ import helpers
 import level
 import menu
 import textbox
+import time
 
 
 class State(enum.Enum):
@@ -22,9 +23,10 @@ class State(enum.Enum):
 
 
 class GameLoop:
-    def __init__(self, screen, img_hand, input_hand):
+    def __init__(self, screen, img_hand, snd_hand, input_hand):
         self.screen = screen
         self.img_hand = img_hand
+        self.snd_hand = snd_hand
         self.input_hand = input_hand
 
         self.main_menu = menu.MainMenu()
@@ -76,7 +78,9 @@ class GameLoop:
                 self.level = level.Level(self.level_select_menu.level_name)
 
             last_room = (self.level.player.room_x, self.level.player.room_y)
+
             self.level.update(self.input_hand)
+            self.level.play_sounds(self.snd_hand)
 
             if self.level.player.level_over:
                 self.state = State.level_end

@@ -158,6 +158,8 @@ class PhysicsObject(GameObject):
         self.spawn_x = x
         self.spawn_y = y
 
+        self.sounds = set()
+
     def update(self, room):
         self.collisions.clear()
         self.dx, self.dy = helpers.limit_speed(self.dx, self.dy)
@@ -219,6 +221,9 @@ class PhysicsObject(GameObject):
             if c.group is not CollisionGroup.springs:
                 bounce_scale = self.bounce_scale(c)
 
+            if abs(relative_vel) > helpers.SCALE:
+                self.sounds.add('hit')
+
         if collisions:
             self.dx *= -bounce_scale
             self.wall_collision = True
@@ -256,8 +261,13 @@ class PhysicsObject(GameObject):
             if c.group is CollisionGroup.springs:
                 c.bounce()
                 bounce_scale = 3 * helpers.SCALE / self.dy
+                self.sounds.add('spring')
             else:
                 bounce_scale = self.bounce_scale(c)
+
+            if abs(relative_vel) > helpers.SCALE:
+                if c.group is not CollisionGroup.springs:
+                    self.sounds.add('hit')
 
         if collisions:
             self.dy *= -bounce_scale
@@ -282,6 +292,12 @@ class PhysicsObject(GameObject):
             self.direction = Direction.left
         elif self.direction is Direction.left:
             self.direction = Direction.right
+
+    def play_sounds(self, snd_hand):
+        for sound in self.sounds:
+            snd_hand.sounds[sound].play()
+
+        self.sounds.clear()
 
     def reset(self):
         self.x = self.spawn_x

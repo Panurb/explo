@@ -1,17 +1,663 @@
+(5, 7)
+WWWWWWWWWWWWWWWWWWWW
+W                   
+W   WWWWWWWWWWWW    
+W  WWWWWWWWWWWWW    
+W             WW    
+WW            WW    
+WWWWWWWWWWW   WW    
+WWWWWWWWWWWW  WW    
+W             WW    
+W            WWW  WW
+W   WWWWWWWWWWWW  WW
+W  WWWWWWWWWWWWW  WW
+W                 WW
+WW                WW
+WWWWWWWWWWWWWWWWWWWW
+
+(-1, 0)
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+          GGGGGGGGGG
+GGGGGGGGGGGGGGGGGGGG
+GGGGGGGGGGGGGGGGGGGG
+GGGGGGGGGGGGGGGGGGGG
+
+(3, 0)
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+ C                C 
+                    
+GGWWWWWW      WWWWWW
+GGGW W         W W G
+GGGW W         W WGG
+GGGW W         W WGG
+GGGG W         W GGG
+GGGGGW         WGGGG
+
+(8, 0)
+MMMMMMMMMMMMMMMMMMMM
+MMMMMMMMMMMMMMMMMMMM
+MMMMMMMMMMMMMMMMMMMM
+MMMMMMMNMMMMMMMMMMMM
+        MMMMMMMMMMMM
+        MNMMMMMMMMMM
+          MMMMMMMMMM
+          MNMMMMMMMM
+            MMMMMMMM
+            MNMMMMMM
+                    
+                    
+                    
+                    
+MMMMMMMMMMMMMMMMMMMM
+
+(7, 7)
+WWWWWWWWWWWWWWWWWWWW
+WWWWWWWWWWWWWWWWWWWW
+                    
+                    
+                    
+                    
+                    
+       W    c       
+WW        WWWWWW  WW
+WW  W             WW
+WW                WW
+WW                WW
+WW                WW
+WW****************WW
+WWWWWWWWWWWWWWWWWWWW
+
+(6, 2)
+RRRRRRRRRRRRRRRRRRRR
+RRRRRRR    RRRRRRRRR
+RRRRRR      RRRRRRR 
+RRRRRR       RRRRR  
+RRRRRR        RRRR  
+RRRRRR        RRR   
+   RRR        RR    
+    RR        RR    
+    RR        RR    
+    RR   RRR  RR    
+         RRR        
+RR             P  RR
+--------------------
+§§§§§§§§§§§§§§§§§§§§
+§§§§§§§§§§§§§§§§§§§§
+
+(9, 4)
+RRR*             RRR
+RRR*             RRR
+RRR*             RRR
+RRR*             RRR
+RRR*             RRR
+RRR*             RRR
+RRR******        RRR
+RRRRRRRRR        RRR
+RRR              RRR
+RRR              RRR
+RRR              RRR
+RRR              RRR
+RRR              RRR
+RRR              RRR
+RRR              RRR
+
+(7, 2)
+RRRRRRRRR           
+RRRRRRRR            
+ RRRRRR             
+  RRRRR             
+   RRRR             
+   RRR              
+    RR              
+    RR             R
+    RR             R
+ C  R       P      R
+                   R
+RRR P        R     R
+-------------------R
+§§§§§§§§§§§§§§§§§§RR
+§§§§§§§§§§§§§§§§§RRR
+
+(-2, 0)
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+~~~~~~~~~~~~~~GGGGGG
+========GGGGGGGGGGGG
+======GGGGGGGGGGGGGG
+
+(1, 2)
+RRRRRRRRRRRRRRRRRRRR
+RRRRRRRRRRRRRRRRRRRR
+                    
+                    
+                    
+              RRRRRR
+              RRRRRR
+            RRRRRRRR
+            RRRRRRRR
+           RRRRRRRRR
+         RRRRRRRRRRR
+        RRRRRRRRRRRR
+        RRRRRRRRRRRR
+       RRRRRRRRRRRRR
+       RRRRRRRRRRRRR
+
+(9, 0)
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+MMMMMMMMMMMMMMMMMMMM
+                   M
+                   M
+    C            # M
+                 # M
+MMMMMMMMMMMMMMMMM#MM
+
+(6, 7)
+         WW   WW    
+         WW   WW    
+         WW   WW    
+         WW   WW    
+         WW   WW    
+         WW   WW    
+         WW   WW    
+   C     WW   WW    
+         WW   WW  WW
+WWWWWWW           WW
+WWWWWWW     c     WW
+WWWWWWWWWWWWWWWWWWWW
+WWWWWWWWWWWWWWWWWWWW
+WWWWWWWWWWWWWWWWWWWW
+WWWWWWWWWWWWWWWWWWWW
+
+(8, 1)
+MMMMMMMMNMMMMMMMMMMM
+M                   
+M                   
+M                   
+M                   
+M                   
+M #                 
+M #            MNM  
+M #  MMMMMMMMMMMMMMM
+M #                 
+M #                 
+M #                 
+M #                 
+MMMMMMMMMMMMMMMMMMMM
+         RRR        
+
+(5, 0)
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+    WWW             
+     W              
+WWW  W            WW
+ W   W              
+ W   W              
+ W   W              
+ W   W     Z    Z   
+ W   W     W    W   
+
+(-2, 1)
+======GGGGGGGGGGGGGG
+=====GGGGGGGGGGGGGGG
+=====GGGGGGGGGGGGGGG
+=====GGGGGGGGGGGGGGG
+=====GGGGGGGGGGGGGGG
+====================
+====================
+====================
+====================
+====================
+====================
+G===================
+GGGGGG==========GGGG
+GGGGGGGGGGGGGGGGGGGG
+GGGGGGGGGGGGGGGGGGGG
+
+(4, 0)
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+WWWWWWW       WWWWWW
+GGGG W         W    
+GGG  W         W    
+GGG  W    Z    W    
+GGGG W****G****W    
+GGGGGGGGGGGGGGGGGGGG
+
+(4, 1)
+GGGGGGGGGGGGGGGGGGGG
+GGGGGGGGGGGGGGGGGGGG
+GGGGGGGGGGGGGGGGGGGG
+GGGGGGGGGGGGGGGGGGGG
+GGGGGGGGGGGGGGGGGGGG
+GGGGGGGGGGGGGGGGGGGR
+                 RRR
+              RRRRRR
+             RRRRRRR
+RRRRRRRRRRRRRRRRRRRR
+RRRRRRRRRRRRRRRRRRRR
+RRRRRRRRRRRRRRRRRRRR
+RRRRRRRRRRRRRRRRRRRR
+RRRRRRRRRRRRRRRRRRRR
+RRRRRRRRRRRRRRRRRRRR
+
+(9, 7)
+WWW              RRR
+WWW              RRR
+WWW              RRR
+                 RRR
+                 RRR
+                 RRR
+                 RRR
+                 RRR
+                 RRR
+                 RRR
+          C     RRRR
+               RRRRR
+WWWRRRRRRRRRRRRRRRRR
+WWWRRRRRRRRRRRRRRRRR
+WWWRRRRRRRRRRRRRRRRR
+
+(3, 2)
+RRRRRR         RRRRR
+RRRRRR         RRRRR
+RRRRRR          RRRR
+RRRRR            RRR
+RRRR              RR
+RRRR               R
+RR                  
+                    
+                    
+                    
+                    
+          W    WW   
+RR     WW W W  WRRRR
+RRRRRRRRRRRRRRRRRRRR
+RRRRRRRRRRRRRRRRRRRR
+
 (0, 0)
---------------------
---------------------
---------------------
---------------------
---------------------
---------------------
-------------N-------
---------------------
---------------------
--C------------------
---------------------
-IIIIIIIIIIIIIIIIIIII
-IIIIIIIIIIIIIIIIIIII
-IIIIIIIIIIIIIIIIIIII
-IIIIIIIIIIIIIIIIIIII
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+          C         
+           04       
+       GGGGGGG      
+    GGGGGGGGGGGGG   
+GGGGGGGGGGGGGGGGGGGG
+GGGGGGGGGGGGGGGGGGGG
+GGGGGGGGGGGGGGGGGGGG
+GGGGGGGGGGGGGGGGGGGG
+
+(8, 2)
+         RRR        
+         RRR        
+         RRR        
+         RRR        
+         RRR        
+         RRR        
+  RRP           RR  
+RRRRRRRRRRRRRRRRRRRR
+RRRRRRRRRRRRRRRRRRRR
+RRRRRRRRRRRRRRRRRRRR
+RRRRRRRRRRRRRRRRRRRR
+RRRRRRRRRRRRRRRRRRRR
+RRRRRRRRRRRRRRRRRRRR
+RRRRRRRRRRRRRRRRRRRR
+RRRRRRRRRRRRRRRRRRRR
+
+(9, 3)
+RRRRRRRR    RRRRRRRR
+RRRRRRRR    RRRRRRRR
+RRRRRRR     *RRRRRRR
+RRRRRR*     *RRRRRRR
+RRRRRR*      *RRRRRR
+RRRRR*        *RRRRR
+RRRRR*        *RRRRR
+RRRRR*        *RRRRR
+RRRR*         *RRRRR
+RRRR*         *RRRRR
+RRRR*          *RRRR
+RRRR*          *RRRR
+RRR*            RRRR
+RRR*            *RRR
+RRR*            *RRR
+
+(6, 0)
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+WWWWWWWWWWWWWWWWWWWW
+                    
+                    
+                    
+                    
+                    
+
+(-3, 1)
+====================
+====================
+====================
+====================
+====================
+====================
+====================
+====================
+====================
+====================
+====================
+GGGGGGGGGGGG=======G
+GGGGGGGGGGGGGGGGGGGG
+GGGGGGGGGGGGGGGGGGGG
+GGGGGGGGGGGGGGGGGGGG
+
+(8, 7)
+WWWWWWWWWWWWWWWWWWWW
+WWWWWWWWWWWWWWWWWWWW
+                    
+                    
+                    
+                    
+                    
+                    
+WW                  
+WW                  
+WWW                 
+WWW                 
+WWWWW  c      WWWWWW
+WWWWWWWWWWWWWWWWWWWW
+WWWWWWWWWWWWWWWWWWWW
+
+(-4, 0)
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+          I         
+         III        
+        IIIII       
+       IIIIIII      
+       IIIIIIII     
+~~~~~~IIIIIIIII~~~~~
+======IIIIIIIII=====
+======IIIIIIIII=====
+
+(4, 2)
+RRRRRRRRRRRRRRRRRRRR
+RRRRRRRRRRRRRRRRRRRR
+RRRRRRRRRRRRRRRRRRRR
+RRRRRRRRRRRRRRRRRRRR
+RRRRR               
+R                   
+                    
+                    
+                    
+                    
+          C         
+                    
+RRRRRRRRRRRRRRRRRRRR
+RRRRRRRRRRRRRRRRRRRR
+RRRRRRRRRRRRRRRRRRRR
+
+(1, 0)
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+GGGG    GGGGG    GGG
+GGGG    GGGGG    GGG
+GGGGG   GGGGG****GGG
+GGGGGGGGGGGGGGGGGGGG
+
+(9, 6)
+RRR              RRR
+RRR              RRR
+RRR              RRR
+RRR       *   *  RRR
+RRR   *          RRR
+RRR              RRR
+RRR              RRR
+RRR              RRR
+RRR              RRR
+RRR  *           RRR
+RRR       *      RRR
+RRR           *  RRR
+RRR              RRR
+RRR    *         RRR
+RRR              RRR
+
+(7, 0)
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+GGGG                
+GGGG                
+GGGGG               
+GGGGG               
+GGGGGG              
+GGGGGGGGGGGGGGGGGGGG
+
+(9, 2)
+          #   RRRRRR
+          #   RRRRRR
+          #   RRRRRR
+          #   RRRRRR
+          #   RRRRRR
+ C        #   RRRRRR
+          #   RRRRRR
+RRRRRR        RRRRRR
+RRRRRRR      RRRRRRR
+RRRRRRR     RRRRRRRR
+RRRRRRRR    RRRRRRRR
+RRRRRRRR    RRRRRRRR
+RRRRRRRR    RRRRRRRR
+RRRRRRRR    RRRRRRRR
+RRRRRRRR    RRRRRRRR
+
+(3, 1)
+GGGGGW         WGGGG
+GGGGGW         WGGGG
+GGGGGG         GGGGG
+GGGGGG         GGGGG
+GGGGGG         GGGGG
+GGGGGG         GGGGG
+GGGGGG              
+RGGGGG              
+RRGGGG              
+RRRGGG          RRRR
+RRRRGG          RRRR
+RRRRRR          RRRR
+RRRRRR         RRRRR
+RRRRRR         RRRRR
+RRRRRR         RRRRR
+
+(2, 2)
+RRRRRRRRRRRRRRRRRRRR
+RRRRRRRRRRRRRRRRRRRR
+           RRRRRRRRR
+            RRRRRRRR
+            RRRRRRRR
+RRRR        RRRRRRRR
+RRRRRRRRRR  RRRRRRRR
+RRRRRRRRRR  RRRRRR  
+RRRRRRRRR   RRR     
+RRRRRRRRR   R       
+RRRRRRRRR           
+RRRRRRRRR           
+RRRRRRRRR      RRRRR
+RRRRRRRRRRRRRRRRRRRR
+RRRRRRRRRRRRRRRRRRRR
+
+(-3, 0)
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+~~~~~~~~~~~~~~~~~~~~
+====================
+====================
+
+(2, 0)
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+              GGGGGG
+   GGGGGGGGGGGGGGGGG
+GGGGGGGGGGGGGGGGGGGG
+GGGGGGGGGGGGGGGGGGGG
+GGGGGGGGGGGGGGGGGGGG
+GGGGGGGGGGGGGGGGGGGG
+
+(-4, 1)
+======IIIIIIIII=====
+=======IIIIIII======
+========III=========
+====================
+====================
+====================
+====================
+====================
+====================
+====================
+====================
+==============GGGGGG
+GGGGGGGGGGGGGGGGGGGG
+GGGGGGGGGGGGGGGGGGGG
+GGGGGGGGGGGGGGGGGGGG
+
+(9, 1)
+MMMMMMMMMMMMMMMMM#MM
+                 # M
+                 # M
+                 # M
+                 # M
+                 # M
+   MM         MM # M
+   MM         NM # M
+MMMMMMMMMMMMMMMMMMMM
+            MRRRRRRR
+            MRRRRRRR
+          # MRRRRRRR
+          # MRRRRRRR
+MMMMMMMMMM#MMRRRRRRR
+          #   RRRRRR
+
+(9, 5)
+RRR              RRR
+RRR              RRR
+RRR              RRR
+RRR              RRR
+RRR              RRR
+RRR              RRR
+RRR              RRR
+RRR              RRR
+RRR              RRR
+RRR       *******RRR
+RRR       RRRRRRRRRR
+RRR              RRR
+RRR              RRR
+RRR              RRR
+RRR              RRR
+
+(5, 2)
+RRRRRRRRRRRRRRRRRRRR
+RRRRRRRRRRRRRRRRRRRR
+RRRRRRRRRRRRRRRRRRRR
+RRRRRRRRRRRRRRRRRRRR
+              RRRRRR
+                  RR
+                    
+                    
+                    
+                    
+                    
+   RRR    P      RRR
+RRRRRR--------------
+RRRRRR§§§§§§§§§§§§§§
+RRRRRRRRR§§§§§§§§§§§
 

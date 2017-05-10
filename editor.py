@@ -2,6 +2,8 @@ import pygame
 import helpers
 import textbox
 
+WORLD_WIDTH = 18
+WORLD_HEIGHT = 14
 OBJECTS = (('W', 'WALL'),
            ('G', 'GROUND'),
            ('R', 'ROCK'),
@@ -12,8 +14,10 @@ OBJECTS = (('W', 'WALL'),
            ('F', 'FALLING PLATFORM'),
            ('D', 'DESTROYABLE'),
            ('#', 'LADDER'),
-           ('~', 'SURFACE'),
+           ('~', 'WATER SURFACE'),
            ('=', 'WATER'),
+           ('-', 'LAVA SURFACE'),
+           ('§', 'LAVA'),
            ('C', 'CHECKPOINT'),
            ('E', 'END'),
            ('*', 'THORNS'),
@@ -40,8 +44,10 @@ class Editor:
         self.room_x = x
         self.room_y = y
         self.object = 0
-        self.text = textbox.Textbox(OBJECTS[self.object][1],
-                                    0.5 * helpers.SCREEN_WIDTH, 0)
+        self.object_text = textbox.Textbox(OBJECTS[self.object][1],
+                                           0.5 * helpers.SCREEN_WIDTH, 0)
+        self.coord_text = textbox.Textbox('0 0',
+                                          0.9 * helpers.SCREEN_WIDTH, 0)
 
     def input(self, lvl, input_hand):
         room = lvl.room(self.room_x, self.room_y)
@@ -75,20 +81,22 @@ class Editor:
             else:
                 self.object = 0
 
-        self.text.set_string(OBJECTS[self.object][1])
+        self.object_text.set_string(OBJECTS[self.object][1])
+        self.coord_text.set_string(str(self.room_x) + ' ' + str(self.room_y))
 
         if input_hand.keys_pressed[pygame.K_UP]:
-            self.room_y -= 1
+            self.room_y = max(self.room_y - 1, -int(WORLD_HEIGHT / 2))
         if input_hand.keys_pressed[pygame.K_DOWN]:
-            self.room_y += 1
+            self.room_y = min(self.room_y + 1, int(WORLD_HEIGHT / 2))
         if input_hand.keys_pressed[pygame.K_RIGHT]:
-            self.room_x += 1
+            self.room_x = min(self.room_x + 1, int(WORLD_WIDTH / 2))
         if input_hand.keys_pressed[pygame.K_LEFT]:
-            self.room_x -= 1
+            self.room_x = max(self.room_x - 1, -int(WORLD_WIDTH / 2))
         if input_hand.keys_down[pygame.K_c]:
             room.clear()
         if input_hand.keys_down[pygame.K_s]:
             lvl.write()
 
     def draw(self, screen, img_hand):
-        self.text.draw(screen, img_hand)
+        self.object_text.draw(screen, img_hand)
+        self.coord_text.draw(screen, img_hand)
