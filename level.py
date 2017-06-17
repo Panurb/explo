@@ -205,6 +205,7 @@ class Room:
         self.powerups = list()
         self.water = list()
         self.dynamic_objects = list()
+        self.cannons = list()
         self.end = None
 
         self.x = x
@@ -285,6 +286,8 @@ class Room:
             p.update(self)
         for d in self.dynamic_objects:
             d.update(self)
+        for c in self.cannons:
+            c.update(self)
         for w in self.water:
             w.update(self)
 
@@ -303,6 +306,8 @@ class Room:
             e.reset()
         for d in self.dynamic_objects:
             d.reset()
+        for c in self.cannons:
+            c.reset()
 
     def draw(self, screen, img_hand):
         for row in self.bg:
@@ -327,6 +332,8 @@ class Room:
             p.draw(screen, img_hand)
         for d in self.dynamic_objects:
             d.draw(screen, img_hand)
+        for c in self.cannons:
+            c.draw(screen, img_hand)
         if self.end is not None:
             self.end.draw(screen, img_hand)
 
@@ -349,15 +356,20 @@ class Room:
             w.debug_draw(screen)
         for d in self.dynamic_objects:
             d.debug_draw(screen)
+        for c in self.cannons:
+            c.debug_draw(screen)
 
     def play_sounds(self, snd_hand):
+        sounds = set()
         for e in self.enemies:
-            e.play_sounds(snd_hand)
+            sounds |= e.sounds
+            e.sounds.clear()
         for d in self.dynamic_objects:
-            d.play_sounds(snd_hand)
-            # play only for once for cannons
-            if type(d) is tile.Cannon:
-                break
+            sounds |= d.sounds
+            d.sounds.clear()
+
+        for sound in sounds:
+            snd_hand.sounds[sound].play()
 
     def add_object(self, x, y, char):
         tile_x = int(x / helpers.TILE_SIZE)

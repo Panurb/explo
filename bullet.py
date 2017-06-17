@@ -78,16 +78,17 @@ class Bullet(gameobject.PhysicsObject):
 
     def destroy(self, particle_type, vertical):
         if self.alive:
-            self.add_particle(0, 0, 0.2, 2, particle_type, vertical)
-            self.add_particle(0, 0, 0.2, 2, particle_type, vertical)
+            self.add_particle(0, 0, 1, 2, particle_type, vertical)
+            self.add_particle(0, 0, 1, 2, particle_type, vertical)
             self.alive = False
+            self.parent.sounds.add('hit')
 
     def add_particle(self, x, y, speed, spread, particle_type, vertical):
         if vertical:
             dx = random.uniform(-spread, spread) * helpers.SCALE
-            dy = speed * self.dy
+            dy = math.copysign(helpers.SCALE * speed, self.dy)
         else:
-            dx = speed * self.dx
+            dx = math.copysign(helpers.SCALE * speed, self.dx)
             dy = random.uniform(-spread, spread) * helpers.SCALE
 
         p = particle.Particle(self.x + x, self.y + y, dx, dy, particle_type,

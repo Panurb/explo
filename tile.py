@@ -241,7 +241,7 @@ class Spring(Wall):
 
 class Cannon(Wall):
     def __init__(self, x, y):
-        super().__init__(x, y, 'destroyable')
+        super().__init__(x, y, 'cannon')
         self.group = gameobject.CollisionGroup.walls
         self.bullets = list()
         self.cooldown = 60
@@ -279,6 +279,7 @@ class Cannon(Wall):
 
     def reset(self):
         self.bullets.clear()
+        self.timer = 0
 
     def play_sounds(self, snd_hand):
         for sound in self.sounds:

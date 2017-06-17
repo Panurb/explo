@@ -136,6 +136,7 @@ class Player(creature.Creature):
                 self.save.abilities = self.abilities.copy()
 
                 cp.active = True
+                #self.sounds.add('save')
 
         if room.end is not None:
             if self.collider.colliderect(room.end.collider):
@@ -240,12 +241,12 @@ class Player(creature.Creature):
         keys_down = input_hand.keys_down
 
         if self.alive:
-            if keys_down[pygame.K_d]:
-                self.modifying_weapon = True
-                self.modify_weapon(input_hand.keys_pressed)
-                return
-            else:
-                self.modifying_weapon = False
+            # if keys_down[pygame.K_d]:
+            #     self.modifying_weapon = True
+            #     self.modify_weapon(input_hand.keys_pressed)
+            #     return
+            # else:
+            #     self.modifying_weapon = False
 
             if keys_down[pygame.K_RIGHT]:
                 self.moving = True
@@ -283,7 +284,7 @@ class Player(creature.Creature):
                 else:
                     self.attack()
 
-            self.show_map = keys_down[pygame.K_f]
+            self.show_map = keys_down[pygame.K_d]
 
             if not self.ground_collision or not keys_down[pygame.K_DOWN]:
                 self.uncrouch(room)
@@ -339,10 +340,14 @@ class Player(creature.Creature):
                 self.dx = speed
             self.dy = JUMP_HEIGHT
             self.jump_buffer = False
-        elif self.abilities[Ability.double_jump] and self.jump_count < 2:
+        elif self.abilities[Ability.double_jump]:
+            if self.jump_count > 1:
+                return
             self.dy = JUMP_HEIGHT
             self.jump_count = 2
             self.jump_buffer = False
+
+        self.sounds.add('jump')
 
     def climb(self, room, speed):
         collider = pygame.sprite.Sprite()

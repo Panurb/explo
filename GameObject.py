@@ -74,6 +74,7 @@ class GameObject:
         self.sprites = []
         for path in sprite_paths:
             self.sprites.append(animatedsprite.AnimatedSprite(path))
+        self.sounds = set()
 
     def set_position(self, x, y):
         self.x = x
@@ -137,6 +138,12 @@ class GameObject:
 
         return collisions
 
+    def play_sounds(self, snd_hand):
+        for sound in self.sounds:
+            snd_hand.sounds[sound].play()
+
+        self.sounds.clear()
+
 
 class PhysicsObject(GameObject):
     def __init__(self, x, y, width, height, dx, dy, sprite_paths,
@@ -157,8 +164,6 @@ class PhysicsObject(GameObject):
 
         self.spawn_x = x
         self.spawn_y = y
-
-        self.sounds = set()
 
     def update(self, room):
         self.collisions.clear()
@@ -222,7 +227,10 @@ class PhysicsObject(GameObject):
                 bounce_scale = self.bounce_scale(c)
 
             if abs(relative_vel) > helpers.SCALE:
-                self.sounds.add('hit')
+                self.sounds.add('bump')
+            elif abs(relative_vel) >= 0.5 * helpers.SCALE:
+                if self is not room.level.player:
+                    self.sounds.add('bump')
 
         if collisions:
             self.dx *= -bounce_scale
@@ -267,7 +275,7 @@ class PhysicsObject(GameObject):
 
             if abs(relative_vel) > helpers.SCALE:
                 if c.group is not CollisionGroup.springs:
-                    self.sounds.add('hit')
+                    self.sounds.add('bump')
 
         if collisions:
             self.dy *= -bounce_scale
@@ -292,12 +300,6 @@ class PhysicsObject(GameObject):
             self.direction = Direction.left
         elif self.direction is Direction.left:
             self.direction = Direction.right
-
-    def play_sounds(self, snd_hand):
-        for sound in self.sounds:
-            snd_hand.sounds[sound].play()
-
-        self.sounds.clear()
 
     def reset(self):
         self.x = self.spawn_x

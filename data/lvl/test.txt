@@ -33,18 +33,18 @@ RRRRRRRRRRRRRRRRRRRR
 RRRRRRRRRRRRRRRRRRRR
 
 (0, 0)
-RRR         RRRR    
-RRR        RRR      
-RRR      RRRR       
-R        RRRR       
-R      RRR          
-R      RR           
-R   RRRR            
-RR#   R             
+RRR  NNNNN  RRRR    
+RRR  NN    RRR      
+RRR  NNN RRRR       
+R    N N RRRR RRRRR 
+R   NN RRR    R   R 
+R      RR     R N R 
+R   RRRR      R   R 
+RR#   R       RRRRR 
 RR#                 
 RR#                 
 RR# C               
-RRR ~   0356247 RR  
+RRR     0356247 RR  
 RRRRRRRRRRRRRRRZRRRR
 RRRRRRRRRRRRRRRRRRRR
 RRRRRRRRRRRRRRRRRRRR

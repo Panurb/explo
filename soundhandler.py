@@ -1,7 +1,7 @@
 import helpers
 
 
-SOUNDS = ['hit', 'powerup', 'shoot', 'splash', 'spring', 'squish']
+SOUNDS = ['bump', 'hit', 'jump', 'powerup', 'save', 'shoot', 'splash', 'spring', 'squish']
 MUSIC = ['menu']
 
 

@@ -5,6 +5,7 @@ SIZES = {
     'bg': (8, 8),
     'boss': (24, 24),
     'bullet': (8, 8),
+    'cannon': (8, 8),
     'charger': (16, 16),
     'charger_gibs': (8, 8),
     'chars': (4, 4),
@@ -54,6 +55,9 @@ ACTIONS = {
     'bullet': [
         ['idle', 3]
     ],
+    'cannon': [
+        ['idle', 1]
+    ],
     'charger': [
         ['idle', 4],
         ['charge', 4],
@@ -66,7 +70,7 @@ ACTIONS = {
     'chars': [
         ['upper_case', 26],
         ['lower_case', 26],
-        ['numbers', 10]
+        ['numbers', 11]
     ],
     'chaser': [
         ['idle', 8],

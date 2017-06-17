@@ -4,6 +4,7 @@ import helpers
 
 UPPER_CASE = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
 LOWER_CASE = 'abcdefghijklmnopqrstuvwxyz'
+NUMBERS = '1234567890-'
 
 
 class Textbox:
@@ -34,9 +35,12 @@ class Textbox:
                     if char.isupper():
                         index = UPPER_CASE.find(char)
                         sprite.show_frame('upper_case', index)
-                    else:
+                    elif char.islower():
                         index = LOWER_CASE.find(char)
                         sprite.show_frame('lower_case', index)
+                    else:
+                        index = NUMBERS.find(char)
+                        sprite.show_frame('numbers', index)
 
                     if index == -1:
                         continue
