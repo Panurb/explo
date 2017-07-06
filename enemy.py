@@ -162,7 +162,8 @@ class Crawler(Enemy):
             self.alive = False
 
     def add_shrapnel(self, dx, dy):
-        dx = random.uniform(dx - 1, dx + 1) * helpers.SCALE
+        #dx = random.uniform(dx - 1, dx + 1) * helpers.SCALE
+        dx = dx * helpers.SCALE
         dy = dy * helpers.SCALE
         self.bullets.append(Shrapnel(self.x, self.y, dx, dy))
 

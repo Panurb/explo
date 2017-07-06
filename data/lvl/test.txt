@@ -33,17 +33,17 @@ RRRRRRRRRRRRRRRRRRRR
 RRRRRRRRRRRRRRRRRRRR
 
 (0, 0)
-RRR  NNNNN  RRRR    
-RRR  NN    RRR      
-RRR  NNN RRRR       
-R    N N RRRR RRRRR 
-R   NN RRR    R   R 
-R      RR     R N R 
+RRR         RRRR    
+RRR        RRR      
+RRR      RRRR       
+R        RRRR RRRRR 
+R      RRR    R   R 
+R      RR     R   R 
 R   RRRR      R   R 
 RR#   R       RRRRR 
 RR#                 
 RR#                 
-RR# C               
+RR# C           DD  
 RRR     0356247 RR  
 RRRRRRRRRRRRRRRZRRRR
 RRRRRRRRRRRRRRRRRRRR

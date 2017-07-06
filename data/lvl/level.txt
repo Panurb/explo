@@ -15,39 +15,39 @@ WW  W       W    WWW
 ****W***W***W****WWW
 WWWWWWWWWWWWWWWWWWWW
 
-(3, 1)
-GGGGGW         WGGGG
-GGGGGW         WGGGG
-GGGGGG         GGGGG
-GGGGGG         GGGGG
-GGGGGG         GGGGG
-GGGGGG         GGGGG
-GGGGGG              
-RGGGGG              
-RRGGGG              
-RRRGGG          RRRR
-RRRRGG          RRRR
-RRRRRR          RRRR
-RRRRRR         RRRRR
-RRRRRR         RRRRR
-RRRRRR         RRRRR
+(1, 3)
+RR    #RRRRRRRRRRRRR
+R     #RRRRRRRRRRRRR
+R     #RRRRRRRRRRRRR
+      #RRRRRRRRRRRRR
+      #RRRRRRRRRRRRR
+      RRRRRRRRRRRRRR
+      RRRRRRRRRRRRRR
+     RRRRRRRRRRRRRRR
+     RRRRRRRRRRRRRRR
+    RRRRRRRRRRRRRRRR
+    RRRRRRRRRRRRRRRR
+RRRRRRRRRRRRRRRRRRRR
+RRRRRRRRRRRRRRRRRRRR
+RRRRRRRRRRRRRRRRRRRR
+RRRRRRRRRRRRRRRRRRRR
 
-(-1, 0)
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-   h                
-          GGGGGGGGGG
-GGGGGGGGGGGGGGGGGGGG
-GGGGGGGGGGGGGGGGGGGG
-GGGGGGGGGGGGGGGGGGGG
+(9, 1)
+MMMMMMMMMMMMMMMMM#MM
+                 # M
+                 # M
+                 # M
+                 # M
+                 # M
+   MM         MM # M
+   MM         NM # M
+MMMMMMMMMMMMMMMMMMMM
+            MRRRRRRR
+            MRRRRRRR
+          # MRRRRRRR
+          # MRRRRRRR
+MMMMMMMMMM#MMRRRRRRR
+          #   RRRRRR
 
 (7, -6)
                     
@@ -134,6 +134,23 @@ MMMMMMMMMMMMMMMMMMMM
 MMMMMMMMMMMMMMMMMMMM
 MMMMMMMMMMMMMMMMMMMM
 
+(7, -4)
+                    
+                    
+                    
+                    
+                    
+                #   
+                #   
+                #MMM
+                #MMM
+                #MMM
+                #MMM
+                #MMM
+                #MMM
+                #MMM
+                #MMM
+
 (7, -2)
                 #MMM
                 #MMM
@@ -151,56 +168,90 @@ MMMMMMMMMMMMMMMMMMMM
                MMMMM
                  MMM
 
-(6, 2)
-RRRRRRRRRRRRRRRRRRRR
-RRRRRRR    RRRRRRRRR
-RRRRRR      RRRRRRR 
-RRRRRR       RRRRR  
-RRRRRR        RRRR  
-RRRRRR        RRR   
-   RRR        RR    
-    RR        RR    
-    RR        RR    
-    RR   RRR  RR    
-         RRR        
-RR             P  RR
---------------------
-§§§§§§§§§§§§§§§§§§§§
-§§§§§§§§§§§§§§§§§§§§
+(9, -5)
+IIIIIIIIIIIIIIIIIIII
+IIIIIIIIIIIIIIIIIIII
+       IIIIIIIIIIIII
+          IIIIIIIIII
+             IIIIIII
+              IIIIII
+               IIIII
+                IIII
+                 III
+III              III
+IIIIII           III
+IIIIIIII          II
+IIIIIIIII         II
+  IIIIIII         II
+   IIIIIIII       II
 
-(9, 4)
-RRR*             RRR
-RRR*             RRR
-RRR*             RRR
-RRR*             RRR
-RRR*             RRR
-RRR*             RRR
-RRR******        RRR
-RRRRRRRRR        RRR
-RRR              RRR
-RRR              RRR
-RRR              RRR
-RRR              RRR
-RRR              RRR
-RRR              RRR
-RRR              RRR
+(-1, 5)
+WWW                 
+WWWWW               
+WWWWWWW             
+WWWWWWWWW           
+WWWWWWWWWWWWWWWWWWWW
+WWWWWWWWWWWWWWWWWWWW
+WWWWWWWWWWWWWWWWWWWW
+WW~WW-WW~WW-WW~WW-WW
+WW=WW§WW=WW§WW=WW§WW
+WW=WW§WW=WW§WW=WW§WW
+WW=WW§WW=WW§WW=WW§WW
+WW=WW§WW=WW§WW=WW§WW
+WWWWWWWWWWWWWWWWWWWW
+WWWWWWWWWWWWWWWWWWWW
+WWWWWWWWWWWWWWWWWWWW
 
 (3, 7)
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                  C 
-                    
-                 WWW
-                    
-                    
-                    
-********************
+WWWWWW              
+WWWWWW              
+WWWWWW              
+WWWWWW              
+WWWWWW              
+WWWWWW              
+WWWWWW              
+WWWWWW            C 
+WWWWWW              
+WWWWWW           WWW
+WWWWWW              
+   WWW              
+         3          
+WW  c   WWW      ***
 WWWWWWWWWWWWWWWWWWWW
+
+(0, 3)
+ RRRRRRRRRRRRRRRRRRR
+    RRRRRRRRRRRRRRRR
+            RRRRRRRR
+              W     
+              W     
+              W     
+              W     
+              W     
+              W     
+       W      D     
+       W      D     
+WWW         P      R
+                   R
+*******************R
+WWWWWWWWWWWWWWWWWWRR
+
+(9, -2)
+MMMMMMMMMMMMMMMMMMMM
+MMMMMMMMMMMMMMMMMMMM
+MMMMMMMMMMMMMMMMMMMM
+MMMMM      MMMMMMMMM
+MMMMM      MMM    #M
+MM***      ***    #M
+MM                #M
+       **       MM#M
+       MM       MM#M
+       MM       MM#M
+  ZZZZZMMZZZZZZZMM#M
+MMMMMMMMMMMMMMMMMM#M
+MMMMMMMMMMMMMMMMMM#M
+MMMMMMMMMMMMMMMMMM#M
+MMMMMMMMMMMMMMMMMM#M
 
 (1, 0)
                     
@@ -236,7 +287,7 @@ RRR P        R     R
 §§§§§§§§§§§§§§§§§§§§
 §§§§§§§§§§§§§§§§§§§§
 
-(-2, 0)
+(-1, 0)
                     
                     
                     
@@ -247,28 +298,45 @@ RRR P        R     R
                     
                     
                     
-                    
-                    
-~~~~~~~~~~~~~~GGGGGG
-========GGGGGGGGGGGG
-======GGGGGGGGGGGGGG
+   h                
+          GGGGGGGGGG
+GGGGGGGGGGGGGGGGGGGG
+GGGGGGGGGGGGGGGGGGGG
+GGGGGGGGGGGGGGGGGGGG
 
 (1, 2)
 RRRRRRRRRRRRRRRRRRRR
 RRRRRRRRRRRRRRRRRRRR
-                    
-                    
-                    
-              RRRRRR
-              RRRRRR
-            RRRRRRRR
-            RRRRRRRR
-           RRRRRRRRR
-         RRRRRRRRRRR
-        RRRRRRRRRRRR
-        RRRRRRRRRRRR
-       RRRRRRRRRRRRR
-       RRRRRRRRRRRRR
+RRRRRRRRRR          
+RRRRRRR             
+RRRRR               
+RRRR          RRRRRR
+RRRR          RRRRRR
+RRR         RRRRRRRR
+RRR         RRRRRRRR
+RRR        RRRRRRRRR
+RR       RRRRRRRRRRR
+RR      RRRRRRRRRRRR
+RR      RRRRRRRRRRRR
+RR    #RRRRRRRRRRRRR
+RR    #RRRRRRRRRRRRR
+
+(-2, 3)
+WW                  
+WW                  
+WW                  
+WW                  
+WW                  
+WW                  
+WW                  
+WW                  
+WW                  
+WW                 W
+WW                 W
+WW           D P   W
+WW                  
+WWWWW               
+WWWWWWWW            
 
 (9, 0)
 MMMMMMMMMMMMMMMMMMMM
@@ -287,22 +355,22 @@ MMMMMMMMMMMMMMMMMMMM
                  # M
 MMMMMMMMMMMMMMMMM#MM
 
-(9, 5)
-RRR              RRR
-RRR              RRR
-RRR              RRR
-RRR              RRR
-RRR              RRR
-RRR              RRR
-RRR              RRR
-RRR              RRR
-RRR              RRR
-RRR       *******RRR
-RRR       RRRRRRRRRR
-RRR              RRR
-RRR              RRR
-RRR              RRR
-RRR              RRR
+(3, 1)
+GGGGGW         WGGGG
+GGGGGW         WGGGG
+GGGGGG         GGGGG
+GGGGGG         GGGGG
+GGGGGG         GGGGG
+GGGGGG         GGGGG
+GGGGGG              
+RGGGGG              
+RRGGGG              
+RRRGGG          RRRR
+RRRRGG          RRRR
+RRRRRR          RRRR
+RRRRRR         RRRRR
+RRRRRR         RRRRR
+RRRRRR         RRRRR
 
 (6, 7)
          WW   WW    
@@ -355,6 +423,57 @@ M #
 MMMMMMMMMMMMMMMMMMMM
          RRR        
 
+(8, -4)
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+MM                  
+MM                MM
+MM                MM
+MM             h MMM
+MM               MMM
+MMMMMMMMMMMMMMMMMMMM
+MMMMMMMMMMMMMMMMMMMM
+MMMMMMMMMMMMMMMMMMMM
+
+(-2, 0)
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+~~~~~~~~~~~~~~GGGGGG
+========GGGGGGGGGGGG
+======GGGGGGGGGGGGGG
+
+(9, 4)
+RRR*             RRR
+RRR*             RRR
+RRR*             RRR
+RRR*             RRR
+RRR*             RRR
+RRR*             RRR
+RRR******        RRR
+RRRRRRRRR        RRR
+RRR              RRR
+RRR              RRR
+RRR              RRR
+RRR              RRR
+RRR              RRR
+RRR              RRR
+RRR              RRR
+
 (8, -2)
 MMMMMMMMMMMMMMMMMMMM
 MMMMMMMMMMMMMMMMMMMM
@@ -389,39 +508,39 @@ WWW  W            WW
  W   W     Z    Z   
  W   W     W    W   
 
-(-2, 1)
-======GGGGGGGGGGGGGG
-=====GGGGGGGGGGGGGGG
-=====GGGGGGGGGGGGGGG
-=====GGGGGGGGGGGGGGG
-=====GGGGGGGGGGGGGGG
-====================
-====================
-====================
-====================
-====================
-====================
-G===================
-GGGGGG==========GGGG
-GGGGGGGGGGGGGGGGGGGG
-GGGGGGGGGGGGGGGGGGGG
+(2, 2)
+RRRRRRRRRRRRRRRRRRRR
+RRRRRRRRRRRRRRRRRRRR
+           RRRRRRRRR
+            RRRRRRRR
+            RRRRRRRR
+RRRR        RRRRRRRR
+RRRRRRRRRR  RRRRRRRR
+RRRRRRRRRR  RRRRRR  
+RRRRRRRRR   RRR     
+RRRRRRRRR   R       
+RRRRRRRRR           
+RRRRRRRRR           
+RRRRRRRRR      RRRRR
+RRRRRRRRRRRRRRRRRRRR
+RRRRRRRRRRRRRRRRRRRR
 
-(4, 0)
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-WWWWWWW       WWWWWW
-GGGG W         W    
-GGG  W         W    
-GGG  W    Z    W    
-GGGG W****G****W    
-GGGGGGGGGGGGGGGGGGGG
+(-2, 4)
+WWWWWWWW            
+WWWWWWWWWWWWWW      
+WWWWWWWWWWWWWWWWWWWW
+WWWWWWWWWWWWWWWWWWWW
+   W    W    W    WW
+   W    W    W    WW
+   W    W    W    WW
+   W    W    W    WW
+   W    W    W    WW
+   W    W    W    WW
+   W    W    W    WW
+   W    W    W    WW
+   W    W    W    WW
+   W    W    W    WW
+   W    W    W    WW
 
 (7, -3)
                 #MMM
@@ -500,7 +619,7 @@ RRRRRRRRRRRRRRRRRRRR
                     
                     
           C         
-         3 041      
+        23 041      
        GGGGGGG      
     GGGGGGGGGGGGG   
 GGGGGGGGGGGGGGGGGGGG
@@ -559,6 +678,23 @@ RRR*            RRRR
 RRR*            *RRR
 RRR*            *RRR
 
+(-2, 1)
+======GGGGGGGGGGGGGG
+=====GGGGGGGGGGGGGGG
+=====GGGGGGGGGGGGGGG
+=====GGGGGGGGGGGGGGG
+=====GGGGGGGGGGGGGGG
+====================
+====================
+====================
+====================
+====================
+====================
+G===================
+GGGGGG==========GGGG
+GGGGGGGGGGGGGGGGGGGG
+GGGGGGGGGGGGGGGGGGGG
+
 (6, 0)
                     
                     
@@ -593,22 +729,39 @@ GGGGGGGGGGGGGGGGGGGG
 GGGGGGGGGGGGGGGGGGGG
 GGGGGGGGGGGGGGGGGGGG
 
-(9, -2)
+(9, -1)
+MMMNNNNNNNNNNNNNMM#M
+MMM             MM#M
+MMM             MM#M
+MMM             MM#M
+MMM             MM#M
+MMM       P     MM#M
+                  #M
+                  #M
+                  #M
+ C                #M
+                  #M
 MMMMMMMMMMMMMMMMMMMM
 MMMMMMMMMMMMMMMMMMMM
 MMMMMMMMMMMMMMMMMMMM
-MMMMM      MMMMMMMMM
-MMMMM      MMM    #M
-MM***      ***    #M
-MM                #M
-       **       MM#M
-       MM       MM#M
-       MM       MM#M
-  ZZZZZMMZZZZZZZMM#M
-MMMMMMMMMMMMMMMMMM#M
-MMMMMMMMMMMMMMMMMM#M
-MMMMMMMMMMMMMMMMMM#M
-MMMMMMMMMMMMMMMMMM#M
+MMMMMMMMMMMMMMMMMMMM
+
+(0, 7)
+WWWW               W
+WWWWWWWW           W
+WWWWWWWWWWWWW      W
+WWWWWWWWWWWWWWWW   W
+WWWWWWW            W
+WW W W            WW
+WW W W             W
+WW W W          W  W
+W  W W             W
+W  W W       W     W
+W  W W  W           
+WW W W              
+WW W W     W        
+WWWW W              
+WWWWWWWWWWWWWWWWWWWW
 
 (8, 7)
 WWWWWWWWWWWWWWWWWWWW
@@ -644,22 +797,22 @@ WWWWWWWWWWWWWWWWWWWW
 ======IIIIIIIII=====
 ======IIIIIIIII=====
 
-(7, -4)
+(4, 0)
                     
                     
                     
                     
                     
-                #   
-                #   
-                #MMM
-                #MMM
-                #MMM
-                #MMM
-                #MMM
-                #MMM
-                #MMM
-                #MMM
+                    
+                    
+                    
+                    
+WWWWWWW       WWWWWW
+GGGG W         W    
+GGG  W         W    
+GGG  W    Z    W    
+GGGG W****G****W    
+GGGGGGGGGGGGGGGGGGGG
 
 (4, 2)
 RRRRRRRRRRRRRRRRRRRR
@@ -712,6 +865,23 @@ RRR              RRR
 RRR    *         RRR
 RRR              RRR
 
+(2, 7)
+                  WW
+                  WW
+                  WW
+                  WW
+                  WW
+                  WW
+                  WW
+                  WW
+        c         WW
+        W         WW
+    c   W   c     WW
+    W   W   W       
+    W   W   W       
+WWWWWWWWWWWWWWWWWWWW
+WWWWWWWWWWWWWWWWWWWW
+
 (7, 0)
                    M
                    M
@@ -729,22 +899,39 @@ GGGGG
 GGGGGG              
 GGGGGGGGGGGGGGGGGGGM
 
-(9, 2)
-          #   RRRRRR
-          #   RRRRRR
-          #   RRRRRR
-          #   RRRRRR
-          #   RRRRRR
- C        #   RRRRRR
-          #   RRRRRR
-RRRRRR        RRRRRR
-RRRRRRR      RRRRRRR
-RRRRRRR     RRRRRRRR
-RRRRRRRR    RRRRRRRR
-RRRRRRRR    RRRRRRRR
-RRRRRRRR    RRRRRRRR
-RRRRRRRR    RRRRRRRR
-RRRRRRRR    RRRRRRRR
+(0, 5)
+                   W
+  s                W
+                   W
+                   W
+WWWWWWWWWWWWWWWW   W
+W                  W
+W                 WW
+W                WWW
+W   WWWWWWWWWWWWWWWW
+W                  W
+WW                 W
+WWW                W
+WWWWWWWWWWWWW    C W
+W                  W
+W              WWWWW
+
+(-1, 3)
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+WWWW                
+WWWW                
+WWWW      P        W
+                    
+                   *
+                   W
 
 (7, -5)
 IIIIIIIIII          
@@ -780,22 +967,39 @@ W                 WW
 WW                WW
 WWWWWWWWWWWWWWWWWWWW
 
-(2, 2)
-RRRRRRRRRRRRRRRRRRRR
-RRRRRRRRRRRRRRRRRRRR
-           RRRRRRRRR
-            RRRRRRRR
-            RRRRRRRR
-RRRR        RRRRRRRR
-RRRRRRRRRR  RRRRRRRR
-RRRRRRRRRR  RRRRRR  
-RRRRRRRRR   RRR     
-RRRRRRRRR   R       
-RRRRRRRRR           
-RRRRRRRRR           
-RRRRRRRRR      RRRRR
-RRRRRRRRRRRRRRRRRRRR
-RRRRRRRRRRRRRRRRRRRR
+(-1, 4)
+                   W
+                   W
+WDDDDDD            W
+WDDDDDD            W
+WDDDDDD            W
+WDDDDDD     C      W
+WDDDDDD            W
+WWWWWWWWWWWWWWW    W
+WWWWWWWWWWWWWWW   WW
+W        D        WW
+W        D       WWW
+W        D     WWWWW
+W    WWWWWWWWWWWWWWW
+W                   
+WWW                 
+
+(9, 2)
+          #   RRRRRR
+          #   RRRRRR
+          #   RRRRRR
+          #   RRRRRR
+          #   RRRRRR
+ C        #   RRRRRR
+          #   RRRRRR
+RRRRRR        RRRRRR
+RRRRRRR      RRRRRRR
+RRRRRRR     RRRRRRRR
+RRRRRRRR    RRRRRRRR
+RRRRRRRR    RRRRRRRR
+RRRRRRRR    RRRRRRRR
+RRRRRRRR    RRRRRRRR
+RRRRRRRR    RRRRRRRR
 
 (-3, 0)
                     
@@ -814,6 +1018,23 @@ RRRRRRRRRRRRRRRRRRRR
 ====================
 ====================
 
+(0, 6)
+W              WWWWW
+W           WWWWWWWW
+W        WWWWWWWWWWW
+W                  W
+W    W             W
+W                  W
+W      W           W
+W                  W
+W          W       W
+W                  W
+W        W         W
+W                  W
+W     W            W
+W                  W
+WWWW               W
+
 (2, 0)
                     
                     
@@ -830,6 +1051,23 @@ GGGGGGGGGGGGGGGGGGGG
 GGGGGGGGGGGGGGGGGGGG
 GGGGGGGGGGGGGGGGGGGG
 GGGGGGGGGGGGGGGGGGGG
+
+(6, 2)
+RRRRRRRRRRRRRRRRRRRR
+RRRRRRR    RRRRRRRRR
+RRRRRR      RRRRRRR 
+RRRRRR       RRRRR  
+RRRRRR        RRRR  
+RRRRRR        RRR   
+   RRR        RR    
+    RR        RR    
+    RR        RR    
+    RR   RRR  RR    
+         RRR        
+RR             P  RR
+--------------------
+§§§§§§§§§§§§§§§§§§§§
+§§§§§§§§§§§§§§§§§§§§
 
 (-4, 1)
 ======IIIIIIIII=====
@@ -848,73 +1086,39 @@ GGGGGGGGGGGGGGGGGGGG
 GGGGGGGGGGGGGGGGGGGG
 GGGGGGGGGGGGGGGGGGGG
 
-(9, -5)
-IIIIIIIIIIIIIIIIIIII
-IIIIIIIIIIIIIIIIIIII
-       IIIIIIIIIIIII
-          IIIIIIIIII
-             IIIIIII
-              IIIIII
-               IIIII
-                IIII
-                 III
-III              III
-IIIIII           III
-IIIIIIII          II
-IIIIIIIII         II
-  IIIIIII         II
-   IIIIIIII       II
+(1, 7)
+WWW                 
+WWW                 
+WWW                 
+WWW                 
+WWW                 
+WWW            WWWW 
+WWW    WWWWW        
+WWWW   WWWWW W      
+WWWWW  WWW   WW     
+WWWWW       cWWW    
+ WWWWWWW    WWWWW   
+             WWWWW  
+ C           WWWWWW 
+             WWWWWWW
+WWWWWWWWWWWWWWWWWWWW
 
-(8, -4)
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-MM                  
-MM                MM
-MM                MM
-MM             h MMM
-MM               MMM
-MMMMMMMMMMMMMMMMMMMM
-MMMMMMMMMMMMMMMMMMMM
-MMMMMMMMMMMMMMMMMMMM
-
-(9, 1)
-MMMMMMMMMMMMMMMMM#MM
-                 # M
-                 # M
-                 # M
-                 # M
-                 # M
-   MM         MM # M
-   MM         NM # M
-MMMMMMMMMMMMMMMMMMMM
-            MRRRRRRR
-            MRRRRRRR
-          # MRRRRRRR
-          # MRRRRRRR
-MMMMMMMMMM#MMRRRRRRR
-          #   RRRRRR
-
-(9, -1)
-MMMNNNNNNNNNNNNNMM#M
-MMM             MM#M
-MMM             MM#M
-MMM             MM#M
-MMM             MM#M
-MMM       P     MM#M
-                  #M
-                  #M
-                  #M
- C                #M
-                  #M
-MMMMMMMMMMMMMMMMMMMM
-MMMMMMMMMMMMMMMMMMMM
-MMMMMMMMMMMMMMMMMMMM
-MMMMMMMMMMMMMMMMMMMM
+(9, 5)
+RRR              RRR
+RRR              RRR
+RRR              RRR
+RRR              RRR
+RRR              RRR
+RRR              RRR
+RRR              RRR
+RRR              RRR
+RRR              RRR
+RRR       *******RRR
+RRR       RRRRRRRRRR
+RRR              RRR
+RRR              RRR
+RRR              RRR
+RRR              RRR
 
 (6, -6)
                     

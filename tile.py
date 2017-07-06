@@ -185,6 +185,8 @@ class Destroyable(Wall):
                 s.play('explode')
             for d in self.debris:
                 d.update(room)
+                if helpers.outside_screen(d.collider):
+                    self.debris.remove(d)
 
     def animate(self):
         for s in self.sprites:
@@ -200,15 +202,17 @@ class Destroyable(Wall):
         self.add_debris(-5, -5)
 
         self.destroyed = True
+        self.group = gameobject.CollisionGroup.debris
 
     def add_debris(self, dx, dy):
         debris = gameobject.Debris(self.x, self.y, dx, dy, 'idle',
-                                   'destroyable_debris')
+                                   ['destroyable_debris'])
         self.debris.append(debris)
 
     def reset(self):
         self.destroyed = False
         self.debris.clear()
+        self.group = gameobject.CollisionGroup.walls
 
     def draw(self, screen, img_hand):
         super().draw(screen, img_hand)
