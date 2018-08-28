@@ -2,7 +2,6 @@ import bullet
 import gameobject
 import helpers
 import creature
-import random
 
 import tile
 import math
@@ -30,6 +29,7 @@ class Enemy(creature.Creature):
         self.gibs.clear()
         self.bullets.clear()
         self.health = self.max_health
+        self.direction = gameobject.Direction.right
 
     def die(self):
         self.alive = False
@@ -61,23 +61,28 @@ class Enemy(creature.Creature):
     def see_player(self, room):
         player = room.level.player
 
-        if self.alive and player.alive:
-            width = abs(self.collider.x - player.collider.x)
-            collider = gameobject.GameObject(self.collider.left,
+        if not self.alive or not player.alive:
+            self.sees_player = False
+            return
+
+        if abs(player.collider.y - self.collider.y) > 2 * helpers.TILE_SIZE:
+            self.sees_player = False
+            return
+
+        if player.x > self.x:
+            width = abs(self.collider.right - player.collider.left)
+            collider = gameobject.GameObject(self.collider.right, self.collider.centery,
+                                             width, helpers.TILE_SIZE)
+        else:
+            width = abs(self.collider.left - player.collider.right)
+            collider = gameobject.GameObject(self.collider.left - width,
                                              self.collider.centery,
-                                             width + player.collider.width,
-                                             helpers.TILE_SIZE)
+                                             width, helpers.TILE_SIZE)
 
-            if player.collider.x < self.collider.x:
-                collider.x = self.collider.x - width
-                collider.collider.width = width
-
-            for c in collider.get_collisions(room):
-                if c is not player and c is not self:
-                    self.sees_player = False
-                    break
-            else:
-                self.sees_player = True
+        if collider.get_collisions(room):
+            self.sees_player = False
+        else:
+            self.sees_player = True
 
     def update(self, room):
         super().update(room)
@@ -421,17 +426,17 @@ class Charger(Enemy):
         super().update(room)
 
         if self.alive:
+            super().update(room)
             self.see_player(room)
 
             if self.wall_collision:
                 self.goal_dx = 0
 
-            if self.goal_dx != 0:
-                acceleration = self.friction
-                if self.goal_dx < self.dx:
-                    self.dx -= acceleration
-                elif self.goal_dx > self.dx:
-                    self.dx += acceleration
+            acceleration = self.friction
+            if self.goal_dx < self.dx:
+                self.dx -= acceleration
+            elif self.goal_dx > self.dx:
+                self.dx += acceleration
 
     def animate(self):
         super().animate()
@@ -450,8 +455,8 @@ class Charger(Enemy):
             self.add_gib(0, 0, 1, -2, 'right', 'charger_gibs')
         self.goal_dx = 0
         # FIXME: purk fix
-        self.dx = 0
-        self.dy = 0
+        self.group = gameobject.CollisionGroup.none
+        self.dy = -2 * helpers.SCALE
         super().die()
 
     def see_player(self, room):
@@ -472,6 +477,7 @@ class Charger(Enemy):
     def reset(self):
         super().reset()
         self.goal_dx = 0
+        self.group = gameobject.CollisionGroup.enemies
 
 
 class Dropper(Enemy):

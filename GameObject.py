@@ -104,6 +104,7 @@ class GameObject:
 
         collisions = []
 
+        # TODO: get wall indeces from coordinates
         for row in room.walls:
             for w in row:
                 if w is None:

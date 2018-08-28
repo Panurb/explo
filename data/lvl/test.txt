@@ -1,68 +1,136 @@
 (2, 0)
-~~~~~~~~~~~~~~~~~~~~
-~~~~~~~~~~~~~~~~~~~~
-~~~~~~~~~s~~~~~~~~~~
-~~~~~~~~~~~~~~~~~~~~
-~~~~~~~~~~~~~~~~~~~~
-~~~~~~~~~~~~~~~~~~~~
-~~~~~~~~~~~~~~~~~~~~
-~~~~~~~~~~~~~~~~~~~~
-~~~~~~~~~~~~~~~~~~~~
-~~~~~~~~~~~~~~~~~~~~
-~~C~~R~~~~~~~~R~~~~~
-~~~~RR========RRRRRR
-RRRRRR=======RRRRRRR
-RRRRRR=======RRRRRRR
-RRRRRRRRRRRRRRRRRRRR
-
-(1, 0)
-~~~~~~~~~~~~~~~~~RR~
-~~~~~~~~~~~~~~~~~RR~
-~~~~~~~~~~~~~~~~~RR~
-~~~~~~~~~~~~RR~~~RR~
-~~~~~~~s~~~~RR~~~RR~
-~~~~~~~~~~~~RR~~~RR~
-~~~~~~~~~~~~RR~~~RR~
-~~~~~~~~~~~~RR~~~RR~
-~~~~~~~~~~~~RR~~~RR~
-~~~~~~~~~~~~RR~~~~~~
-~~~~~~~~~~~~~~~~~~~~
-~~~~~~~~~c~~~~~~~~~~
-RRRRRR~~P~~~~~RRRRRR
-RRRRRRRRRRRRRRRRRRRR
-RRRRRRRRRRRRRRRRRRRR
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+ C                  
+                    
+GGG            P  GG
+GGG               GG
+GGG               GG
+GGG***************GG
+GGGGGGGGGGGGGGGGGGGG
+GGGGGGGGGGGGGGGGGGGG
 
 (0, 0)
-RRR         RRRR    
-RRR        RRR      
-RRR      RRRR       
-R        RRRR RRRRR 
-R      RRR    R   R 
-R      RR     R   R 
-R   RRRR      R   R 
-RR#   R       RRRRR 
-RR#                 
-RR#                 
-RR# C           DD  
-RRR     0356247 RR  
-RRRRRRRRRRRRRRRZRRRR
-RRRRRRRRRRRRRRRRRRRR
-RRRRRRRRRRRRRRRRRRRR
+                    
+                    
+                    
+R                   
+RR                  
+RR                  
+RRR                 
+RRR                 
+RRR                 
+RRR                 
+RRR  C              
+RRR     0           
+RRGGGGGGGGGGGGGGGGGG
+RGGGGGGGGGGGGGGGGGGG
+GGGGGGGGGGGGGGGGGGGG
 
-(0, -1)
-~~~~~~~~~~~~~~~~~~~~
-~~~~~~~~~~~~~~~~~~~~
-~~~~~~~~~~~~~~~~~~~~
-~~~~~~~~~~~~~~~~~~~~
-~~~~~~~~~~~~~~~~~~~~
-~~~~~~~~~~~~~~~~~~~~
-~~~~~~~~~~~~~~~~~~~~
-~~~~~~~~~~~~~~~~~~~~
-~~~~~~~~~~~~~~~~~~~~
-~~~~~~~~~~~~~~~~~~~~
-~~~~~~~~~~~~~~~~~~~~
-~~~~~~~~~~~~~~~~~~~~
-RR~~~~~~~~~~~~~~~~~~
-RRR~~~~~~~~~~~~~~~~~
-RRR~~~~~~~~~RRRR~~~~
+(3, 0)
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+ C     M  M    M    
+     M       M      
+GGGG             GGG
+GGGG             GGG
+GGGG             GGG
+GGGG*************GGG
+GGGGGGGGGGGGGGGGGGGG
+GGGGGGGGGGGGGGGGGGGG
+
+(1, 0)
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+      GGG    GGGGGGG
+      GGG    GGGGGGG
+   GGGGGGGG  GGGGGGG
+GGGGGGGGGGGGGGGGGGGG
+GGGGGGGGGGGGGGGGGGGG
+GGGGGGGGGGGGGGGGGGGG
+
+(2, -1)
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+GGGGGGGGG           
+GGGGGGGGGGGGGGGGGGGG
+GGGGGGGGGGGGGGGGGGGG
+
+(4, -1)
+                 GGG
+                 GGG
+                 GGG
+                 GGG
+                 GGG
+                 GGG
+GGGG    GGGGGGG# GGG
+GGGG    GGGGGGG# GGG
+GGGG 0 GGGGGGGG# GGG
+GGGGGGGGGGGGGGG# #GG
+GGGGGGGGGGGGGGG# #GG
+GGGGGGGGGGGGGGG# #GG
+GGGGGGGGGGGGGGG# #GG
+GGGGGGGGGGGGGGG  #GG
+GGGGGGGGGGGGGGG  #GG
+
+(3, -1)
+                    
+                    
+                    
+                    
+                 C  
+                    
+                GGGG
+               GGGGG
+             GGGGGGG
+             GGGGGGG
+                GGGG
+              h  GGG
+                 GGG
+GGGGGGGGGGGGGGGGGGGG
+GGGGGGGGGGGGGGGGGGGG
+
+(4, 0)
+           GGGG  #GG
+          GGGG   #GG
+          GGG    #GG
+          GGG    #GG
+    #GGGG#GGG    #GG
+    #GGGG#GGG    #GG
+    #GGGG#GG     #GG
+    #GGGG#       #GG
+    #GGGG#       #GG
+GGGGGGGGGGG  C   #GG
+GGGGGGGGGGGG     #GG
+GGGGGGGGGGGGGGG   GG
+GGGGGGGGGGGGGGG   GG
+GGGGGGGGGGGGGGG***GG
+GGGGGGGGGGGGGGGGGGGG
 

@@ -76,6 +76,8 @@ class GameLoop:
         elif self.state is State.play:
             if self.level is None:
                 self.level = level.Level(self.level_select_menu.level_name)
+                pygame.mixer.music.load('data/msc/level.wav')
+                pygame.mixer.music.play(-1)
 
             last_room = (self.level.player.room_x, self.level.player.room_y)
 
@@ -130,6 +132,7 @@ class GameLoop:
         if self.input_hand.keys_pressed[pygame.K_ESCAPE]:
             if self.state is State.play:
                 self.state = State.paused
+                pygame.mixer.music.pause()
             elif self.state is State.editor:
                 self.state = State.menu
             elif self.state is State.options:
@@ -138,7 +141,10 @@ class GameLoop:
                 self.state = State.menu
             elif self.state is State.paused:
                 self.state = State.play
+                pygame.mixer.music.unpause()
             elif self.state is State.editor_select:
                 self.state = State.menu
             elif self.state is State.level_creation:
                 self.state = State.editor_select
+            elif self.state is State.level_end:
+                self.state = State.menu

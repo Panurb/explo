@@ -241,13 +241,6 @@ class Player(creature.Creature):
         keys_down = input_hand.keys_down
 
         if self.alive:
-            # if keys_down[pygame.K_d]:
-            #     self.modifying_weapon = True
-            #     self.modify_weapon(input_hand.keys_pressed)
-            #     return
-            # else:
-            #     self.modifying_weapon = False
-
             if keys_down[pygame.K_RIGHT]:
                 self.moving = True
                 self.uncrouch(room)
@@ -418,6 +411,7 @@ class Player(creature.Creature):
                 self.add_gib(0.5, 4, 0.5, -1.25, path, 'leg')
 
             self.sounds.add('squish')
+        self.submerged = False
 
         super().die()
 
