@@ -38,8 +38,8 @@ class WeaponMod(enum.Enum):
 
 class Player(creature.Creature):
     def __init__(self, level):
-        self.room_x = 0
-        self.room_y = 0
+        self.room_x = 3
+        self.room_y = -1
 
         # Spawns in topleft if no checkpoint in room
         try:
@@ -77,7 +77,7 @@ class Player(creature.Creature):
 
         self.abilities = {}
         for a in Ability:
-            self.abilities[a] = False
+            self.abilities[a] = True
 
         self.save = save.Save(self.x, self.y, self.room_x, self.room_y,
                               self.direction, self.abilities, self.weapon_mods)

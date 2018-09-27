@@ -79,7 +79,7 @@ GGGGGGGGGGGGGGGGGGGG
                     
                     
                     
-GGGGGGGGG           
+GGGGGGGGGGGGGGGGGGGG
 GGGGGGGGGGGGGGGGGGGG
 GGGGGGGGGGGGGGGGGGGG
 
@@ -113,7 +113,7 @@ GGGGGGGGGGGGGGG  #GG
              GGGGGGG
                 GGGG
               h  GGG
-                 GGG
+GGGGG            GGG
 GGGGGGGGGGGGGGGGGGGG
 GGGGGGGGGGGGGGGGGGGG
 

@@ -226,9 +226,8 @@ class Room:
                 self.add_object(x, y, char)
 
                 if char == 'C':
-                    if self.x == 0 and self.y == 0:
-                        self.player_x = x
-                        self.player_y = y
+                    self.player_x = x
+                    self.player_y = y
 
         for row in self.walls:
             for wall in row:

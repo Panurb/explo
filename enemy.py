@@ -419,7 +419,7 @@ class Charger(Enemy):
         width = 16 * helpers.SCALE
         height = 16 * helpers.SCALE
         super().__init__(x, y, width, height, 6, ['charger'])
-        self.speed = 1 * helpers.SCALE
+        self.speed = 0.5 * helpers.SCALE
         self.goal_dx = 0
 
     def update(self, room):
@@ -478,6 +478,8 @@ class Charger(Enemy):
         super().reset()
         self.goal_dx = 0
         self.group = gameobject.CollisionGroup.enemies
+        if self.direction == gameobject.Direction.left:
+            self.flip()
 
 
 class Dropper(Enemy):
