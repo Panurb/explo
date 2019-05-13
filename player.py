@@ -38,8 +38,8 @@ class WeaponMod(enum.Enum):
 
 class Player(creature.Creature):
     def __init__(self, level):
-        self.room_x = 3
-        self.room_y = -1
+        self.room_x = 0
+        self.room_y = 0
 
         # Spawns in topleft if no checkpoint in room
         try:
@@ -77,7 +77,8 @@ class Player(creature.Creature):
 
         self.abilities = {}
         for a in Ability:
-            self.abilities[a] = True
+            self.abilities[a] = False
+        self.abilities[Ability.run] = True
 
         self.save = save.Save(self.x, self.y, self.room_x, self.room_y,
                               self.direction, self.abilities, self.weapon_mods)
@@ -377,6 +378,7 @@ class Player(creature.Creature):
         self.bullets.clear()
         self.gibs.clear()
         self.alive = True
+        self.txtbox.set_string('')
 
     def apply_gravity(self):
         if not self.alive or self.climbing_ladder:
@@ -412,6 +414,8 @@ class Player(creature.Creature):
 
             self.sounds.add('squish')
         self.submerged = False
+        self.txtbox.set_string('You died\\press R to reset')
+        self.txtbox.time = -1
 
         super().die()
 

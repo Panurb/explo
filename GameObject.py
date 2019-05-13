@@ -11,9 +11,9 @@ import platform
 # COLLISION MATRIX
 #
 #           p   b   e   w   d   c   s
-# player    -   X   X   X   -   X   X
+# player    -   -   X   X   -   X   X
 # bullets   -   -   X   X   -   X   -
-# enemies   X   X   -   X   -   -   X
+# enemies   -   X   -   X   -   -   X
 # walls     -   -   -   X   -   -   -
 # debris    -   -   -   -   -   -   -
 # chaser    X   X   -   -   -   -   -
@@ -21,7 +21,7 @@ import platform
 
 COLLISION_MATRIX = [[False, False, True, True, False, True, True],
                     [False, False, True, True, False, True, False],
-                    [True, True, False, True, False, False, True],
+                    [False, True, False, True, False, False, True],
                     [False, True, True, True, True, False, False],
                     [False, False, False, False, False, False, False],
                     [True, True, False, False, False, False, False],

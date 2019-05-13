@@ -29,7 +29,8 @@ class Enemy(creature.Creature):
         self.gibs.clear()
         self.bullets.clear()
         self.health = self.max_health
-        self.direction = gameobject.Direction.right
+        if self.direction == gameobject.Direction.left:
+            self.flip()
 
     def die(self):
         self.alive = False
@@ -478,8 +479,6 @@ class Charger(Enemy):
         super().reset()
         self.goal_dx = 0
         self.group = gameobject.CollisionGroup.enemies
-        if self.direction == gameobject.Direction.left:
-            self.flip()
 
 
 class Dropper(Enemy):

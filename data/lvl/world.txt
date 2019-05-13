@@ -1,221 +1,289 @@
-(5, -2)
-GGGGGGGGGG----------
-------GGGG----------
--------GGGG---------
---------GGG---------
---------GGG---------
--C------GGG---------
--------*GGG----GG---
-GGGG*--*GGGG---GG---
-GGGG*--*GGGG---GGG--
-GGGG*--*GGG---GGGGGG
-GGGG*--*GG----GGGGGG
-GGGG*--------GGGGGGG
-GGGG*--------GGGGGGG
-GGGGGGGGGGGGGGGGGGGG
-GGGGGGGGGGGGGGGGGGGG
+(9, 0)
+        RRRRRRRRRRRR
+         RRRRRRRRRRR
+         RRRRRRRRRRR
+          RRRRRRRRRR
+          RRRRRRRRRR
+           RRRRRRRRR
+           RRRRRRRRR
+           RRRRRRRRR
+GGG        RRRRRRRRR
+GGG        RRRRRRRRR
+GGG        RRRRRRRRR
+GGG        RRRRRRRRR
+GGG        RRRRRRRRR
+GGG***  ***RRRRRRRRR
+GGGGGG  RRRRRRRRRRRR
 
 (0, 0)
                     
                     
                     
-  C                 
-   0                
-GGGGGGGG   GGGGGGGGG
-GGGGGGGG   GGGGGGGGG
-GGG h  W      h  GGG
+                    
+                    
+                    
+                    
+                    
+                    
+  MMMMMMMM          
+ MIIMMM C           
+MMMMMMM  0    MM    
+MMMMMMMMMMGGGMMMGGGG
+GGGGGGGGGGGGGMMGGGGG
+GGGGGGGGGGGGGGGGGGGG
+
+(7, 0)
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+   G#GGG            
+  GG#GG        GGGGG
+GGGG#G          GGGG
+GGGG#G     Z     GGG
+GGGG#      G      GG
+GGGG#             GG
+GGGG#             GG
+GGGGGGGGGGGGGGGGGGGG
+
+(9, 1)
+RRRRRR  RRRRRRRRRRRR
+RRRRRR  RRRRRRRRRRRR
+RRRRRR  RRRRRRRRRRRR
+RRRRRR  RRRRRRRRRRRR
+RRRRRR    RRRRRRRRRR
+RRRRR       RRRRRRRR
+RRR           RRRRRR
+R              RRRRR
+                RRRR
+                RRRR
+               RRRRR
+              RRRRRR
+RRRRRRRRRRRRRRRRRRRR
+RRRRRRRRRRRRRRRRRRRR
+RRRRRRRRRRRRRRRRRRRR
+
+(7, 1)
+RRRRRRRRRRRRRRRRRRRR
+RRRRRRRRRRR RRRRRRRR
+RRR   RRRR    RR  RR
+RRR    RRR     R  RR
+R       R          R
+R                  R
+                    
+                    
+                    
+     *              
+          *         
+RR P           RRR  
+RR-------------RRRRR
+RR§§§§§§§§§§§§§RRRRR
+RR§§§§§§§§§§§§§RRRRR
+
+(3, 0)
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+GGGGG   MM  M  GGGGG
+GGGGG          GGGGG
+GGGGGG         GGGGG
+GGGGGGGGGGGGGGGGGGGG
+GGGGGGGGGGGGGGGGGGGG
+
+(6, 1)
+RRRRRRRRRRRRRRRRRRRR
+RRRRRRRRRRRRRRRRRRRR
+RRRRRRRRRRRRRRRRRRRR
+RRRRRRRRRRRRRRRRRRRR
+RRRRRRRRRRRRRRRRRRRR
+RRRRRRRRRRRRRRRRRRRR
+RRRRRRRRRRRRRRRRRR  
+RRRRRRR   RRRRRRR   
+RR   RR   RR   RR   
+                 C  
+                    
+RRZZZZZZZZZZZZZRRRRR
+RRRRRRRRRRRRRRRRRRRR
+RRRRRRRRRRRRRRRRRRRR
+RRRRRRRRRRRRRRRRRRRR
+
+(3, 1)
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+RRRRRRRRRRRRRRRRRRRR
+                    
+                    
+                    
+RRRRRRRRRRRRRRRRRRRR
+RRRRRRRRRRRRRRRRRRRR
+RRRRRRRRRRRRRRRRRRRR
+RRRRRRRRRRRRRRRRRRRR
+
+(6, 0)
+ GGGGGGGGGGGG       
+  GGGGGGGGGG        
+    GGGGGGG         
+     GGGGGG         
+      GGGGG         
+      GGGGG         
+       GGGG         
+        GG          
+        GG          
+        GG        GG
+GGG     GG       GGG
+GGG     P      GGGGG
+GGGGGGGGGGGGGGGGGGGG
+GGGGGGGGGGGGGGGGGGGG
+GGGGGGGGGGGGGGGGGGGG
+
+(8, 1)
+RRRRRRRRRRRRRRRRRRRR
+RRRRRRRRRRRRRRRRRRRR
+RRRR #    #  # RRRRR
+RR   #    #  #   RRR
+R    #    #  #   RRR
+R    #    #  #    RR
+     #       #    RR
+     #       #     R
+     #       #      
+     #              
+     #            C 
+                    
+RR--------------RRRR
+RR§§§§§§§§§§§§§§RRRR
+RR§§§§§§§§§§§§§§RRRR
+
+(5, 0)
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+            MM      
+ C    MM    MM      
+      MM            
+GGG          P   GGG
 GGG              GGG
-GGGGGGGGGGGGGGGGGGGG
-GGGGGGGGGGGGGGGGGGGG
-                    
-                    
-                    
-                    
-
-(2, -1)
---------------------
---------------------
---------------------
---------------------
---------------------
---------------------
---------------------
---------------------
---------------------
---------------------
---------------------
----C----------------
--------MM#---MM--GGG
-GGGGGGGGM#---MGGGGGG
-GGGGGGGGM#---MGGGGGG
-
-(3, -1)
--------------------G
-------------------GG
------------------GGG
----------------GGGGG
-------------GGGGGGGG
------------GGGGGGGGG
-----------GGG*****GG
-----------GG*-----*G
---------------------
---------------------
---------------GGG---
---GGG*--GGGGGGGGGGGG
-GGGGG***GGGGGGGGGGGG
-GGGGGGGGGGGGGGGGGGGG
+GGG              GGG
+GGG**************GGG
 GGGGGGGGGGGGGGGGGGGG
 
-(6, -2)
---------------------
---------------------
---------------------
---------------------
--------------------R
-------------------RR
----------------RRRRR
-------------RRRRRRRR
-----------RRRRRRRRRR
-GGGGGGG---GRRRRRRRRR
-GGGGGGG---GGRRRRRRRR
-GGGGGGG---GGGGGRRRRR
-GGGGGGG---GGGGGGGGGG
-GGGGGGG---GGGGGGGGGG
-GGGGGGG---GGGGGGGGGG
+(5, 1)
+RRRRRRRRRRRRRRRRRRRR
+RRRRRRRRRRRRRRRRRRRR
+RRRRRRRRRRRRRRRRRRRR
+RRRRRRRRRRRRRRRRRRRR
+RRRRRRRRRRRRRRRRRRRR
+RRRRRRRRRRRRRRRRRRRR
+RRRRRRRRRRRRRRRRRRRR
+RR****************RR
+RR    P           RR
+                    
+                    
+RRZZZZZZZZZZZZZZZZRR
+RRRRRRRRRRRRRRRRRRRR
+RRRRRRRRRRRRRRRRRRRR
+RRRRRRRRRRRRRRRRRRRR
+
+(8, 0)
+                    
+                    
+                    
+                    
+                    
+                    
+  C                 
+                    
+GGGG              GG
+GGGG              GG
+GGGG         Z    GG
+GGGG         G    GG
+GGGG    Z    G    GG
+GGGG****G****G****GG
+GGGGGGGGGGGGGGGGGGGG
 
 (2, 0)
-GGGGGGGGM#---MGGGGGG
-GGGGGGGGM#---MGGGGGG
-GGGGGGGGM#---MGGGGGG
-GGGGGGGGM#---MGGGGGG
-GGGGGGGGM----MGGGGGG
-GGGGGGGGM---#MGGGGGG
-GGGGGGGGM---#MGGGGGG
-MMMMMMMMM---#MGGGGRR
-------------#MGGGRRR
-------------#MGRRRRR
-------------#MGRRRRR
-MMMMMMMMMMMMMMRRRRRR
-RRRRRRRRRRRRRRRRRRRR
-RRRRRRRRRRRRRRRRRRRR
-RRRRRRRRRRRRRRRRRRRR
-
-(7, -2)
-----------RRRRRRRRRR
-----------RRRRRRRRRR
-----------RRRRRRRRRR
----------RRRRRRRRRRR
-R--------RRRRRRRRRRR
-RRR-----RRRRRRRRRRRR
-RRRRR---RRRRRRRRRRRR
-RRRRRRRRRRRRRRRRRRRR
-RRRRRRRRRRRRRRRRRRRR
-RRRRRRRRRRRRRRRRRRRR
-RRRRRRRRRRRRRRRRRRRR
-RRRRRRRRRRRRRRRRRRRR
-RRRRRRRRRRRRRRRRRRRR
-RRRRRRRRRRRRRRRRRRRR
-RRRRRRRRRRRRRRRRRRRR
-
-(0, -1)
---------------------
---------------------
---------------------
---------------------
---------------------
-G-------------------
-G-------------------
-G------0------------
-G----WWWWW----------
-GGGGGGGGGGGGGG----GG
-GGGGGGGGGGGGGG----GG
-GGGGGGGGGGGGGGG---GG
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+          0         
+       GGMMMGG      
+      GGGGGGGGG     
+     GGGGGGGGGGGGGGG
+  GGGGGGGGGGGGGGGGGG
 GGGGGGGGGGGGGGGGGGGG
 GGGGGGGGGGGGGGGGGGGG
 GGGGGGGGGGGGGGGGGGGG
 
 (1, 0)
-GGGGGGGGGGGGGGGGGGGG
-GGGGGGGGGGGGGGGGGGGG
-GGGGGGGGGGGGGGGGGGGG
-GGGGMMMMMMMMMMMMGGGG
-GGGM------------MGGG
-GGM--------------MGG
-GGM--------------MGG
-MM----------------MM
---------------------
--------------MM-----
------MM------MM-----
-MMMMMMMMMMMMMMMMMMMM
-RRRRRRRRRRRRRRRRRRRR
-RRRRRRRRRRRRRRRRRRRR
-RRRRRRRRRRRRRRRRRRRR
-
-(6, -1)
-GGGGGGG---GGGGGGGGGG
-GGGGGGG---GGGGGGGGGG
-GGGGGGG---GGGGGGGGGG
-GGGGGGG---GGGGGGGGGG
-GGGGGGG---GGGGGGGGGG
-GGGGGGG---GGGGGGGGGG
-GGGGGGG---GGGGGGGGGG
-GGGGGGG---GGGGGGGGGG
-GGGGGGG---GGGGGGGGGG
-GGGGGGG---GGGGGGGGGG
-GGGGGGG---GGGGGGGGGG
-GGGGGGG--*GGGGGGGGGG
-GGGGGGG**GGGGGGGGGGG
-GGGGGGGGGGGGGGGGGGGG
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+      M      MM     
+     MMM     MMM    
+GGGGGMMMGGGGMMMGGGGG
+GGGGGGGGGGGGMGMGGGGG
 GGGGGGGGGGGGGGGGGGGG
 
-(1, -1)
---------------------
---------------------
---------------------
---------------------
---------------------
---------------------
---------------------
---------------------
---------------------
-G--GG--GG--GG--GG---
-G--------------GG---
-G-------------GGGG--
-G-------------GGGG--
-GGGGGGGGGGGGGGGGGGGG
-GGGGGGGGGGGGGGGGGGGG
+(4, 1)
+                  RR
+      *           RR
+      *            R
+      *            R
+      *   R   R    R
+      *           RR
+      *            R
+           *     R R
+           *       R
+           *  R  C  
+           *        
+RR  R       *   RRRR
+RR      R    *  RRRR
+RR--------------RRRR
+RR§§§§§§§§§§§§§§RRRR
 
-(4, -1)
-G#----------GGGGGGGG
-G#---------------GGG
-GG-----------------G
-GGGGGG-------------G
-GGGGGGGGGGG--------G
-GGGGGGGGGGGGG*-----G
-GGGGGGGGG***GGG----G
-G----*GG----------GG
-------------------GG
--C---------------GGG
------------------GGG
-GGG-----*G*-----GGGG
-GGG*----*G*-----GGGG
+(4, 0)
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+         MM         
+         MM         
+                    
+GGGGG     P    GGGGG
+GGGGG          GGGGG
+GGGGGG         GGGGG
 GGGGGGGGGGGGGGGGGGGG
 GGGGGGGGGGGGGGGGGGGG
-
-(4, -2)
-GGGGGGGGGGGGGGGGGGGG
-GGGGG------#--#-----
-GG---------#--#-----
-G----------#--#-----
-G----------#--#-----
-G----------#--#-----
-G----#G----#--------
-G----#G----#-----GGG
-GG---#G-----------GG
-G#---#G*-----------G
-G#---#GG*****------G
-G#---#GGGGGGG*****GG
-G#----GGGGGGGGGGGGGG
-G#-----GGGGGGGGGGGGG
-G#----------GGGGGGGG
 
