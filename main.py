@@ -22,10 +22,10 @@ class Main:
         self.clock = pygame.time.Clock()
         self.fps = 60
 
-        pygame.mixer.music.load('data/msc/menu.wav')
+        pygame.mixer.music.load('data/msc/menu.mp3')
         pygame.mixer.music.play(-1)
-        pygame.mixer.music.set_volume(1)
-        self.snd_hand.set_volume(1)
+        pygame.mixer.music.set_volume(0)
+        self.snd_hand.set_volume(0)
 
     def main_loop(self):
         while self.loop.state != gameloop.State.quit:

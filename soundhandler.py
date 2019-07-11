@@ -15,3 +15,4 @@ class SoundHandler():
     def set_volume(self, vol):
         for sound in self.sounds.values():
             sound.set_volume(vol)
+        self.sounds['bump'].set_volume(0.75 * vol)

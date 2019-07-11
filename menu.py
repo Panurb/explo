@@ -18,6 +18,7 @@ class ButtonType(enum.Enum):
     new = 9
     editor = 10
     create = 11
+    save = 12
 
 
 class Menu:
@@ -80,6 +81,7 @@ class LevelSelectMenu(Menu):
         self.level_name = ''
 
     def update(self):
+        self.buttons = []
         dy = 4
         for filename in os.listdir('data/lvl'):
             self.add_button(0, dy, ButtonType.level, filename.replace('.txt', ''))
@@ -172,6 +174,14 @@ class LevelCreationMenu(Menu):
         return super().input(input_hand)
 
 
+class EditorPauseMenu(Menu):
+    def __init__(self):
+        super().__init__(gameloop.State.editor_paused)
+        self.add_button(0, 6, ButtonType.edit)
+        self.add_button(0, 8, ButtonType.menu)
+        self.add_button(0, 10, ButtonType.save)
+
+
 class Button(animatedsprite.AnimatedSprite):
     def __init__(self, x, y, button_type, text=''):
         super().__init__('menu')
@@ -210,6 +220,8 @@ class Button(animatedsprite.AnimatedSprite):
             return gameloop.State.level_creation
         elif self.type is ButtonType.create:
             return gameloop.State.editor
+        elif self.type is ButtonType.save:
+            return gameloop.State.save
 
 
 class TextInput(animatedsprite.AnimatedSprite):

@@ -39,8 +39,8 @@ class WeaponMod(enum.Enum):
 
 class Player(creature.Creature):
     def __init__(self, level):
-        self.room_x = -6
-        self.room_y = -7
+        self.room_x = 6
+        self.room_y = 1
 
         # Spawns in topleft if no checkpoint in room
         try:
@@ -81,6 +81,7 @@ class Player(creature.Creature):
             self.abilities[a] = False
         self.abilities[Ability.run] = True
         self.abilities[Ability.double_jump] = True
+        self.abilities[Ability.gun] = True
 
         self.save = save.Save(self.x, self.y, self.room_x, self.room_y,
                               self.direction, self.abilities, self.weapon_mods)
@@ -111,6 +112,8 @@ class Player(creature.Creature):
         if room.end is not None:
             if self.collider.colliderect(room.end.collider):
                 self.level_over = True
+                pygame.mixer.music.load('data/msc/ending.mp3')
+                pygame.mixer.music.play(-1)
 
         for b in self.bullets:
             b.update(room)
@@ -452,7 +455,7 @@ class Player(creature.Creature):
             self.abilities[p.ability] = True
             self.txtbox.set_string(
                 p.ability.name.upper() + '\\' + p.text)
-            self.txtbox.time = 120
+            self.txtbox.time = -1
             if p.ability.name in self.weapon_mods:
                 self.weapon_mods[p.ability.name] = True
             self.sounds.add('powerup')
