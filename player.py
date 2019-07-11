@@ -20,6 +20,7 @@ HEIGHT = 15 * helpers.SCALE
 CROUCHED_HEIGHT = 8 * helpers.SCALE
 
 JUMP_HEIGHT = -2.25 * helpers.SCALE
+DOUBLE_JUMP_HEIGHT = -2 * helpers.SCALE
 WALK_SPEED = 0.5 * helpers.SCALE
 RUN_SPEED = 1 * helpers.SCALE
 LADDER_SPEED = 0.75 * helpers.SCALE
@@ -38,8 +39,8 @@ class WeaponMod(enum.Enum):
 
 class Player(creature.Creature):
     def __init__(self, level):
-        self.room_x = 0
-        self.room_y = 0
+        self.room_x = -6
+        self.room_y = -7
 
         # Spawns in topleft if no checkpoint in room
         try:
@@ -79,6 +80,7 @@ class Player(creature.Creature):
         for a in Ability:
             self.abilities[a] = False
         self.abilities[Ability.run] = True
+        self.abilities[Ability.double_jump] = True
 
         self.save = save.Save(self.x, self.y, self.room_x, self.room_y,
                               self.direction, self.abilities, self.weapon_mods)
@@ -136,8 +138,9 @@ class Player(creature.Creature):
                 self.save.direction = self.direction
                 self.save.abilities = self.abilities.copy()
 
-                cp.active = True
-                #self.sounds.add('save')
+                if not cp.active:
+                    self.sounds.add('save')
+                    cp.active = True
 
         if room.end is not None:
             if self.collider.colliderect(room.end.collider):
@@ -337,9 +340,11 @@ class Player(creature.Creature):
         elif self.abilities[Ability.double_jump]:
             if self.jump_count > 1:
                 return
-            self.dy = JUMP_HEIGHT
+            self.dy = DOUBLE_JUMP_HEIGHT
             self.jump_count = 2
             self.jump_buffer = False
+        else:
+            return
 
         self.sounds.add('jump')
 
@@ -397,7 +402,6 @@ class Player(creature.Creature):
                 self.dy = min(self.dy, helpers.TERMINAL_VELOCITY)
         elif not self.jump_buffer and self.dy < 0:
             # jump higher when holding down
-            # TODO: disable when bouncing on spring
             self.dy += helpers.GRAVITY / 2
         else:
             self.dy += helpers.GRAVITY
@@ -413,7 +417,6 @@ class Player(creature.Creature):
                 self.add_gib(0.5, 4, 0.5, -1.25, path, 'leg')
 
             self.sounds.add('squish')
-        self.submerged = False
         self.txtbox.set_string('You died\\press R to reset')
         self.txtbox.time = -1
 

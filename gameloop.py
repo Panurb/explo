@@ -5,7 +5,6 @@ import helpers
 import level
 import menu
 import textbox
-import time
 
 
 class State(enum.Enum):
@@ -36,7 +35,6 @@ class GameLoop:
         self.options_menu = menu.OptionsMenu()
         self.level_creation_menu = menu.LevelCreationMenu()
 
-        self.level_name = ''
         self.level = None
         self.editor = None
         self.clock_text = textbox.Textbox(
