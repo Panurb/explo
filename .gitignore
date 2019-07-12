@@ -1,0 +1,4 @@
+*.pyc
+/.idea
+/dist
+/__pycache__
