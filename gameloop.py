@@ -21,6 +21,7 @@ class State(enum.Enum):
     level_end = 11
     editor_paused = 12
     save = 13
+    editor_play = 14
 
 
 class GameLoop:
@@ -70,7 +71,25 @@ class GameLoop:
             self.editor_pause_menu.draw(self.screen, self.img_hand)
         elif self.state is State.save:
             self.level.write()
-            self.state = self.editor_pause_menu
+            self.state = State.editor_paused
+        elif self.state is State.editor_play:
+            last_room = (self.level.player.room_x, self.level.player.room_y)
+
+            self.level.update(self.input_hand)
+            self.level.play_sounds(self.snd_hand)
+
+            if self.level.player.level_over:
+                self.state = State.editor
+
+            self.level.draw(self.screen, self.img_hand)
+
+            if self.debug_enabled:
+                self.level.debug_draw(self.screen)
+
+            # Done after drawing to avoid visual glitches on room change
+            if (self.level.player.room_x,
+                    self.level.player.room_y) != last_room:
+                self.level.rooms[last_room].reset()
         elif self.state is State.level_select:
             self.state = self.level_select_menu.input(self.input_hand)
             self.level_select_menu.draw(self.screen, self.img_hand)
@@ -78,7 +97,7 @@ class GameLoop:
             self.state = self.editor_select_menu.input(self.input_hand)
             self.editor_select_menu.draw(self.screen, self.img_hand)
         elif self.state is State.options:
-            self.state = self.options_menu.input(self.input_hand)
+            self.state = self.options_menu.input(self.input_hand, self.snd_hand)
             self.options_menu.draw(self.screen, self.img_hand)
         elif self.state is State.level_creation:
             self.state = self.level_creation_menu.input(self.input_hand)
@@ -147,8 +166,9 @@ class GameLoop:
                 self.state = State.paused
                 pygame.mixer.music.pause()
             elif self.state is State.editor:
+                self.editor.setup_play(self.level)
                 self.state = State.editor_paused
-            elif self.state is State.editor_pausedd:
+            elif self.state is State.editor_paused:
                 self.state = State.editor
             elif self.state is State.options:
                 self.state = State.menu
@@ -162,3 +182,7 @@ class GameLoop:
                 self.state = State.editor_select
             elif self.state is State.level_end:
                 self.state = State.menu
+            elif self.state is State.editor_play:
+                self.level.room(self.level.player.room_x,
+                                self.level.player.room_y).reset()
+                self.state = State.editor

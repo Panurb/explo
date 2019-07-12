@@ -48,6 +48,7 @@ ACTIONS = {
         ['metal', 3],
         ['ground', 3],
         ['rock', 3],
+        ['ice', 16]
     ],
     'boss': [
         ['idle', 1]
@@ -70,7 +71,7 @@ ACTIONS = {
     'chars': [
         ['upper_case', 26],
         ['lower_case', 26],
-        ['numbers', 11]
+        ['numbers', 12]
     ],
     'chaser': [
         ['idle', 8],

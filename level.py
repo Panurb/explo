@@ -237,13 +237,6 @@ class Room:
                 x = int(wall.x / helpers.TILE_SIZE)
                 y = int(wall.y / helpers.TILE_SIZE)
 
-                # TODO
-                values = [[0, 1, 1, 1, 0],
-                          [1, 2, 3, 2, 1],
-                          [1, 3, 3, 3, 1],
-                          [1, 2, 3, 2, 1],
-                          [0, 1, 1, 1, 0]]
-
                 for i in range(-2, 3):
                     for j in range(-2, 3):
                         if x + i < 0 or x + i >= helpers.ROOM_WIDTH:
@@ -261,7 +254,7 @@ class Room:
                             continue
 
                         # FIXME
-                        if wall.path in ['ground', 'metal', 'rock']:
+                        if wall.path in ['ground', 'metal', 'rock', 'ice']:
                             action = wall.path
                         else:
                             action = 'ground'

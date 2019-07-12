@@ -113,12 +113,38 @@ class Editor:
             self.room_x = min(self.room_x + 1, int(WORLD_WIDTH / 2))
         if input_hand.keys_pressed[pygame.K_LEFT]:
             self.room_x = max(self.room_x - 1, -int(WORLD_WIDTH / 2))
+
         if input_hand.keys_down[pygame.K_c]:
             room.clear()
         if input_hand.keys_down[pygame.K_s]:
             lvl.write()
 
+    def setup_play(self, lvl):
+        lvl.player.save.room_x = self.room_x
+        lvl.player.save.room_y = self.room_y
+        lvl.player.save.x = 0.5 * helpers.SCREEN_WIDTH
+        lvl.player.save.y = 0.5 * helpers.SCREEN_HEIGHT
+        room = lvl.room(self.room_x, self.room_y)
+        for cp in room.checkpoints:
+            cp.active = True
+            lvl.player.save.x = cp.collider.x
+            lvl.player.save.y = cp.collider.y
+
+        room.reset()
+        lvl.player.reset()
+
     def draw(self, screen, img_hand):
         self.category_text.draw(screen, img_hand)
         self.object_text.draw(screen, img_hand)
         self.coord_text.draw(screen, img_hand)
+
+    def draw_grid(self, screen):
+        color = (50, 50, 50)
+        for i in range(helpers.ROOM_WIDTH):
+            for j in range(helpers.ROOM_HEIGHT):
+                start = (0, j * helpers.TILE_SIZE)
+                end = (helpers.SCREEN_WIDTH, j * helpers.TILE_SIZE)
+                pygame.draw.line(screen, color, start, end)
+                start = (i * helpers.TILE_SIZE, 0)
+                end = (i * helpers.TILE_SIZE, helpers.SCREEN_HEIGHT)
+                pygame.draw.line(screen, color, start, end)

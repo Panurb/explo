@@ -4,7 +4,7 @@ import helpers
 
 UPPER_CASE = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
 LOWER_CASE = 'abcdefghijklmnopqrstuvwxyz'
-NUMBERS = '1234567890-'
+NUMBERS = '1234567890-+'
 
 
 class Textbox:

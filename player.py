@@ -39,15 +39,15 @@ class WeaponMod(enum.Enum):
 
 class Player(creature.Creature):
     def __init__(self, level):
-        self.room_x = 6
-        self.room_y = 1
+        self.room_x = 0
+        self.room_y = 0
 
-        # Spawns in topleft if no checkpoint in room
         try:
             self.x = level.room(self.room_x, self.room_y).player_x
             self.y = level.room(self.room_x, self.room_y).player_y
         except KeyError:
-            self.x = self.y = 0
+            self.x = 0.5 * helpers.SCREEN_WIDTH
+            self.y = 0.5 * helpers.SCREEN_HEIGHT
 
         paths = ['player_legs', 'player_body']
         super().__init__(self.x, self.y, WIDTH, HEIGHT, paths,

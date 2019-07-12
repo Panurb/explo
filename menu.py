@@ -1,4 +1,5 @@
 import enum
+import random
 import pygame
 import animatedsprite
 import gameloop
@@ -19,6 +20,12 @@ class ButtonType(enum.Enum):
     editor = 10
     create = 11
     save = 12
+    test = 13
+
+
+class SliderType(enum.Enum):
+    sound = 1
+    music = 2
 
 
 class Menu:
@@ -27,8 +34,7 @@ class Menu:
         self.buttons = []
 
     def add_button(self, x, y, button_type, text=''):
-        self.buttons.append(Button(x * helpers.TILE_SIZE,
-                                   y * helpers.TILE_SIZE, button_type, text))
+        self.buttons.append(Button(x, y, button_type, text))
 
     def draw(self, screen, img_hand):
         for b in self.buttons:
@@ -143,18 +149,6 @@ class EditorSelectMenu(Menu):
         return self.state
 
 
-class OptionsMenu(Menu):
-    def __init__(self):
-        super().__init__(gameloop.State.options)
-        self.bg_sprite = animatedsprite.AnimatedSprite('image')
-        self.bg_sprite.play('menu')
-        self.add_button(0, 10, ButtonType.menu)
-
-    def draw(self, screen, img_hand):
-        self.bg_sprite.draw(screen, img_hand)
-        super().draw(screen, img_hand)
-
-
 class LevelCreationMenu(Menu):
     def __init__(self):
         super().__init__(gameloop.State.level_creation)
@@ -177,16 +171,78 @@ class LevelCreationMenu(Menu):
 class EditorPauseMenu(Menu):
     def __init__(self):
         super().__init__(gameloop.State.editor_paused)
-        self.add_button(0, 6, ButtonType.edit)
-        self.add_button(0, 8, ButtonType.menu)
-        self.add_button(0, 10, ButtonType.save)
+        self.add_button(0, 4, ButtonType.edit)
+        self.add_button(0, 6, ButtonType.test)
+        self.add_button(0, 8, ButtonType.save)
+        self.add_button(0, 10, ButtonType.menu)
+
+
+class OptionsMenu(Menu):
+    def __init__(self):
+        super().__init__(gameloop.State.options)
+        self.bg_sprite = animatedsprite.AnimatedSprite('image')
+        self.bg_sprite.play('menu')
+        self.music_slider = VolumeSlider(0, 5, SliderType.music)
+        self.sound_slider = VolumeSlider(0, 8, SliderType.sound)
+        self.add_button(0, 10, ButtonType.menu)
+
+    def draw(self, screen, img_hand):
+        self.bg_sprite.draw(screen, img_hand)
+        super().draw(screen, img_hand)
+        self.music_slider.draw(screen, img_hand)
+        self.sound_slider.draw(screen, img_hand)
+
+    def input(self, input_hand, snd_hand):
+        self.music_slider.input(input_hand, snd_hand)
+        self.sound_slider.input(input_hand, snd_hand)
+        return super().input(input_hand)
+
+
+class VolumeSlider():
+    def __init__(self, x, y, type):
+        self.type = type
+        self.button_up = Button(x + 4, y, ButtonType.options, '+')
+        self.button_down = Button(x - 4, y, ButtonType.options, '-')
+        self.volume = 100
+        self.title = TextInput(x, y - 1, type.name)
+        self.txtbox = TextInput(x, y, str(self.volume))
+
+    def draw(self, screen, img_hand):
+        self.button_up.draw(screen, img_hand)
+        self.button_down.draw(screen, img_hand)
+        self.title.draw(screen, img_hand)
+        self.txtbox.draw(screen, img_hand)
+
+    def input(self, input_hand, snd_hand):
+        changed = False
+
+        if self.button_up.rect.collidepoint(input_hand.mouse_x, input_hand.mouse_y):
+            if input_hand.mouse_released[1]:
+                if self.volume < 100:
+                    self.volume += 10
+                    changed = True
+        if self.button_down.rect.collidepoint(input_hand.mouse_x, input_hand.mouse_y):
+            if input_hand.mouse_released[1]:
+                if self.volume > 0:
+                    self.volume -= 10
+                    changed = True
+
+        if changed:
+            if self.type is SliderType.music:
+                pygame.mixer.music.set_volume(self.volume / 100)
+            elif self.type is SliderType.sound:
+                snd_hand.set_volume(self.volume / 100)
+                sound = random.choice(list(snd_hand.sounds.keys()))
+                snd_hand.sounds[sound].play()
+
+            self.txtbox.txtbox.set_string(str(self.volume))
 
 
 class Button(animatedsprite.AnimatedSprite):
     def __init__(self, x, y, button_type, text=''):
         super().__init__('menu')
-        self.rect.x = x + 0.5 * helpers.SCREEN_WIDTH - 16 * helpers.SCALE
-        self.rect.y = y
+        self.rect.x = x * helpers.TILE_SIZE + 0.5 * helpers.SCREEN_WIDTH - 16 * helpers.SCALE
+        self.rect.y = y * helpers.TILE_SIZE
         if text == '':
             text = button_type.name
         self.txtbox = textbox.Textbox(text, self.rect.centerx, self.rect.y)
@@ -222,14 +278,16 @@ class Button(animatedsprite.AnimatedSprite):
             return gameloop.State.editor
         elif self.type is ButtonType.save:
             return gameloop.State.save
+        elif self.type is ButtonType.test:
+            return gameloop.State.editor_play
 
 
 class TextInput(animatedsprite.AnimatedSprite):
-    def __init__(self, x, y):
+    def __init__(self, x, y, text=''):
         super().__init__('menu')
         self.rect.x = x + 0.5 * helpers.SCREEN_WIDTH - 16 * helpers.SCALE
         self.rect.y = y * helpers.TILE_SIZE
-        self.txtbox = textbox.Textbox('', self.rect.centerx, self.rect.y)
+        self.txtbox = textbox.Textbox(text, self.rect.centerx, self.rect.y)
         self.max_length = 7
 
         self.play('button')
