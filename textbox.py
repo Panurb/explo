@@ -4,22 +4,25 @@ import helpers
 
 UPPER_CASE = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
 LOWER_CASE = 'abcdefghijklmnopqrstuvwxyz'
-NUMBERS = '1234567890-+'
+NUMBERS = '1234567890-+*'
 
 
 class Textbox:
     def __init__(self, string, x=0.5*helpers.SCREEN_WIDTH, y=0.5*helpers.SCREEN_HEIGHT):
         self.x = x
         self.y = y
-        self.chars = pygame.sprite.Group()
+        self.chars = []
         self.time = -1
         self.string = string
         self.set_string(string)
 
+    def clear(self):
+        self.set_string('')
+
     def set_string(self, string):
         self.string = string
         strings = string.split('\\')
-        self.chars = pygame.sprite.Group()
+        self.chars = []
 
         for j, string in enumerate(strings):
             string = string.upper()
@@ -46,7 +49,7 @@ class Textbox:
                         continue
 
                 sprite.set_position(x + i * 4 * helpers.SCALE, y + j * 5 * helpers.SCALE)
-                self.chars.add(sprite)
+                self.chars.append(sprite)
 
     def add_char(self, char):
         if LOWER_CASE.find(char) != -1:

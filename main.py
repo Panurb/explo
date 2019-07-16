@@ -11,7 +11,13 @@ class Main:
         # init mixer first to prevent audio delay
         pygame.mixer.pre_init(44100, -16, 2, 2048)
         pygame.mixer.init()
+
         pygame.init()
+        pygame.display.set_caption('EXPLO')
+
+        # TODO: gamepad support
+        pygame.joystick.init()
+        joysticks = [pygame.joystick.Joystick(x) for x in range(pygame.joystick.get_count())]
 
         self.screen = pygame.display.set_mode((width, height))
         self.img_hand = imagehandler.ImageHandler()
@@ -24,8 +30,8 @@ class Main:
 
         pygame.mixer.music.load('data/msc/menu.mp3')
         pygame.mixer.music.play(-1)
-        pygame.mixer.music.set_volume(1)
-        self.snd_hand.set_volume(1)
+        pygame.mixer.music.set_volume(0)
+        self.snd_hand.set_volume(0)
 
     def main_loop(self):
         while self.loop.state != gameloop.State.quit:

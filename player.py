@@ -53,6 +53,9 @@ class Player(creature.Creature):
         super().__init__(self.x, self.y, WIDTH, HEIGHT, paths,
                          gameobject.CollisionGroup.player)
 
+        self.deaths = 0
+        self.time = 0
+
         self.alive = True
         self.moving = False
         self.looking_up = False
@@ -95,6 +98,7 @@ class Player(creature.Creature):
         self.level_over = False
 
     def update(self, room):
+        self.time += 1
         self.apply_water(room)
         super().update(room)
 
@@ -144,11 +148,6 @@ class Player(creature.Creature):
                 if not cp.active:
                     self.sounds.add('save')
                     cp.active = True
-
-        if room.end is not None:
-            if self.collider.colliderect(room.end.collider):
-                # TODO: back to menu
-                pass
 
     def move_y(self, room):
         super().move_y(room)
@@ -412,6 +411,7 @@ class Player(creature.Creature):
     def die(self):
         path = 'player_gibs'
         if self.alive:
+            self.deaths += 1
             self.add_gib(0, 0, 0, -2.5, path, 'head')
             self.add_gib(-0.5, 2, -1.25, -2.5, path, 'arm')
             self.add_gib(0.5, 2, 1.25, -2.5, path, 'arm')
@@ -447,6 +447,8 @@ class Player(creature.Creature):
 
             self.x = self.collider.x
             self.y = self.collider.y
+
+            self.txtbox.clear()
 
         self.map.rooms_visited[(self.room_x, self.room_y)] = True
 

@@ -14,6 +14,8 @@ class AnimatedSprite(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
         self.sprite = pygame.sprite.RenderPlain(self)
 
+        self.x = 0
+        self.y = 0
         self.offset_x = offset_x
         self.offset_y = offset_y
 
@@ -24,9 +26,9 @@ class AnimatedSprite(pygame.sprite.Sprite):
             if not self.action:
                 self.action = action[0]
 
-        self.rect = pygame.Rect(0, 0, imagehandler.SIZES[self.name][0], imagehandler.SIZES[self.name][1])
-        self.rect.width *= helpers.SCALE
-        self.rect.height *= helpers.SCALE
+        self.rect = pygame.Rect(0, 0, 0, 0)
+        self.rect.width = imagehandler.SIZES[self.name][0] * helpers.SCALE
+        self.rect.height = imagehandler.SIZES[self.name][1] * helpers.SCALE
         self.frame = 0
 
         self.playing = False
@@ -40,8 +42,8 @@ class AnimatedSprite(pygame.sprite.Sprite):
         self.animation_finished = False
 
     def set_position(self, x, y):
-        self.rect.x = x + self.offset_x
-        self.rect.y = y + self.offset_y
+        self.x = x + self.offset_x
+        self.y = y + self.offset_y
 
     def animate(self):
         if self.playing:
@@ -63,11 +65,17 @@ class AnimatedSprite(pygame.sprite.Sprite):
 
     def draw(self, screen, img_hand):
         self.image = img_hand.animations[self.name][self.action][self.frame]
-        self.image = pygame.transform.scale(self.image, (self.rect.width, self.rect.height))
+
+        self.rect.x = int(self.x * img_hand.scale / helpers.SCALE)
+        self.rect.y = int(self.y * img_hand.scale / helpers.SCALE)
+        self.rect.width = imagehandler.SIZES[self.name][0] * img_hand.scale
+        self.rect.height = imagehandler.SIZES[self.name][1] * img_hand.scale
+
         if self.rotation != 0:
             self.image = pygame.transform.rotate(self.image, self.rotation)
         if self.dir is Direction.left:
             self.image = pygame.transform.flip(self.image, True, False)
+
         self.sprite.draw(screen)
 
     def show_frame(self, name, index):

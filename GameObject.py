@@ -104,13 +104,21 @@ class GameObject:
 
         collisions = []
 
-        # TODO: get wall indeces from coordinates
-        for row in room.walls:
-            for w in row:
-                if w is None:
+        x1 = int(self.collider.left / helpers.TILE_SIZE)
+        x2 = int(self.collider.right / helpers.TILE_SIZE)
+        y1 = int(self.collider.top / helpers.TILE_SIZE)
+        y2 = int(self.collider.bottom / helpers.TILE_SIZE)
+
+        for x in range(x1, x2 + 1):
+            for y in range(y1, y2 + 1):
+                try:
+                    w = room.walls[y][x]
+                except IndexError:
                     continue
-                if w is not self and collider.colliderect(w.collider):
-                    collisions.append(w)
+
+                if w is not None and w is not self:
+                    if collider.colliderect(w.collider):
+                        collisions.append(w)
 
         if not collisions:
             for s in room.spikes:

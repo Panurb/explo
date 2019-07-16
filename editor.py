@@ -105,6 +105,13 @@ class Editor:
         self.object_text.set_string(OBJECTS[self.category][self.object][1])
         self.coord_text.set_string(str(self.room_x) + ' ' + str(self.room_y))
 
+        if input_hand.keys_down[pygame.K_c]:
+            room.clear()
+        if input_hand.keys_down[pygame.K_s]:
+            lvl.write()
+
+        room.update_bg()
+
         if input_hand.keys_pressed[pygame.K_UP]:
             self.room_y = max(self.room_y - 1, -int(WORLD_HEIGHT / 2))
         if input_hand.keys_pressed[pygame.K_DOWN]:
@@ -113,11 +120,6 @@ class Editor:
             self.room_x = min(self.room_x + 1, int(WORLD_WIDTH / 2))
         if input_hand.keys_pressed[pygame.K_LEFT]:
             self.room_x = max(self.room_x - 1, -int(WORLD_WIDTH / 2))
-
-        if input_hand.keys_down[pygame.K_c]:
-            room.clear()
-        if input_hand.keys_down[pygame.K_s]:
-            lvl.write()
 
     def setup_play(self, lvl):
         lvl.player.save.room_x = self.room_x

@@ -97,7 +97,7 @@ class GameLoop:
             self.state = self.editor_select_menu.input(self.input_hand)
             self.editor_select_menu.draw(self.screen, self.img_hand)
         elif self.state is State.options:
-            self.state = self.options_menu.input(self.input_hand, self.snd_hand)
+            self.state = self.options_menu.input([self.input_hand, self.snd_hand, self.img_hand])
             self.options_menu.draw(self.screen, self.img_hand)
         elif self.state is State.level_creation:
             self.state = self.level_creation_menu.input(self.input_hand)

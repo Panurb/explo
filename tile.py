@@ -50,7 +50,7 @@ class Wall(gameobject.GameObject):
         elif self.x - helpers.TILE_SIZE < 0:
             left = 1
 
-        self.index = int(str(up) + str(right) + str(down) + str(left), 2)
+        self.index = 8 * up + 4 * right + 2 * down + left
         for s in self.sprites:
             s.show_frame('idle', self.index)
 
@@ -115,7 +115,7 @@ class Spike(Wall):
         elif self.x - helpers.TILE_SIZE < 0:
             left = 1
 
-        self.index = int(str(up) + str(right) + str(down) + str(left), 2)
+        self.index = 8 * up + 4 * right + 2 * down + left
         for s in self.sprites:
             s.show_frame('idle', self.index)
 

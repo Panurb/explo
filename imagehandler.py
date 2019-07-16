@@ -1,3 +1,4 @@
+import pygame
 import helpers
 
 
@@ -45,9 +46,8 @@ SIZES = {
 ACTIONS = {
     'bg': [
         ['sky', 1],
-        ['metal', 3],
-        ['ground', 3],
-        ['rock', 3],
+        ['ground', 16],
+        ['rock', 16],
         ['ice', 16]
     ],
     'boss': [
@@ -71,7 +71,7 @@ ACTIONS = {
     'chars': [
         ['upper_case', 26],
         ['lower_case', 26],
-        ['numbers', 12]
+        ['numbers', 13]
     ],
     'chaser': [
         ['idle', 8],
@@ -216,6 +216,18 @@ class ImageHandler:
     def __init__(self):
         self.animations = {}
         self.load()
+        self.scale = helpers.SCALE
+        self.rescale(self.scale)
+
+    def rescale(self, scale):
+        self.scale = scale
+
+        for name in self.animations.keys():
+            for action in self.animations[name]:
+                for i, image in enumerate(self.animations[name][action]):
+                    width = SIZES[name][0] * self.scale
+                    height = SIZES[name][1] * self.scale
+                    self.animations[name][action][i] = pygame.transform.scale(image, (width, height))
 
     def load(self):
         for name in ACTIONS.keys():

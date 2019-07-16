@@ -34,30 +34,6 @@ class Platform(gameobject.PhysicsObject):
         if self.collider.colliderect(player.collider):
             player.base_dy = self.dy
 
-    def get_collisions(self, room, collider=None):
-        if collider is None:
-            collider = self.collider
-
-        collisions = []
-
-        for row in room.walls:
-            for w in row:
-                if w is None:
-                    continue
-                if collider.colliderect(w.collider):
-                    collisions.append(w)
-
-        for d in room.dynamic_objects:
-            if collider.colliderect(d.collider):
-                if d is not self:
-                    collisions.append(d)
-
-        # TODO: allow crushing in certain situations
-        if self.collider.colliderect(room.level.player.collider):
-            collisions.append(room.level.player)
-
-        return collisions
-
     def reset(self):
         self.x = self.spawn_x
         self.y = self.spawn_y

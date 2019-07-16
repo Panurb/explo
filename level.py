@@ -188,9 +188,9 @@ class Room:
         self.level = level
 
         self.bg = []
-        for i in range(0, helpers.SCREEN_WIDTH, helpers.TILE_SIZE):
+        for j in range(0, helpers.SCREEN_HEIGHT, helpers.TILE_SIZE):
             row = []
-            for j in range(0, helpers.SCREEN_HEIGHT, helpers.TILE_SIZE):
+            for i in range(0, helpers.SCREEN_WIDTH, helpers.TILE_SIZE):
                 sprite = animatedsprite.AnimatedSprite('bg')
                 sprite.set_position(i, j)
                 sprite.show_frame('sky', 0)
@@ -229,45 +229,70 @@ class Room:
                     self.player_x = x
                     self.player_y = y
 
-        for row in self.walls:
-            for wall in row:
+        self.update_bg()
+
+    def update_bg(self):
+        for row in self.bg:
+            for sprite in row:
+                sprite.show_frame('sky', 0)
+
+        for x in range(helpers.ROOM_WIDTH):
+            for y in range(helpers.ROOM_HEIGHT):
+                wall = self.walls[y][x]
                 if wall is None:
                     continue
 
-                x = int(wall.x / helpers.TILE_SIZE)
-                y = int(wall.y / helpers.TILE_SIZE)
-
                 for i in range(-2, 3):
+                    if x + i < 0 or x + i >= helpers.ROOM_WIDTH:
+                        continue
+
                     for j in range(-2, 3):
-                        if x + i < 0 or x + i >= helpers.ROOM_WIDTH:
-                            break
                         if y + j < 0 or y + j >= helpers.ROOM_HEIGHT:
                             continue
 
-                        if i < 0 and self.walls[y][x - 1] is not None:
-                            break
-                        if i > 0 and self.walls[y][x + 1] is not None:
-                            break
-                        if j < 0 and self.walls[y - 1][x] is not None:
-                            continue
-                        if j > 0 and self.walls[y + 1][x] is not None:
-                            continue
-
-                        # FIXME
-                        if wall.path in ['ground', 'metal', 'rock', 'ice']:
+                        if wall.path in ['rock', 'ice']:
                             action = wall.path
                         else:
                             action = 'ground'
-                        frame = self.bg[x + i][y + j].frame
-                        if abs(i) == 2 and abs(j) == 2:
-                            continue
-                        else:
-                            dist = 2 - max(abs(i), abs(j))
-                        #dist = values[j][i]
-                        frame = max(frame, dist)
-                        if self.bg[x + i][y + j].action == 'sky' \
-                                or self.bg[x + i][y + j].action == action:
-                            self.bg[x + i][y + j].show_frame(action, frame)
+
+                        self.bg[y + j][x + i].show_frame(action, 0)
+
+        for x in range(helpers.ROOM_WIDTH):
+            for y in range(helpers.ROOM_HEIGHT):
+                action = self.bg[y][x].action
+                if action == 'sky':
+                    continue
+
+                up = right = down = left = 0
+
+                if y - 1 >= 0:
+                    if self.bg[y - 1][x].action == action:
+                        up = 1
+
+                if y + 1 < helpers.ROOM_HEIGHT:
+                    if self.bg[y + 1][x].action == action:
+                        down = 1
+
+                if x + 1 < helpers.ROOM_WIDTH:
+                    if self.bg[y][x + 1].action == action:
+                        right = 1
+
+                if x - 1 >= 0:
+                    if self.bg[y][x - 1].action == action:
+                        left = 1
+
+                if y == 0:
+                    up = 1
+                elif y == helpers.ROOM_HEIGHT - 1:
+                    down = 1
+
+                if x == helpers.ROOM_WIDTH - 1:
+                    right = 1
+                elif x == 0:
+                    left = 1
+
+                frame = 8 * up + 4 * right + 2 * down + left
+                self.bg[y][x].show_frame(action, frame)
 
     def update(self):
         for e in self.enemies:
@@ -447,7 +472,7 @@ class Room:
             self.end = None
 
     def clear(self):
-        self.walls.clear()
+        self.walls = [[None] * helpers.ROOM_WIDTH for _ in range(helpers.ROOM_HEIGHT)]
         self.ladders.clear()
         self.spikes.clear()
         self.spikes.clear()
