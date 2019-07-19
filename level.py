@@ -117,7 +117,7 @@ class Level:
                     if w.surface:
                         tilemap[w.y // helpers.TILE_SIZE][w.x // helpers.TILE_SIZE] = '-'
                     else:
-                        tilemap[w.y // helpers.TILE_SIZE][w.x // helpers.TILE_SIZE] = '§'
+                        tilemap[w.y // helpers.TILE_SIZE][w.x // helpers.TILE_SIZE] = '_'
                 else:
                     if w.surface:
                         tilemap[w.y // helpers.TILE_SIZE][w.x // helpers.TILE_SIZE] = '~'
@@ -416,7 +416,7 @@ class Room:
             self.water.append(tile.Water(x, y, False))
         elif char == '-':
             self.water.append(tile.Lava(x, y, True))
-        elif char == '§':
+        elif char == '_':
             self.water.append(tile.Lava(x, y, False))
         elif char == 'C':
             self.checkpoints.append(tile.Checkpoint(x, y))
