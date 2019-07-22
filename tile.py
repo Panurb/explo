@@ -251,6 +251,7 @@ class Cannon(Wall):
         self.cooldown = 60
         self.timer = 0
         self.sounds = set()
+        self.alive = False
 
     def update(self, room):
         self.animate()

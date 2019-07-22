@@ -22,7 +22,7 @@ import platform
 COLLISION_MATRIX = [[False, False, True, True, False, True, True],
                     [False, False, True, True, False, True, False],
                     [False, True, False, True, False, False, True],
-                    [False, True, True, True, False, False, False],
+                    [False, False, False, True, False, False, False],
                     [False, False, False, False, False, False, False],
                     [True, True, False, False, False, False, False],
                     [False, False, False, False, False, False, False]]
@@ -204,6 +204,9 @@ class PhysicsObject(GameObject):
         if self.group is CollisionGroup.none:
             return -1
         else:
+            if self.gravity_scale == 0:
+                return 1
+
             # off by 2 because enums start at 1 and first is none
             return BOUNCE_MATRIX[self.group - 2][obj.group - 2]
 

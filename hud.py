@@ -12,23 +12,9 @@ class Map():
             self.rooms_visited[key] = False
 
     def draw(self, screen, img_hand, x, y):
-        max_x = 0
-        min_x = 0
-        max_y = 0
-        min_y = 0
-        for key in self.rooms:
-            room = self.rooms[key]
-            max_x = max(room.x, max_x)
-            min_x = min(room.x, min_x)
-            max_y = max(room.y, max_y)
-            min_y = min(room.y, min_y)
-
-        width = abs(max_x - min_x) + 1
-        height = abs(max_y - min_y) + 1
-
         for key, room in self.rooms.items():
-            self.sprite.rect.x = 0.5 * helpers.SCREEN_WIDTH - ((width / 2 - room.x + min_x) * 7) * helpers.SCALE
-            self.sprite.rect.y = 0.5 * helpers.SCREEN_HEIGHT - ((height / 2 - room.y + min_y) * 6) * helpers.SCALE
+            self.sprite.set_position(0.5 * helpers.SCREEN_WIDTH + (room.x - 0.5) * self.sprite.rect.width,
+                                     0.5 * helpers.SCREEN_HEIGHT + (room.y - 0.5) * self.sprite.rect.height)
 
             if room.x == x and room.y == y:
                 self.sprite.play('active')

@@ -130,7 +130,7 @@ class Player(creature.Creature):
 
     def apply_damage(self, room):
         for c in self.collisions:
-            if isinstance(c.obj, enemy.Enemy):
+            if c.obj.group is gameobject.CollisionGroup.enemies:
                 self.damage(1, 0, 0)
             elif type(c.obj) is tile.Spike:
                 self.damage(1, 0, 0)
@@ -393,8 +393,12 @@ class Player(creature.Creature):
 
         if self.submerged:
             # TODO low gravity
-            self.dy += helpers.GRAVITY
-            self.dy = min(self.dy, helpers.TERMINAL_VELOCITY)
+            if self.dy > 0:
+                self.dy += 0.25 * helpers.GRAVITY
+            else:
+                self.dy += 0.5 * helpers.GRAVITY
+            self.dy = min(self.dy, 0.5 * helpers.TERMINAL_VELOCITY)
+            self.jump_count = 0
         elif self.hugging_wall and self.abilities[Ability.wall_jump]:
             if not self.sliding:
                 self.dy += helpers.GRAVITY / 2

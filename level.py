@@ -87,6 +87,8 @@ class Level:
                     char = 's'
                 elif type(e) is enemy.Charger:
                     char = 'h'
+                elif type(e) is tile.Cannon:
+                    char = 'N'
                 tilemap[y][e.x // helpers.TILE_SIZE] = char
             for c in room.checkpoints:
                 tilemap[c.y // helpers.TILE_SIZE][c.x // helpers.TILE_SIZE] = 'C'
@@ -136,8 +138,6 @@ class Level:
                     tilemap[d.y // helpers.TILE_SIZE][d.x // helpers.TILE_SIZE] = 'F'
                 elif type(d) is tile.Spring:
                     tilemap[d.y // helpers.TILE_SIZE][d.x // helpers.TILE_SIZE] = 'Z'
-                elif type(d) is tile.Cannon:
-                    tilemap[d.y // helpers.TILE_SIZE][d.x // helpers.TILE_SIZE] = 'N'
 
             empty = True
             for row in tilemap:
@@ -427,7 +427,7 @@ class Room:
         elif char == 'Z':
             self.dynamic_objects.append(tile.Spring(x, y))
         elif char == 'N':
-            self.dynamic_objects.append(tile.Cannon(x, y))
+            self.enemies.append(tile.Cannon(x, y))
         elif char == 'D':
             self.dynamic_objects.append(tile.Destroyable(x, y))
         elif char == 'c':
