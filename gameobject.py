@@ -22,7 +22,7 @@ import platform
 COLLISION_MATRIX = [[False, False, True, True, False, True, True],
                     [False, False, True, True, False, True, False],
                     [False, True, False, True, False, False, True],
-                    [False, True, True, True, True, False, False],
+                    [False, True, True, True, False, False, False],
                     [False, False, False, False, False, False, False],
                     [True, True, False, False, False, False, False],
                     [False, False, False, False, False, False, False]]
@@ -34,7 +34,7 @@ COLLISION_MATRIX = [[False, False, True, True, False, True, True],
 # bullets   0   0   0   1   0   0   0
 # enemies   0   0   0  0.5  0   0   1
 # walls     0   0   0   1   0   0   0
-# debris    0   0   0  0.5  0   0   0
+# debris    0   0   0   0   0   0   0
 # chaser    0   0   0   0   0   0   0
 # springs   0   0   0   0   0   0   0
 
@@ -42,7 +42,7 @@ BOUNCE_MATRIX = [[0, 0, 0, 0, 0, 0, 1],
                  [0, 0, 0, 1, 0, 0, 0],
                  [0, 0, 0, 0.5, 0, 0, 1],
                  [0, 0, 0, 1, 0, 0, 0],
-                 [0, 0, 0, 0.5, 0, 0, 1],
+                 [0, 0, 0, 0, 0, 0, 1],
                  [0, 0, 0, 0, 0, 0, 0],
                  [0, 0, 0, 0, 0, 0, 0]]
 

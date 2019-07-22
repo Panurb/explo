@@ -316,7 +316,7 @@ class Spawner(Enemy):
         super().__init__(x, y, width, height, 5, ['spawner'])
         self.gravity_scale = 0
         self.cooldown = 120
-        self.timer = 0
+        self.timer = self.cooldown
 
     def update(self, room):
         super().update(room)
@@ -351,7 +351,7 @@ class Spawner(Enemy):
         super().reset()
         for s in self.sprites:
             s.play('idle')
-        self.timer = 0
+        self.timer = self.cooldown
 
 
 class Chaser(Enemy):
