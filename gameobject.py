@@ -109,8 +109,8 @@ class GameObject:
         y1 = int(self.collider.top / helpers.TILE_SIZE)
         y2 = int(self.collider.bottom / helpers.TILE_SIZE)
 
-        for x in range(x1, x2 + 1):
-            for y in range(y1, y2 + 1):
+        for x in range(x1 - 1, x2 + 1):
+            for y in range(y1 - 1, y2 + 1):
                 try:
                     w = room.walls[y][x]
                 except IndexError:
@@ -204,9 +204,6 @@ class PhysicsObject(GameObject):
         if self.group is CollisionGroup.none:
             return -1
         else:
-            if self.gravity_scale == 0:
-                return 1
-
             # off by 2 because enums start at 1 and first is none
             return BOUNCE_MATRIX[self.group - 2][obj.group - 2]
 

@@ -85,6 +85,8 @@ class Player(creature.Creature):
         self.abilities[Ability.run] = True
         self.abilities[Ability.double_jump] = True
         self.abilities[Ability.gun] = True
+        self.abilities[Ability.wall_jump] = True
+        self.abilities[Ability.rebreather] = True
 
         self.save = save.Save(self.x, self.y, self.room_x, self.room_y,
                               self.direction, self.abilities, self.weapon_mods)
@@ -220,8 +222,7 @@ class Player(creature.Creature):
 
     def apply_wall_hugging(self, room):
         collider = pygame.Rect(self.collider.left - 1, self.collider.y,
-                               self.collider.width + 2,
-                               self.collider.height / 2)
+                               self.collider.width + 2, self.collider.height / 2)
 
         collisions = self.get_collisions(room, collider)
         collisions = [c for c in collisions if self.collides_with(c)]
@@ -238,6 +239,9 @@ class Player(creature.Creature):
 
         if not collisions or self.ground_collision:
             self.hugging_wall = False
+
+        if self.hugging_wall:
+            self.jump_count = 0
 
     def input(self, input_hand, room):
         self.moving = False
@@ -696,9 +700,10 @@ class Player(creature.Creature):
             self.collider.height = HEIGHT
             self.collider.y -= 7 * helpers.SCALE
             self.y = self.collider.y
-            if self.get_collisions(room):
-                self.collider.height = helpers.TILE_SIZE
-                self.collider.y += helpers.TILE_SIZE
-                self.y = self.collider.y
-                return
+            for c in self.get_collisions(room):
+                if self.collides_with(c):
+                    self.collider.height = helpers.TILE_SIZE
+                    self.collider.y += helpers.TILE_SIZE
+                    self.y = self.collider.y
+                    return
             self.crouched = False
