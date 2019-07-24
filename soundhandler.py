@@ -1,3 +1,5 @@
+import pygame
+
 import helpers
 
 
@@ -5,10 +7,11 @@ SOUNDS = ['bump', 'hit', 'jump', 'powerup', 'save', 'shoot', 'splash', 'spring',
 MUSIC = ['menu']
 
 
-class SoundHandler():
+class SoundHandler:
     def __init__(self):
         self.volume = 1
         self.sounds = {}
+        self.current_track = ''
 
         for sound in SOUNDS:
             self.sounds[sound] = helpers.load_sound(sound + '.wav')
@@ -17,3 +20,12 @@ class SoundHandler():
         self.volume = vol
         for sound in self.sounds.values():
             sound.set_volume(vol)
+
+    def set_music(self, track):
+        if self.current_track != track:
+            if track == '':
+                pygame.mixer.music.stop()
+            else:
+                pygame.mixer.music.load('data/msc/' + track + '.mp3')
+                pygame.mixer.music.play(-1)
+            self.current_track = track

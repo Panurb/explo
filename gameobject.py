@@ -10,41 +10,45 @@ import platform
 
 # COLLISION MATRIX
 #
-#           p   b   e   w   d   c   s
-# player    -   -   X   X   -   X   X
-# bullets   -   -   X   X   -   X   -
-# enemies   -   X   -   X   -   -   X
-# walls     -   -   -   X   -   -   -
-# debris    -   -   -   -   -   -   -
-# chaser    X   X   -   -   -   -   -
-# springs   -   -   -   -   -   -   -
+#           p   b   e   w   d   c   s   b
+# player    -   -   X   X   -   X   X   X
+# bullets   -   -   X   X   -   X   -   X
+# enemies   -   X   -   X   -   -   X   X
+# walls     -   -   -   X   -   -   -   -
+# debris    -   -   -   -   -   -   -   -
+# chaser    X   X   -   -   -   -   -   -
+# springs   -   -   -   -   -   -   -   -
+# boss      X   -   X   X   -   -   X   -
 
-COLLISION_MATRIX = [[False, False, True, True, False, True, True],
-                    [False, False, True, True, False, True, False],
-                    [False, True, False, True, False, False, True],
-                    [False, False, False, True, False, False, False],
-                    [False, False, False, False, False, False, False],
-                    [True, True, False, False, False, False, False],
-                    [False, False, False, False, False, False, False]]
+COLLISION_MATRIX = [[False, False, True, True, False, True, True, True],
+                    [False, False, True, True, False, True, False, True],
+                    [False, True, False, True, False, False, True, True],
+                    [False, False, False, True, False, False, False, False],
+                    [False, False, False, False, False, False, False, False],
+                    [True, True, False, False, False, False, False, False],
+                    [False, False, False, False, False, False, False, False],
+                    [True, False, True, True, False, False, True, False]]
 
 # BOUNCE MATRIX
 #
-#           p   b   e   w   d   c   s
-# player    0   0   0   0   0   0   1
-# bullets   0   0   0   1   0   0   0
-# enemies   0   0   0  0.5  0   0   1
-# walls     0   0   0   1   0   0   0
-# debris    0   0   0   0   0   0   0
-# chaser    0   0   0   0   0   0   0
-# springs   0   0   0   0   0   0   0
+#           p   b   e   w   d   c   s   b
+# player    0   0   0   0   0   0   1   0
+# bullets   0   0   0   0   0   0   0   0
+# enemies   0   0   0  0.5  0   0   1   1
+# walls     0   0   0   1   0   0   0   1
+# debris    0   0   0   0   0   0   0   0
+# chaser    0   0   0   0   0   0   0   0
+# springs   0   0   0   0   0   0   0   0
+# boss      1   0   1   1   0   0   1   0
 
-BOUNCE_MATRIX = [[0, 0, 0, 0, 0, 0, 1],
-                 [0, 0, 0, 1, 0, 0, 0],
-                 [0, 0, 0, 0.5, 0, 0, 1],
-                 [0, 0, 0, 1, 0, 0, 0],
-                 [0, 0, 0, 0, 0, 0, 1],
-                 [0, 0, 0, 0, 0, 0, 0],
-                 [0, 0, 0, 0, 0, 0, 0]]
+BOUNCE_MATRIX = [[0, 0, 0, 0, 0, 0, 1, 0],
+                 [0, 0, 0, 0, 0, 0, 0, 0],
+                 [0, 0, 0, 0.5, 0, 0, 1, 1],
+                 [0, 0, 0, 1, 0, 0, 0, 0],
+                 [0, 0, 0, 0, 0, 0, 1, 0],
+                 [0, 0, 0, 0, 0, 0, 0, 0],
+                 [0, 0, 0, 0, 0, 0, 0, 0],
+                 [1, 0, 1, 1, 0, 0, 1, 0]]
 
 
 class CollisionGroup:
@@ -56,6 +60,7 @@ class CollisionGroup:
     debris = 6
     chaser = 7
     springs = 8
+    boss = 9
 
 
 class Direction(Enum):
@@ -139,6 +144,11 @@ class GameObject:
                 if collider.colliderect(b.collider):
                     if b is not self and b.alive:
                         collisions.append(b)
+
+        if room.boss:
+            if collider.colliderect(room.boss.collider):
+                if room.boss is not self and room.boss.alive:
+                    collisions.append(room.boss)
 
         player = room.level.player
         if player is not self and collider.colliderect(player.collider):

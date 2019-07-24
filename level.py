@@ -73,7 +73,10 @@ class Level:
             for l in room.ladders:
                 tilemap[l.y // helpers.TILE_SIZE][l.x // helpers.TILE_SIZE] = '#'
             for s in room.spikes:
-                tilemap[s.y // helpers.TILE_SIZE][s.x // helpers.TILE_SIZE] = '*'
+                if s.action == 'water':
+                    tilemap[s.y // helpers.TILE_SIZE][s.x // helpers.TILE_SIZE] = '^'
+                else:
+                    tilemap[s.y // helpers.TILE_SIZE][s.x // helpers.TILE_SIZE] = '*'
             for e in room.enemies:
                 y = e.y // helpers.TILE_SIZE
                 char = ''
@@ -138,6 +141,18 @@ class Level:
                     tilemap[d.y // helpers.TILE_SIZE][d.x // helpers.TILE_SIZE] = 'F'
                 elif type(d) is tile.Spring:
                     tilemap[d.y // helpers.TILE_SIZE][d.x // helpers.TILE_SIZE] = 'Z'
+            mus = room.music
+            if mus:
+                char = ''
+                if mus.track == 'track1':
+                    char = 'm'
+                elif mus.track == 'track2':
+                    char = 'n'
+
+                tilemap[mus.y // helpers.TILE_SIZE][mus.x // helpers.TILE_SIZE] = char
+
+            if room.boss:
+                tilemap[room.boss.y // helpers.TILE_SIZE][room.boss.x // helpers.TILE_SIZE] = 'b'
 
             empty = True
             for row in tilemap:
@@ -207,6 +222,8 @@ class Room:
         self.dynamic_objects = list()
         self.cannons = list()
         self.end = None
+        self.music = None
+        self.boss = None
 
         self.x = x
         self.y = y
@@ -307,6 +324,8 @@ class Room:
             c.update(self)
         for w in self.water:
             w.update(self)
+        if self.boss:
+            self.boss.update(self)
 
     def update_visuals(self):
         for row in self.walls:
@@ -325,6 +344,8 @@ class Room:
             d.reset()
         for c in self.cannons:
             c.reset()
+        if self.boss:
+            self.boss.reset()
 
     def draw(self, screen, img_hand):
         for row in self.bg:
@@ -351,8 +372,10 @@ class Room:
             d.draw(screen, img_hand)
         for c in self.cannons:
             c.draw(screen, img_hand)
-        if self.end is not None:
+        if self.end:
             self.end.draw(screen, img_hand)
+        if self.boss:
+            self.boss.draw(screen, img_hand)
 
     def debug_draw(self, screen):
         for c in self.checkpoints:
@@ -387,6 +410,11 @@ class Room:
 
         for sound in sounds:
             snd_hand.sounds[sound].play()
+
+        if self.music:
+            snd_hand.set_music(self.music.track)
+        else:
+            snd_hand.set_music('')
 
     def add_object(self, x, y, char):
         tile_x = int(x / helpers.TILE_SIZE)
@@ -458,9 +486,15 @@ class Room:
             self.powerups.append(powerup.Powerup(x, y, player.Ability.spread))
         elif char == '7':
             self.powerups.append(powerup.Powerup(x, y, player.Ability.gravity))
+        elif char == 'm':
+            self.music = tile.Music(x, y, 'track1')
+        elif char == 'n':
+            self.music = tile.Music(x, y, 'track2')
+        elif char == 'b':
+            self.boss = enemy.Boss(x, y)
 
-    def remove_object(self, x, y):
-        collider = pygame.Rect(x, y, helpers.TILE_SIZE, helpers.TILE_SIZE)
+    def remove_object(self, x, y, width=helpers.TILE_SIZE, height=helpers.TILE_SIZE):
+        collider = pygame.Rect(x, y, width, height)
 
         self.walls[int(y / helpers.TILE_SIZE)][int(x / helpers.TILE_SIZE)] = None
         self.ladders[:] = [x for x in self.ladders if not collider.colliderect(x.collider)]
@@ -470,8 +504,12 @@ class Room:
         self.powerups[:] = [x for x in self.powerups if not collider.colliderect(x.collider)]
         self.water[:] = [x for x in self.water if not collider.colliderect(x.collider)]
         self.dynamic_objects[:] = [x for x in self.dynamic_objects if not collider.colliderect(x.collider)]
-        if self.end is not None and collider.colliderect(self.end.collider):
+        if self.end and collider.colliderect(self.end.collider):
             self.end = None
+        if self.music and collider.colliderect(self.music.collider):
+            self.music = None
+        if self.boss and collider.colliderect(self.boss.collider):
+            self.boss = None
 
     def clear(self):
         self.walls = [[None] * helpers.ROOM_WIDTH for _ in range(helpers.ROOM_HEIGHT)]

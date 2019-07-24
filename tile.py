@@ -292,3 +292,9 @@ class Cannon(Wall):
             snd_hand.sounds[sound].play()
 
         self.sounds.clear()
+
+
+class Music(gameobject.GameObject):
+    def __init__(self, x, y, track):
+        super().__init__(x, y, helpers.TILE_SIZE, helpers.TILE_SIZE, ['ladder'])
+        self.track = track

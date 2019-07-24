@@ -65,6 +65,13 @@ class Bullet(gameobject.PhysicsObject):
                         if p.alive:
                             c.obj.bullets.remove(p)
                             self.destroy('blood', vert)
+                elif c.obj.group is gameobject.CollisionGroup.boss:
+                    c.obj.damage(1, 0, 0)
+                    self.destroy('blood', vert)
+                    for p in c.obj.bullets:
+                        if p.alive:
+                            c.obj.bullets.remove(p)
+                            self.destroy('blood', vert)
                 else:
                     self.destroy('spark', vert)
 

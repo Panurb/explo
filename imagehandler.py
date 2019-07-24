@@ -52,7 +52,8 @@ ACTIONS = {
         ['water', 16]
     ],
     'boss': [
-        ['idle', 1]
+        ['idle', 1],
+        ['die', 1]
     ],
     'bullet': [
         ['idle', 3]

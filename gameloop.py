@@ -105,8 +105,6 @@ class GameLoop:
         elif self.state is State.play:
             if self.level is None:
                 self.level = level.Level(self.level_select_menu.level_name)
-                pygame.mixer.music.load('data/msc/track2.mp3')
-                pygame.mixer.music.play(-1)
 
             pygame.mixer.music.unpause()
 
@@ -124,8 +122,7 @@ class GameLoop:
                 self.level.debug_draw(self.screen)
 
             # Done after drawing to avoid visual glitches on room change
-            if (self.level.player.room_x,
-                    self.level.player.room_y) != last_room:
+            if (self.level.player.room_x, self.level.player.room_y) != last_room:
                 self.level.rooms[last_room].reset()
         elif self.state is State.editor:
             pygame.mixer.music.stop()
@@ -142,11 +139,11 @@ class GameLoop:
                 self.editor.input(self.level, self.input_hand)
                 room = self.level.room(self.editor.room_x, self.editor.room_y)
                 room.draw(self.screen, self.img_hand)
+                if room.music:
+                    room.music.draw(self.screen, self.img_hand)
             except KeyError:
-                room = level.Room(self, [], self.editor.room_x,
-                                  self.editor.room_y)
-                self.level.rooms[(self.editor.room_x,
-                                  self.editor.room_y)] = room
+                room = level.Room(self, [], self.editor.room_x, self.editor.room_y)
+                self.level.rooms[(self.editor.room_x, self.editor.room_y)] = room
 
             self.editor.draw(self.screen, self.img_hand)
         elif self.state is State.level_end:

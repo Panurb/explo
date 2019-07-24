@@ -27,7 +27,8 @@ OBJECTS = {'WALLS': (('W', 'WALL'),
                        ('s', 'SPWANER'),
                        ('f', 'FLYER'),
                        ('h', 'CHARGER'),
-                       ('d', 'DROPPER')),
+                       ('d', 'DROPPER'),
+                       ('b', 'BOSS')),
            'MISC': (('C', 'CHECKPOINT'),
                     ('E', 'END')),
            'POWERUPS': (('0', 'RUN'),
@@ -37,7 +38,9 @@ OBJECTS = {'WALLS': (('W', 'WALL'),
                         ('4', 'REBREATHER'),
                         ('5', 'FULL AUTO'),
                         ('6', 'SPREAD'),
-                        ('7', 'GRAVITY'))}
+                        ('7', 'GRAVITY')),
+           'MUSIC': (('m', 'TRACK 1'),
+                     ('n', 'TRACK 2'))}
 
 
 class Editor:
@@ -88,6 +91,8 @@ class Editor:
             self.change_category('POWERUPS')
         elif input_hand.keys_pressed[pygame.K_6]:
             self.change_category('MISC')
+        elif input_hand.keys_pressed[pygame.K_7]:
+            self.change_category('MUSIC')
 
         if input_hand.mouse_pressed[4] or input_hand.keys_pressed[
                 pygame.K_COMMA]:

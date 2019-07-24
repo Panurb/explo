@@ -536,7 +536,7 @@ class Player(creature.Creature):
                     else:
                         sprite_body.play_once('jump', 1)
             else:
-                if self.ground_collision:
+                if self.ground_collision and not self.submerged:
                     if self.crouched:
                         if self.cooldown > 0:
                             sprite_body.play('gun_crouch_attack')
@@ -571,7 +571,9 @@ class Player(creature.Creature):
                             sprite_body.play_once('gun_jump', 1)
 
             # LEGS
-            if self.ground_collision:
+            if self.submerged:
+                sprite_legs.play('jump')
+            elif self.ground_collision:
                 if self.crouched:
                     sprite_legs.play('crouch')
                 elif self.moving and not self.wall_collision:

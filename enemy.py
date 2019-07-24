@@ -513,5 +513,52 @@ class Dropper(Enemy):
 class Boss(Enemy):
     def __init__(self, x, y):
         width = 24 * helpers.SCALE
-        height = 16 * helpers.SCALE
-        super().__init__(x, y, width, height, 100, ['boss'])
+        height = 24 * helpers.SCALE
+        super().__init__(x, y, width, height, 5, ['boss'])
+        self.gravity_scale = 0
+        self.group = gameobject.CollisionGroup.boss
+        self.dx = 1 * helpers.SCALE
+        self.dy = 1 * helpers.SCALE
+
+    def animate(self):
+        super().animate()
+        for s in self.sprites:
+            if self.alive:
+                s.play('idle')
+            else:
+                s.play_once('die')
+
+    def update(self, room):
+        super(creature.Creature, self).update(room)
+
+        if self.alive:
+            for c in self.collisions:
+                player = room.level.player
+                if c.obj is player:
+                    player.damage(1, 0, 0)
+
+        for p in self.bullets:
+            p.update(room)
+            if helpers.outside_screen(p.collider):
+                self.bullets.remove(p)
+
+        self.animate()
+
+    def reset(self):
+        super().reset()
+        self.gravity_scale = 0
+        self.group = gameobject.CollisionGroup.boss
+        self.dx = 1 * helpers.SCALE
+        self.dy = 1 * helpers.SCALE
+
+    def apply_friction(self):
+        if not self.alive and self.ground_collision:
+            if self.dx > 0:
+                self.dx = max(0, self.dx - self.friction)
+            if self.dx < 0:
+                self.dx = min(0, self.dx + self.friction)
+
+    def die(self):
+        super().die()
+        self.gravity_scale = 1
+        self.group = gameobject.CollisionGroup.enemies
