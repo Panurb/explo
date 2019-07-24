@@ -73,14 +73,15 @@ class Ladder(gameobject.GameObject):
 
 
 class Spike(Wall):
-    def __init__(self, x, y, index):
+    def __init__(self, x, y, index, action='idle'):
         super().__init__(x, y, 'spike')
         self.collider.x = x + helpers.SCALE
         self.collider.y = y + helpers.SCALE
         self.collider.width = 6 * helpers.SCALE
         self.collider.height = 6 * helpers.SCALE
+        self.action = action
         for s in self.sprites:
-            s.show_frame('idle', index)
+            s.show_frame(self.action, index)
         self.path = 'spike'
 
     def update(self, room):
@@ -117,7 +118,7 @@ class Spike(Wall):
 
         self.index = 8 * up + 4 * right + 2 * down + left
         for s in self.sprites:
-            s.show_frame('idle', self.index)
+            s.show_frame(self.action, self.index)
 
 
 class Checkpoint(gameobject.GameObject):

@@ -58,7 +58,7 @@ class Bullet(gameobject.PhysicsObject):
                 if type(c.obj) is tile.Destroyable:
                     c.obj.destroy()
 
-                if c.obj.group is gameobject.CollisionGroup.enemies:
+                if c.obj.group is gameobject.CollisionGroup.enemies and type(c.obj) is not Bullet:
                     c.obj.damage(1, 0, 0)
                     self.destroy('blood', vert)
                     for p in c.obj.bullets:

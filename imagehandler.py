@@ -48,7 +48,8 @@ ACTIONS = {
         ['sky', 1],
         ['ground', 16],
         ['rock', 16],
-        ['ice', 16]
+        ['ice', 16],
+        ['water', 16]
     ],
     'boss': [
         ['idle', 1]
@@ -183,7 +184,8 @@ ACTIONS = {
         ['die', 2]
     ],
     'spike': [
-        ['idle', 16]
+        ['idle', 16],
+        ['water', 16]
     ],
     'spring': [
         ['idle', 1],

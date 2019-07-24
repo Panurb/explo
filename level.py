@@ -424,6 +424,8 @@ class Room:
             self.end = tile.End(x, y)
         elif char == '*':
             self.spikes.append(tile.Spike(x, y, 0))
+        elif char == '^':
+            self.spikes.append(tile.Spike(x, y, 0, 'water'))
         elif char == 'Z':
             self.dynamic_objects.append(tile.Spring(x, y))
         elif char == 'N':
