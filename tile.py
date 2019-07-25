@@ -54,6 +54,9 @@ class Wall(gameobject.GameObject):
         for s in self.sprites:
             s.show_frame('idle', self.index)
 
+    def reset(self):
+        self.destroyed = False
+
 
 class Ladder(gameobject.GameObject):
     def __init__(self, x, y):
@@ -107,14 +110,14 @@ class Spike(Wall):
                 left = 1
 
         if self.y - helpers.TILE_SIZE < 0:
-            up = 1
+            up = 0
         elif self.y + helpers.TILE_SIZE >= helpers.SCREEN_HEIGHT:
-            down = 1
+            down = 0
 
         if self.x + helpers.TILE_SIZE >= helpers.SCREEN_WIDTH:
-            right = 1
+            right = 0
         elif self.x - helpers.TILE_SIZE < 0:
-            left = 1
+            left = 0
 
         self.index = 8 * up + 4 * right + 2 * down + left
         for s in self.sprites:
@@ -296,5 +299,21 @@ class Cannon(Wall):
 
 class Music(gameobject.GameObject):
     def __init__(self, x, y, track):
-        super().__init__(x, y, helpers.TILE_SIZE, helpers.TILE_SIZE, ['ladder'])
+        super().__init__(x, y, helpers.TILE_SIZE, helpers.TILE_SIZE, ['music'])
         self.track = track
+
+
+class BossWall(Wall):
+    def __init__(self, x, y):
+        super().__init__(x, y, 'bosswall')
+
+    def update(self, room):
+        if room.boss:
+            if not room.boss.alive:
+                self.destroyed = True
+        else:
+            self.destroyed = True
+
+    def draw(self, screen, img_hand):
+        if not self.destroyed:
+            super().draw(screen, img_hand)

@@ -57,9 +57,8 @@ class GameLoop:
             self.editor_select_menu.update()
 
         if self.state is State.menu:
-            if self.level is not None:
-                pygame.mixer.music.load('data/msc/menu.mp3')
-                pygame.mixer.music.play(-1)
+            if self.level:
+                self.snd_hand.set_music('menu')
                 self.level = None
             self.state = self.main_menu.input(self.input_hand)
             self.main_menu.draw(self.screen, self.img_hand)
@@ -125,7 +124,7 @@ class GameLoop:
             if (self.level.player.room_x, self.level.player.room_y) != last_room:
                 self.level.rooms[last_room].reset()
         elif self.state is State.editor:
-            pygame.mixer.music.stop()
+            self.snd_hand.set_music('')
             if self.level is None:
                 if self.editor_select_menu.level_name:
                     name = self.editor_select_menu.level_name

@@ -141,6 +141,8 @@ class Level:
                     tilemap[d.y // helpers.TILE_SIZE][d.x // helpers.TILE_SIZE] = 'F'
                 elif type(d) is tile.Spring:
                     tilemap[d.y // helpers.TILE_SIZE][d.x // helpers.TILE_SIZE] = 'Z'
+                elif type(d) is tile.BossWall:
+                    tilemap[d.y // helpers.TILE_SIZE][d.x // helpers.TILE_SIZE] = 'B'
             mus = room.music
             if mus:
                 char = ''
@@ -344,7 +346,7 @@ class Room:
             d.reset()
         for c in self.cannons:
             c.reset()
-        if self.boss:
+        if self.boss and self.boss.alive:
             self.boss.reset()
 
     def draw(self, screen, img_hand):
@@ -414,7 +416,8 @@ class Room:
         if self.music:
             snd_hand.set_music(self.music.track)
         else:
-            snd_hand.set_music('')
+            if snd_hand.current_track == 'menu':
+                snd_hand.set_music('')
 
     def add_object(self, x, y, char):
         tile_x = int(x / helpers.TILE_SIZE)
@@ -460,6 +463,8 @@ class Room:
             self.enemies.append(tile.Cannon(x, y))
         elif char == 'D':
             self.dynamic_objects.append(tile.Destroyable(x, y))
+        elif char == 'B':
+            self.dynamic_objects.append(tile.BossWall(x, y))
         elif char == 'c':
             self.enemies.append(enemy.Crawler(x, y))
         elif char == 'z':
@@ -522,3 +527,4 @@ class Room:
         self.water.clear()
         self.dynamic_objects.clear()
         self.end = None
+        self.boss = None

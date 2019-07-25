@@ -514,7 +514,7 @@ class Boss(Enemy):
     def __init__(self, x, y):
         width = 24 * helpers.SCALE
         height = 24 * helpers.SCALE
-        super().__init__(x, y, width, height, 5, ['boss'])
+        super().__init__(x, y, width, height, 20, ['boss'])
         self.gravity_scale = 0
         self.group = gameobject.CollisionGroup.boss
         self.dx = 1 * helpers.SCALE

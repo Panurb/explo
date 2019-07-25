@@ -5,6 +5,7 @@ import helpers
 SIZES = {
     'bg': (8, 8),
     'boss': (24, 24),
+    'bosswall': (8, 8),
     'bullet': (8, 8),
     'cannon': (8, 8),
     'charger': (16, 16),
@@ -26,6 +27,7 @@ SIZES = {
     'menu': (32, 8),
     'metal': (8, 8),
     'mods': (48, 48),
+    'music': (8, 8),
     'particle': (4, 4),
     'platform': (24, 8),
     'player_body': (16, 16),
@@ -54,6 +56,9 @@ ACTIONS = {
     'boss': [
         ['idle', 1],
         ['die', 1]
+    ],
+    'bosswall': [
+        ['idle', 1]
     ],
     'bullet': [
         ['idle', 3]
@@ -108,8 +113,7 @@ ACTIONS = {
         ['idle', 16]
     ],
     'image': [
-        ['menu', 1],
-        ['game', 1]
+        ['menu', 1]
     ],
     'ladder': [
         ['idle', 1]
@@ -133,6 +137,9 @@ ACTIONS = {
         ['right', 2],
         ['down', 2],
         ['left', 2],
+    ],
+    'music': [
+        ['idle', 1]
     ],
     'particle': [
         ['blood', 4],
