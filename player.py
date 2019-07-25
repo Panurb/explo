@@ -5,7 +5,6 @@ import pygame
 import animatedsprite
 
 import bullet
-import enemy
 import gameobject
 import helpers
 import hud
@@ -27,7 +26,7 @@ LADDER_SPEED = 0.75 * helpers.SCALE
 AIR_ACCELERATION = 0.125 * helpers.SCALE
 WEAPON_COOLDOWN = 8
 BULLET_SPEED = 4 * helpers.SCALE
-WATER_SPEED = 0.5 * helpers.SCALE
+WATER_SPEED = 0.6 * helpers.SCALE
 WATER_FRICTION = 0.05 * helpers.SCALE
 
 
@@ -572,7 +571,10 @@ class Player(creature.Creature):
 
             # LEGS
             if self.submerged:
-                sprite_legs.play('jump')
+                if self.dy < -1 * helpers.SCALE:
+                    sprite_legs.play('jump')
+                else:
+                    sprite_legs.show_frame('jump', 0)
             elif self.ground_collision:
                 if self.crouched:
                     sprite_legs.play('crouch')

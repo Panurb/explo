@@ -206,7 +206,6 @@ class Destroyable(Wall):
         self.add_debris(-5, -5)
 
         self.destroyed = True
-        self.group = gameobject.CollisionGroup.debris
 
     def add_debris(self, dx, dy):
         debris = gameobject.Debris(self.x, self.y, dx, dy, 'idle',
@@ -216,7 +215,6 @@ class Destroyable(Wall):
     def reset(self):
         self.destroyed = False
         self.debris.clear()
-        self.group = gameobject.CollisionGroup.walls
 
     def draw(self, screen, img_hand):
         super().draw(screen, img_hand)

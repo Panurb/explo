@@ -5,6 +5,7 @@ import creature
 
 import tile
 import math
+import random
 
 
 class Enemy(creature.Creature):
@@ -286,6 +287,7 @@ class Flyer(Enemy):
         width = 8 * helpers.SCALE
         height = 8 * helpers.SCALE
         super().__init__(x, y, width, height, 1, ['flyer'])
+        self.group = gameobject.CollisionGroup.boss
         self.speed = 0.5 * helpers.SCALE
         self.dx = self.speed
         self.gravity_scale = 0
@@ -517,8 +519,8 @@ class Boss(Enemy):
         super().__init__(x, y, width, height, 20, ['boss'])
         self.gravity_scale = 0
         self.group = gameobject.CollisionGroup.boss
-        self.dx = 1 * helpers.SCALE
-        self.dy = 1 * helpers.SCALE
+        self.speed = helpers.SCALE
+        self.active = False
 
     def animate(self):
         super().animate()
@@ -531,16 +533,18 @@ class Boss(Enemy):
     def update(self, room):
         super(creature.Creature, self).update(room)
 
+        if not self.active and abs(self.x - room.level.player.x) < 4 * helpers.TILE_SIZE:
+            self.active = True
+            dx = random.uniform(0, 1)
+            dy = random.uniform(0, 1)
+            self.dx = dx * self.speed / (dx**2 + dy**2)
+            self.dy = dy * self.speed / (dx**2 + dy**2)
+
         if self.alive:
             for c in self.collisions:
                 player = room.level.player
                 if c.obj is player:
                     player.damage(1, 0, 0)
-
-        for p in self.bullets:
-            p.update(room)
-            if helpers.outside_screen(p.collider):
-                self.bullets.remove(p)
 
         self.animate()
 
@@ -548,8 +552,7 @@ class Boss(Enemy):
         super().reset()
         self.gravity_scale = 0
         self.group = gameobject.CollisionGroup.boss
-        self.dx = 1 * helpers.SCALE
-        self.dy = 1 * helpers.SCALE
+        self.active = False
 
     def apply_friction(self):
         if not self.alive and self.ground_collision:

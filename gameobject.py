@@ -132,7 +132,7 @@ class GameObject:
 
         for d in room.dynamic_objects:
             if collider.colliderect(d.collider):
-                if d is not self:
+                if d is not self and not d.destroyed:
                     collisions.append(d)
 
         for e in room.enemies:
