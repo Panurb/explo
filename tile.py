@@ -304,14 +304,24 @@ class Music(gameobject.GameObject):
 class BossWall(Wall):
     def __init__(self, x, y):
         super().__init__(x, y, 'bosswall')
+        self.destroyed = False
 
     def update(self, room):
         if room.boss:
-            if not room.boss.alive:
+            if room.boss.active:
+                if room.boss.alive:
+                    self.destroyed = False
+                else:
+                    self.destroyed = True
+            else:
                 self.destroyed = True
         else:
-            self.destroyed = True
+            self.destroyed = False
 
     def draw(self, screen, img_hand):
         if not self.destroyed:
             super().draw(screen, img_hand)
+
+    def reset(self):
+        super().reset()
+        self.destroyed = False

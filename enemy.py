@@ -519,7 +519,7 @@ class Boss(Enemy):
         super().__init__(x, y, width, height, 20, ['boss'])
         self.gravity_scale = 0
         self.group = gameobject.CollisionGroup.boss
-        self.speed = helpers.SCALE
+        self.speed = 2 * helpers.SCALE
         self.active = False
 
     def animate(self):
@@ -535,10 +535,10 @@ class Boss(Enemy):
 
         if not self.active and abs(self.x - room.level.player.x) < 4 * helpers.TILE_SIZE:
             self.active = True
-            dx = random.uniform(0, 1)
-            dy = random.uniform(0, 1)
-            self.dx = dx * self.speed / (dx**2 + dy**2)
-            self.dy = dy * self.speed / (dx**2 + dy**2)
+            dx = random.uniform(-1, 1)
+            dy = random.uniform(-1, 1)
+            self.dx = dx * self.speed / math.sqrt(dx**2 + dy**2)
+            self.dy = dy * self.speed / math.sqrt(dx**2 + dy**2)
 
         if self.alive:
             for c in self.collisions:

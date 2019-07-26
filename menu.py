@@ -61,8 +61,12 @@ class MainMenu(Menu):
         self.bg_sprite = animatedsprite.AnimatedSprite('image')
         self.bg_sprite.play('menu')
 
+        self.title_sprite = animatedsprite.AnimatedSprite('title')
+        self.title_sprite.set_position(1.5 * helpers.TILE_SIZE, helpers.TILE_SIZE)
+
     def draw(self, screen, img_hand):
         self.bg_sprite.draw(screen, img_hand)
+        self.title_sprite.draw(screen, img_hand)
         super().draw(screen, img_hand)
 
 

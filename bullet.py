@@ -46,8 +46,7 @@ class Bullet(gameobject.PhysicsObject):
 
         if self.alive:
             for c in self.collisions:
-                if c.direction is collision.Direction.up or \
-                        c.direction is collision.Direction.down:
+                if c.direction is collision.Direction.up or c.direction is collision.Direction.down:
                     vert = True
                 else:
                     vert = False
@@ -58,20 +57,15 @@ class Bullet(gameobject.PhysicsObject):
                 if type(c.obj) is tile.Destroyable:
                     c.obj.destroy()
 
-                if c.obj.group is gameobject.CollisionGroup.enemies and type(c.obj) is not Bullet:
-                    c.obj.damage(1, 0, 0)
-                    self.destroy('blood', vert)
-                    for p in c.obj.bullets:
-                        if p.alive:
-                            c.obj.bullets.remove(p)
-                            self.destroy('blood', vert)
-                elif c.obj.group is gameobject.CollisionGroup.boss:
-                    c.obj.damage(1, 0, 0)
-                    self.destroy('blood', vert)
-                    for p in c.obj.bullets:
-                        if p.alive:
-                            c.obj.bullets.remove(p)
-                            self.destroy('blood', vert)
+                if c.obj.group is gameobject.CollisionGroup.enemies or c.obj.group is gameobject.CollisionGroup.boss \
+                        or c.obj.group is gameobject.CollisionGroup.chaser:
+                    if type(c.obj) is not Bullet:
+                        c.obj.damage(1, 0, 0)
+                        self.destroy('blood', vert)
+                        for p in c.obj.bullets:
+                            if p.alive:
+                                c.obj.bullets.remove(p)
+                                self.destroy('blood', vert)
                 else:
                     self.destroy('spark', vert)
 

@@ -26,7 +26,7 @@ class Main:
         self.loop = gameloop.GameLoop(self.screen, self.img_hand, self.snd_hand,
                                       self.inp_hand)
         self.clock = pygame.time.Clock()
-        self.fps = 60
+        self.fps = helpers.FPS
 
         self.snd_hand.set_music('menu')
         pygame.mixer.music.set_volume(0)

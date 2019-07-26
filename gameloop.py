@@ -86,8 +86,7 @@ class GameLoop:
                 self.level.debug_draw(self.screen)
 
             # Done after drawing to avoid visual glitches on room change
-            if (self.level.player.room_x,
-                    self.level.player.room_y) != last_room:
+            if (self.level.player.room_x, self.level.player.room_y) != last_room:
                 self.level.rooms[last_room].reset()
         elif self.state is State.level_select:
             self.state = self.level_select_menu.input(self.input_hand)
@@ -146,8 +145,8 @@ class GameLoop:
 
             self.editor.draw(self.screen, self.img_hand)
         elif self.state is State.level_end:
-            text = textbox.Textbox('YOU WON', 0.5 * helpers.SCREEN_WIDTH,
-                                   0.5 * helpers.SCREEN_HEIGHT)
+            text = textbox.Textbox('YOU WON\\\\TIME    ' + helpers.frames_to_time(self.level.player.time) + '\\\\DEATHS    ' + str(self.level.player.deaths),
+                                   0.5 * helpers.SCREEN_WIDTH, 0.2 * helpers.SCREEN_HEIGHT)
             text.draw(self.screen, self.img_hand)
 
         if self.debug_enabled:

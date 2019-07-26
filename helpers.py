@@ -10,6 +10,7 @@ SCREEN_WIDTH = ROOM_WIDTH * TILE_SIZE
 SCREEN_HEIGHT = ROOM_HEIGHT * TILE_SIZE
 GRAVITY = 0.25 * SCALE
 TERMINAL_VELOCITY = 7 * SCALE
+FPS = 60
 
 
 def load_image(name):
@@ -71,3 +72,15 @@ def mouse_to_grid(mouse_x, mouse_y):
     y = mouse_y - mouse_y % TILE_SIZE
 
     return x, y
+
+
+def frames_to_time(frames):
+    s = frames / FPS
+    h = int(s // 3600)
+
+    m = int(s // 60 - h * 60)
+    s = int(s - m * 60)
+
+    time = str(h) + ' - ' + str(m) + ' - ' + str(s)
+
+    return time

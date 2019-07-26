@@ -269,10 +269,9 @@ class Room:
                         if y + j < 0 or y + j >= helpers.ROOM_HEIGHT:
                             continue
 
-                        if wall.path in ['rock', 'ice']:
-                            action = wall.path
-                        else:
-                            action = 'ground'
+                        action = 'ground'
+                        #if wall.path in ['rock', 'ice']:
+                        #    action = wall.path
 
                         self.bg[y + j][x + i].show_frame(action, 0)
 
@@ -527,4 +526,5 @@ class Room:
         self.water.clear()
         self.dynamic_objects.clear()
         self.end = None
+        self.music = None
         self.boss = None

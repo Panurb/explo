@@ -17,6 +17,7 @@ class Platform(gameobject.PhysicsObject):
             self.dx = 0.5 * helpers.SCALE
         self.spawn_x = x
         self.spawn_y = y
+        self.destroyed = False
 
     def move_x(self, room):
         super().move_x(room)
