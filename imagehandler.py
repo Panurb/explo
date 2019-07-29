@@ -5,6 +5,7 @@ import helpers
 SIZES = {
     'bg': (8, 8),
     'boss': (24, 24),
+    'boss_gibs': (8, 8),
     'bosswall': (8, 8),
     'bullet': (8, 8),
     'cannon': (8, 8),
@@ -55,8 +56,14 @@ ACTIONS = {
         ['water', 16]
     ],
     'boss': [
-        ['idle', 1],
+        ['idle', 5],
         ['die', 1]
+    ],
+    'boss_gibs': [
+        ['eye', 4],
+        ['right', 4],
+        ['tooth', 4],
+        ['left', 4]
     ],
     'bosswall': [
         ['idle', 1]

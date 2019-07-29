@@ -215,13 +215,15 @@ class Slider():
         self.button_up = Button(x + 4, y, ButtonType.options, '+')
         self.button_down = Button(x - 4, y, ButtonType.options, '-')
         self.val = 0
-        self.values = range(0, 110, 10)
-        self.txtbox = TextInput(x, y, str(self.values[self.val]))
 
         if slider_type is SliderType.scale:
             self.values = [(helpers.ROOM_WIDTH * 8 * x, helpers.ROOM_HEIGHT * 8 * x) for x in range(4, 10)]
             val_str = str(self.values[self.val]).strip('()').replace(',', '*')
             self.txtbox = TextInput(x, y, val_str)
+        else:
+            self.values = range(0, 110, 10)
+            self.val = len(self.values) - 1
+            self.txtbox = TextInput(x, y, str(self.values[self.val]))
 
         self.title = TextInput(x, y - 1, slider_type.name)
 
@@ -249,10 +251,10 @@ class Slider():
 
         if changed:
             if self.type is SliderType.music:
-                pygame.mixer.music.set_volume(self.val / 100)
+                pygame.mixer.music.set_volume(self.values[self.val] / 100)
                 self.txtbox.txtbox.set_string(str(self.values[self.val]))
             elif self.type is SliderType.sound:
-                snd_hand.set_volume(self.val / 100)
+                snd_hand.set_volume(self.values[self.val] / 100)
                 sound = random.choice(list(snd_hand.sounds.keys()))
                 snd_hand.sounds[sound].play()
                 self.txtbox.txtbox.set_string(str(self.values[self.val]))

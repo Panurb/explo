@@ -82,10 +82,10 @@ class Player(creature.Creature):
         for a in Ability:
             self.abilities[a] = False
         self.abilities[Ability.run] = True
-        self.abilities[Ability.double_jump] = True
-        self.abilities[Ability.gun] = True
-        self.abilities[Ability.wall_jump] = True
-        self.abilities[Ability.rebreather] = True
+        #self.abilities[Ability.double_jump] = True
+        #self.abilities[Ability.gun] = True
+        #self.abilities[Ability.wall_jump] = True
+        #self.abilities[Ability.rebreather] = True
 
         self.save = save.Save(self.x, self.y, self.room_x, self.room_y,
                               self.direction, self.abilities, self.weapon_mods)

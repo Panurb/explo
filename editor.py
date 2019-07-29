@@ -41,7 +41,9 @@ OBJECTS = {'WALLS': (('W', 'WALL'),
                         ('6', 'SPREAD'),
                         ('7', 'GRAVITY')),
            'MUSIC': (('m', 'TRACK 1'),
-                     ('n', 'TRACK 2'))}
+                     ('n', 'TRACK 2'),
+                     ('l', 'TRACK 3'),
+                     ('k', 'NONE'))}
 
 
 class Editor:

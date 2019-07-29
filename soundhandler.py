@@ -19,12 +19,12 @@ class SoundHandler:
     def set_volume(self, vol):
         self.volume = vol
         for sound in self.sounds.values():
-            sound.set_volume(vol)
+            sound.set_volume(0.5 * vol)
 
     def set_music(self, track):
         if self.current_track != track:
             if track == '':
-                pygame.mixer.music.stop()
+                pygame.mixer.music.fadeout(1000)
             else:
                 pygame.mixer.music.load('data/msc/' + track + '.mp3')
                 pygame.mixer.music.play(-1)

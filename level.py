@@ -150,6 +150,8 @@ class Level:
                     char = 'm'
                 elif mus.track == 'track2':
                     char = 'n'
+                elif mus.track == 'track3':
+                    char = 'l'
 
                 tilemap[mus.y // helpers.TILE_SIZE][mus.x // helpers.TILE_SIZE] = char
 
@@ -345,7 +347,7 @@ class Room:
             d.reset()
         for c in self.cannons:
             c.reset()
-        if self.boss and self.boss.alive:
+        if self.boss:
             self.boss.reset()
 
     def draw(self, screen, img_hand):
@@ -408,11 +410,19 @@ class Room:
         for d in self.dynamic_objects:
             sounds |= d.sounds
             d.sounds.clear()
+        if self.boss:
+            sounds |= self.boss.sounds
+            self.boss.sounds.clear()
 
         for sound in sounds:
             snd_hand.sounds[sound].play()
 
-        if self.music:
+        if self.boss:
+            if self.boss.active and self.boss.alive:
+                snd_hand.set_music('boss')
+            else:
+                snd_hand.set_music('')
+        elif self.music:
             snd_hand.set_music(self.music.track)
         else:
             if snd_hand.current_track == 'menu':
@@ -494,6 +504,10 @@ class Room:
             self.music = tile.Music(x, y, 'track1')
         elif char == 'n':
             self.music = tile.Music(x, y, 'track2')
+        elif char == 'l':
+            self.music = tile.Music(x, y, 'track3')
+        elif char == 'k':
+            self.music = tile.Music(x, y, '')
         elif char == 'b':
             self.boss = enemy.Boss(x, y)
 

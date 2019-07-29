@@ -120,7 +120,7 @@ class Enemy(creature.Creature):
 
 class Crawler(Enemy):
     def __init__(self, x, y):
-        super().__init__(x, y, 8 * helpers.SCALE, 8 * helpers.SCALE, 5,
+        super().__init__(x, y, 8 * helpers.SCALE, 8 * helpers.SCALE, 2,
                          ['crawler'])
 
         self.speed = 0.25 * helpers.SCALE
@@ -516,43 +516,58 @@ class Boss(Enemy):
     def __init__(self, x, y):
         width = 24 * helpers.SCALE
         height = 24 * helpers.SCALE
-        super().__init__(x, y, width, height, 20, ['boss'])
+        super().__init__(x, y, width, height, 30, ['boss'])
         self.gravity_scale = 0
         self.group = gameobject.CollisionGroup.boss
         self.speed = 2 * helpers.SCALE
         self.active = False
+        self.timer = 0
+        self.time = 4 * helpers.FPS
+        self.pause_time = 1 * helpers.FPS
 
     def animate(self):
         super().animate()
         for s in self.sprites:
-            if self.alive:
-                s.play('idle')
+            if not self.active:
+                s.show_frame('idle', 0)
             else:
-                s.play_once('die')
+                if self.alive:
+                    if self.time < self.timer < self.time + self.pause_time:
+                        s.show_frame('idle', 0)
+                    else:
+                        s.play('idle')
+                else:
+                    s.play_once('die')
+
+    def random_direction(self):
+        dx = random.choice([-1, 1])
+        dy = random.choice([-1, 1])
+        self.dx = dx * self.speed / math.sqrt(dx**2 + dy**2)
+        self.dy = dy * self.speed / math.sqrt(dx**2 + dy**2)
 
     def update(self, room):
-        super(creature.Creature, self).update(room)
+        super().update(room)
 
         if not self.active and abs(self.x - room.level.player.x) < 4 * helpers.TILE_SIZE:
             self.active = True
-            dx = random.uniform(-1, 1)
-            dy = random.uniform(-1, 1)
-            self.dx = dx * self.speed / math.sqrt(dx**2 + dy**2)
-            self.dy = dy * self.speed / math.sqrt(dx**2 + dy**2)
+            self.random_direction()
 
-        if self.alive:
-            for c in self.collisions:
-                player = room.level.player
-                if c.obj is player:
-                    player.damage(1, 0, 0)
+        if self.alive and self.active:
+            if self.time < self.timer < self.time + self.pause_time:
+                self.dx = 0
+                self.dy = 0
+            elif self.timer == self.time + self.pause_time:
+                self.random_direction()
+                self.timer = 0
 
-        self.animate()
+            self.timer += 1
 
     def reset(self):
         super().reset()
         self.gravity_scale = 0
         self.group = gameobject.CollisionGroup.boss
         self.active = False
+        self.timer = 0
 
     def apply_friction(self):
         if not self.alive and self.ground_collision:
@@ -563,5 +578,13 @@ class Boss(Enemy):
 
     def die(self):
         super().die()
-        self.gravity_scale = 1
+        self.dx = 0
+        self.dy = 0
         self.group = gameobject.CollisionGroup.enemies
+        self.add_gib(-2, 8, -1, -2, 'eye', 'boss_gibs')
+        self.add_gib(18, 8, 1, -2, 'eye', 'boss_gibs')
+        self.add_gib(-2, 0, -1, -1, 'left', 'boss_gibs')
+        self.add_gib(18, 0, 1, -1, 'right', 'boss_gibs')
+        self.add_gib(4, 12, -0.5, -1, 'tooth', 'boss_gibs')
+        self.add_gib(12, 12, 0.5, -1, 'tooth', 'boss_gibs')
+        self.gravity_scale = 1
