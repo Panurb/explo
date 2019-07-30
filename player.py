@@ -372,7 +372,8 @@ class Player(creature.Creature):
             self.dy = speed
 
     def reset(self):
-        self.base_dx = self.base_dy = 0
+        self.base_dx = 0
+        self.base_dy = 0
         self.x = self.save.x
         self.y = self.save.y
         self.collider.x = self.x

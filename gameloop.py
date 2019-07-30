@@ -22,6 +22,7 @@ class State(enum.Enum):
     editor_paused = 12
     save = 13
     editor_play = 14
+    credits = 15
 
 
 class GameLoop:
@@ -38,6 +39,7 @@ class GameLoop:
         self.editor_select_menu = menu.EditorSelectMenu()
         self.options_menu = menu.OptionsMenu()
         self.level_creation_menu = menu.LevelCreationMenu()
+        self.credits = menu.Credits()
 
         self.level = None
         self.editor = None
@@ -148,6 +150,9 @@ class GameLoop:
             text = textbox.Textbox('YOU WON\\\\TIME    ' + helpers.frames_to_time(self.level.player.time) + '\\\\DEATHS    ' + str(self.level.player.deaths),
                                    0.5 * helpers.SCREEN_WIDTH, 0.2 * helpers.SCREEN_HEIGHT)
             text.draw(self.screen, self.img_hand)
+        elif self.state is State.credits:
+            self.state = self.credits.input(self.input_hand)
+            self.credits.draw(self.screen, self.img_hand)
 
         if self.debug_enabled:
             self.clock_text.set_string(str(int(clock.get_fps())))

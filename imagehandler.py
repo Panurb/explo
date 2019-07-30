@@ -25,7 +25,7 @@ SIZES = {
     'ladder': (8, 8),
     'lava': (8, 8),
     'map': (7, 6),
-    'menu': (32, 8),
+    'menu': (8, 8),
     'metal': (8, 8),
     'mods': (48, 48),
     'music': (8, 8),
@@ -138,7 +138,7 @@ ACTIONS = {
         ['idle', 16]
     ],
     'menu': [
-        ['button', 1]
+        ['button', 4]
     ],
     'mods': [
         ['up', 2],
@@ -238,10 +238,21 @@ class ImageHandler:
         self.animations = {}
         self.load()
         self.scale = helpers.SCALE
+        self.fullscreen = False
         self.rescale(self.scale)
 
-    def rescale(self, scale):
+    def rescale(self, scale, fullscreen=None):
         self.scale = scale
+        if fullscreen:
+            self.fullscreen = fullscreen
+
+        s = self.scale / helpers.SCALE
+        size = (int(helpers.SCREEN_WIDTH * s), int(helpers.SCREEN_HEIGHT * s))
+
+        if self.fullscreen:
+            pygame.display.set_mode(size, pygame.FULLSCREEN)
+        else:
+            pygame.display.set_mode(size)
 
         for name in self.animations.keys():
             for action in self.animations[name]:

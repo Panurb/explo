@@ -145,13 +145,14 @@ class Level:
                     tilemap[d.y // helpers.TILE_SIZE][d.x // helpers.TILE_SIZE] = 'B'
             mus = room.music
             if mus:
-                char = ''
                 if mus.track == 'track1':
                     char = 'm'
                 elif mus.track == 'track2':
                     char = 'n'
                 elif mus.track == 'track3':
                     char = 'l'
+                else:
+                    char = 'k'
 
                 tilemap[mus.y // helpers.TILE_SIZE][mus.x // helpers.TILE_SIZE] = char
 

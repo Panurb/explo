@@ -21,12 +21,13 @@ class ButtonType(enum.Enum):
     create = 11
     save = 12
     test = 13
+    credits = 14
 
 
 class SliderType(enum.Enum):
     sound = 1
     music = 2
-    scale = 3
+    resolution = 3
 
 
 class Menu:
@@ -43,9 +44,10 @@ class Menu:
 
     def input(self, input_hand):
         for b in self.buttons:
-            if b.rect.collidepoint(input_hand.mouse_x, input_hand.mouse_y):
-                if input_hand.mouse_released[1]:
-                    return b.press()
+            for s in b.sprites:
+                if s.rect.collidepoint(input_hand.mouse_x, input_hand.mouse_y):
+                    if input_hand.mouse_released[1]:
+                        return b.press()
 
         return self.state
 
@@ -56,7 +58,8 @@ class MainMenu(Menu):
         self.add_button(0, 7, ButtonType.play)
         self.add_button(0, 9, ButtonType.editor)
         self.add_button(0, 11, ButtonType.options)
-        self.add_button(0, 13, ButtonType.quit)
+        self.add_button(-7, 13, ButtonType.quit)
+        self.add_button(7, 13, ButtonType.credits)
 
         self.bg_sprite = animatedsprite.AnimatedSprite('image')
         self.bg_sprite.play('menu')
@@ -107,11 +110,12 @@ class LevelSelectMenu(Menu):
 
     def input(self, input_hand):
         for b in self.buttons:
-            if b.rect.collidepoint(input_hand.mouse_x, input_hand.mouse_y):
-                if input_hand.mouse_released[1]:
-                    if b.type is ButtonType.level:
-                        self.level_name = b.txtbox.string
-                    return b.press()
+            for s in b.sprites:
+                if s.rect.collidepoint(input_hand.mouse_x, input_hand.mouse_y):
+                    if input_hand.mouse_released[1]:
+                        if b.type is ButtonType.level:
+                            self.level_name = b.txtbox.string
+                        return b.press()
 
         return self.state
 
@@ -148,11 +152,12 @@ class EditorSelectMenu(Menu):
 
     def input(self, input_hand):
         for b in self.buttons:
-            if b.rect.collidepoint(input_hand.mouse_x, input_hand.mouse_y):
-                if input_hand.mouse_released[1]:
-                    if b.type is ButtonType.edit:
-                        self.level_name = b.txtbox.string
-                    return b.press()
+            for s in b.sprites:
+                if s.rect.collidepoint(input_hand.mouse_x, input_hand.mouse_y):
+                    if input_hand.mouse_released[1]:
+                        if b.type is ButtonType.edit:
+                            self.level_name = b.txtbox.string
+                        return b.press()
 
         self.level_name = ''
         return self.state
@@ -191,7 +196,8 @@ class OptionsMenu(Menu):
         super().__init__(gameloop.State.options)
         self.bg_sprite = animatedsprite.AnimatedSprite('image')
         self.bg_sprite.play('menu')
-        self.sliders = [Slider(0, 5, SliderType.scale),
+        self.button = FullscreenButton(0, 2)
+        self.sliders = [Slider(0, 5, SliderType.resolution),
                         Slider(0, 8, SliderType.music),
                         Slider(0, 11, SliderType.sound)]
         self.add_button(-7, 13, ButtonType.menu)
@@ -199,26 +205,32 @@ class OptionsMenu(Menu):
     def draw(self, screen, img_hand):
         self.bg_sprite.draw(screen, img_hand)
         super().draw(screen, img_hand)
+
+        self.button.draw(screen, img_hand)
+
         for s in self.sliders:
             s.draw(screen, img_hand)
 
     def input(self, hands):
         input_hand, snd_hand, img_hand = hands
+
+        self.button.input(input_hand, img_hand, self.sliders[0].val + helpers.SCALE)
+
         for s in self.sliders:
             s.input(input_hand, snd_hand, img_hand)
         return super().input(input_hand)
 
 
-class Slider():
+class Slider:
     def __init__(self, x, y, slider_type):
         self.type = slider_type
         self.button_up = Button(x + 4, y, ButtonType.options, '+')
         self.button_down = Button(x - 4, y, ButtonType.options, '-')
         self.val = 0
 
-        if slider_type is SliderType.scale:
+        if slider_type is SliderType.resolution:
             self.values = [(helpers.ROOM_WIDTH * 8 * x, helpers.ROOM_HEIGHT * 8 * x) for x in range(4, 10)]
-            val_str = str(self.values[self.val]).strip('()').replace(',', '*')
+            val_str = str(self.values[self.val]).strip('()').replace(',', ' *')
             self.txtbox = TextInput(x, y, val_str)
         else:
             self.values = range(0, 110, 10)
@@ -226,6 +238,7 @@ class Slider():
             self.txtbox = TextInput(x, y, str(self.values[self.val]))
 
         self.title = TextInput(x, y - 1, slider_type.name)
+        #self.title = Button(x, y - 1, None, slider_type.name)
 
     def draw(self, screen, img_hand):
         self.button_up.draw(screen, img_hand)
@@ -236,18 +249,18 @@ class Slider():
     def input(self, input_hand, snd_hand, img_hand):
         changed = False
 
-        if self.button_up.rect.collidepoint(input_hand.mouse_x,
-                                            input_hand.mouse_y):
-            if input_hand.mouse_released[1]:
-                if self.val < len(self.values) - 1:
-                    self.val += 1
-                    changed = True
-        if self.button_down.rect.collidepoint(input_hand.mouse_x,
-                                              input_hand.mouse_y):
-            if input_hand.mouse_released[1]:
-                if self.val > 0:
-                    self.val -= 1
-                    changed = True
+        for s in self.button_up.sprites:
+            if s.rect.collidepoint(input_hand.mouse_x, input_hand.mouse_y):
+                if input_hand.mouse_released[1]:
+                    if self.val < len(self.values) - 1:
+                        self.val += 1
+                        changed = True
+        for s in self.button_down.sprites:
+            if s.rect.collidepoint(input_hand.mouse_x, input_hand.mouse_y):
+                if input_hand.mouse_released[1]:
+                    if self.val > 0:
+                        self.val -= 1
+                        changed = True
 
         if changed:
             if self.type is SliderType.music:
@@ -258,28 +271,40 @@ class Slider():
                 sound = random.choice(list(snd_hand.sounds.keys()))
                 snd_hand.sounds[sound].play()
                 self.txtbox.txtbox.set_string(str(self.values[self.val]))
-            elif self.type is SliderType.scale:
-                val_str = str(self.values[self.val]).strip('()').replace(',', '*')
+            elif self.type is SliderType.resolution:
+                val_str = str(self.values[self.val]).strip('()').replace(',', ' *')
                 self.txtbox.txtbox.set_string(val_str)
-                pygame.display.set_mode(self.values[self.val])
                 img_hand.rescale(self.val + helpers.SCALE)
 
 
-class Button(animatedsprite.AnimatedSprite):
+class Button:
     def __init__(self, x, y, button_type, text=''):
-        super().__init__('menu')
-        self.x = x * helpers.TILE_SIZE + 0.5 * helpers.SCREEN_WIDTH - 16 * helpers.SCALE
+        self.x = x * helpers.TILE_SIZE + 0.5 * helpers.SCREEN_WIDTH
         self.y = y * helpers.TILE_SIZE
         if text == '':
             text = button_type.name
-        self.txtbox = textbox.Textbox(text, self.x + 16 * helpers.SCALE, self.y)
-        self.txtbox.y = y
+        self.txtbox = textbox.Textbox(text, self.x, self.y)
         self.type = button_type
 
-        self.play('button')
+        width = int(len(text) / 2 + 2)
+
+        self.sprites = []
+        for i in range(width):
+            s = animatedsprite.AnimatedSprite('menu')
+            s.set_position(self.x - (width * 4) * helpers.SCALE + i * helpers.TILE_SIZE, self.y)
+            self.sprites.append(s)
+
+        if len(self.sprites) == 1:
+            self.sprites[0].show_frame('button', 3)
+        else:
+            for s in self.sprites:
+                s.show_frame('button', 1)
+            self.sprites[0].show_frame('button', 0)
+            self.sprites[-1].show_frame('button', 2)
 
     def draw(self, screen, img_hand):
-        super().draw(screen, img_hand)
+        for s in self.sprites:
+            s.draw(screen, img_hand)
         self.txtbox.draw(screen, img_hand)
 
     def press(self):
@@ -307,20 +332,39 @@ class Button(animatedsprite.AnimatedSprite):
             return gameloop.State.save
         elif self.type is ButtonType.test:
             return gameloop.State.editor_play
+        elif self.type is ButtonType.credits:
+            return gameloop.State.credits
 
 
-class TextInput(animatedsprite.AnimatedSprite):
+class FullscreenButton(Button):
+    def __init__(self, x, y):
+        super().__init__(x, y, None, 'fullscreen')
+
+    def input(self, input_hand, img_hand, scale):
+        for s in self.sprites:
+            if s.rect.collidepoint(input_hand.mouse_x, input_hand.mouse_y):
+                if input_hand.mouse_released[1]:
+                    if self.txtbox.string == 'fullscreen':
+                        self.txtbox.set_string('windowed')
+                        img_hand.rescale(scale, True)
+                    else:
+                        self.txtbox.set_string('fullscreen')
+                        img_hand.rescale(scale, False)
+
+                    self.txtbox.y = self.y
+
+
+class TextInput(Button):
     def __init__(self, x, y, text=''):
-        super().__init__('menu')
+        super().__init__(x, y, None, 'asdfghjklm')
         self.x = x + 0.5 * helpers.SCREEN_WIDTH - 16 * helpers.SCALE
         self.y = y * helpers.TILE_SIZE
         self.txtbox = textbox.Textbox(text, x + 0.5 * helpers.SCREEN_WIDTH, self.y)
-        self.max_length = 7
-
-        self.play('button')
+        self.max_length = 12
 
     def draw(self, screen, img_hand):
         super().draw(screen, img_hand)
+        self.txtbox.draw(screen, img_hand)
         self.txtbox.draw(screen, img_hand)
 
     def input(self, input_hand):
@@ -331,3 +375,16 @@ class TextInput(animatedsprite.AnimatedSprite):
                 else:
                     if len(self.txtbox.string) < self.max_length:
                         self.txtbox.add_char(chr(key))
+
+
+class Credits(Menu):
+    def __init__(self):
+        super().__init__(gameloop.State.credits)
+        self.add_button(-7, 13, ButtonType.menu)
+
+        self.bg_sprite = animatedsprite.AnimatedSprite('image')
+        self.bg_sprite.play('menu')
+
+    def draw(self, screen, img_hand):
+        self.bg_sprite.draw(screen, img_hand)
+        super().draw(screen, img_hand)

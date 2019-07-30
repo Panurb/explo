@@ -34,6 +34,7 @@ class Enemy(creature.Creature):
             self.flip()
 
     def die(self):
+        self.sounds.add('squish')
         self.alive = False
 
     def add_gib(self, x, y, dx, dy, part, path):
@@ -158,15 +159,12 @@ class Crawler(Enemy):
 
     def die(self):
         if self.alive:
-            self.add_shrapnel(-1.25, -3)
-            self.add_shrapnel(-0.75, -3.5)
-            self.add_shrapnel(0, -3.75)
-            self.add_shrapnel(0.75, -3.5)
-            self.add_shrapnel(1.25, -3)
+            self.add_gib(0, 0, -1.25, -3, 'shrapnel', 'crawler')
+            self.add_gib(0, 0, 1.25, -3, 'shrapnel', 'crawler')
 
             self.dx = 0
             self.dy = 0
-            self.alive = False
+            super().die()
 
     def add_shrapnel(self, dx, dy):
         #dx = random.uniform(dx - 1, dx + 1) * helpers.SCALE
@@ -548,7 +546,7 @@ class Boss(Enemy):
     def update(self, room):
         super().update(room)
 
-        if not self.active and abs(self.x - room.level.player.x) < 4 * helpers.TILE_SIZE:
+        if not self.active and abs(self.collider.centerx - room.level.player.x) < 2 * helpers.TILE_SIZE:
             self.active = True
             self.random_direction()
 

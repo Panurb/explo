@@ -16,7 +16,7 @@ class Ability(Enum):
 TEXTS = {
     Ability.run: 'Hold shift to walk',
     Ability.double_jump: 'Press A in midair',
-    Ability.wall_jump: 'Press A while hugging a wall',
+    Ability.wall_jump: 'Press A while against a wall',
     Ability.gun: 'Press S to shoot',
     Ability.rebreather: 'Breathe underwater'
 }
