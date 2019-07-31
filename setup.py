@@ -4,7 +4,7 @@ from distutils.core import setup
 import py2exe
 
 
-def find_data_files(source,target,patterns):
+def find_data_files(source, target, patterns):
     """Locates the specified data-files and returns the matches
     in a data_files compatible format.
 
@@ -19,22 +19,24 @@ def find_data_files(source,target,patterns):
         raise ValueError("Magic not allowed in src, target")
     ret = {}
     for pattern in patterns:
-        pattern = os.path.join(source,pattern)
+        pattern = os.path.join(source, pattern)
         for filename in glob.glob(pattern):
             if os.path.isfile(filename):
-                targetpath = os.path.join(target,os.path.relpath(filename,source))
+                targetpath = os.path.join(target, os.path.relpath(filename, source))
                 path = os.path.dirname(targetpath)
-                ret.setdefault(path,[]).append(filename)
+                ret.setdefault(path, []).append(filename)
     return sorted(ret.items())
 
 # Example:
 setup(
-    name="Sample",
+    name="EXPLO",
     version="1.0",
-    description="A sample app",
-    author="MizardX",
-    windows=['main.py'],
-    data_files=find_data_files('data','data',[
+    description="Game",
+    author="Panu Keskinen",
+    options={'py2exe': {'bundle_files': 1, 'compressed': True}},
+    windows=[{'script': "main.py"}],
+    zipfile=None,
+    data_files=find_data_files('data', 'data', [
         'img/*',
         'lvl/*',
         'msc/*',

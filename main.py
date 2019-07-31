@@ -20,15 +20,16 @@ class Main:
         joysticks = [pygame.joystick.Joystick(x) for x in range(pygame.joystick.get_count())]
 
         self.screen = pygame.display.set_mode((width, height))
-        #self.screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
         self.img_hand = imagehandler.ImageHandler()
-        #self.img_hand.rescale(9)
         self.snd_hand = soundhandler.SoundHandler()
         self.inp_hand = inputhandler.InputHandler()
         self.loop = gameloop.GameLoop(self.screen, self.img_hand, self.snd_hand,
                                       self.inp_hand)
         self.clock = pygame.time.Clock()
         self.fps = helpers.FPS
+
+        # TODO make icon
+        pygame.display.set_icon(self.img_hand.animations['ladder']['idle'][0])
 
         self.snd_hand.set_music('menu')
         pygame.mixer.music.set_volume(1)
