@@ -97,15 +97,13 @@ class Editor:
         elif input_hand.keys_pressed[pygame.K_7]:
             self.change_category('MUSIC')
 
-        if input_hand.mouse_pressed[4] or input_hand.keys_pressed[
-                pygame.K_COMMA]:
+        if input_hand.mouse_pressed[4] or input_hand.keys_pressed[pygame.K_COMMA]:
             if self.object > 0:
                 self.object -= 1
             else:
                 self.object = len(OBJECTS[self.category]) - 1
 
-        if input_hand.mouse_pressed[5] or input_hand.keys_pressed[
-                pygame.K_PERIOD]:
+        if input_hand.mouse_pressed[5] or input_hand.keys_pressed[pygame.K_PERIOD]:
             if self.object < len(OBJECTS[self.category]) - 1:
                 self.object += 1
             else:

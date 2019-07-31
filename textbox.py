@@ -19,6 +19,11 @@ class Textbox:
     def clear(self):
         self.set_string('')
 
+    def set_position(self, x, y):
+        self.x = x
+        self.y = y
+        self.set_string(self.string)
+
     def set_string(self, string):
         self.string = string
         strings = string.split('\\')

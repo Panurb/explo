@@ -15,8 +15,8 @@ import tile
 from powerup import Ability
 
 WIDTH = 6 * helpers.SCALE
-HEIGHT = 15 * helpers.SCALE
-CROUCHED_HEIGHT = 8 * helpers.SCALE
+HEIGHT = 14 * helpers.SCALE
+CROUCHED_HEIGHT = 7 * helpers.SCALE
 
 JUMP_HEIGHT = -2.25 * helpers.SCALE
 DOUBLE_JUMP_HEIGHT = -2 * helpers.SCALE
@@ -87,11 +87,10 @@ class Player(creature.Creature):
         #self.abilities[Ability.wall_jump] = True
         #self.abilities[Ability.rebreather] = True
 
-        self.save = save.Save(self.x, self.y, self.room_x, self.room_y,
-                              self.direction, self.abilities, self.weapon_mods)
+        self.save = save.Save(self.x, self.y, self.room_x, self.room_y, self.direction, self.abilities,
+                              self.weapon_mods)
 
-        self.txtbox = textbox.Textbox('', 0.5 * helpers.SCREEN_WIDTH,
-                                      4 * helpers.SCALE)
+        self.txtbox = textbox.Textbox('', 0.5 * helpers.SCREEN_WIDTH, 4 * helpers.SCALE)
         self.map = hud.Map(level)
         self.mods = hud.Mods()
         self.modifying_weapon = False
@@ -202,9 +201,9 @@ class Player(creature.Creature):
         for s in self.sprites:
             s.offset_x = -5 * helpers.SCALE
             if self.crouched:
-                s.offset_y = -8 * helpers.SCALE
+                s.offset_y = -9 * helpers.SCALE
             else:
-                s.offset_y = -1 * helpers.SCALE
+                s.offset_y = -2 * helpers.SCALE
 
         super().draw(screen, img_hand)
 
@@ -239,7 +238,7 @@ class Player(creature.Creature):
         if not collisions or self.ground_collision:
             self.hugging_wall = False
 
-        if self.hugging_wall:
+        if self.hugging_wall and self.abilities[Ability.wall_jump]:
             self.jump_count = 0
 
     def input(self, input_hand, room):
@@ -436,8 +435,7 @@ class Player(creature.Creature):
     def apply_room_change(self):
         window_rect = pygame.Rect(0, 0, helpers.SCREEN_WIDTH,
                                   helpers.SCREEN_HEIGHT)
-        if not window_rect.collidepoint(self.collider.centerx,
-                                        self.collider.centery):
+        if not window_rect.collidepoint(self.collider.centerx, self.collider.centery):
             self.bullets.clear()
 
             if self.collider.centerx >= helpers.SCREEN_WIDTH:
@@ -458,7 +456,11 @@ class Player(creature.Creature):
 
             self.txtbox.clear()
 
-        self.map.rooms_visited[(self.room_x, self.room_y)] = True
+            self.map.rooms_visited[(self.room_x, self.room_y)] = True
+
+            return True
+        else:
+            return False
 
     def give_powerup(self, p):
         if self.abilities[p.ability] is False:

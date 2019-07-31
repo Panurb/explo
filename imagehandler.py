@@ -243,7 +243,7 @@ class ImageHandler:
 
     def rescale(self, scale, fullscreen=None):
         self.scale = scale
-        if fullscreen:
+        if fullscreen is not None:
             self.fullscreen = fullscreen
 
         s = self.scale / helpers.SCALE

@@ -60,8 +60,8 @@ class GameLoop:
 
         if self.state is State.menu:
             if self.level:
-                self.snd_hand.set_music('menu')
                 self.level = None
+                self.snd_hand.set_music('menu')
             self.state = self.main_menu.input(self.input_hand)
             self.main_menu.draw(self.screen, self.img_hand)
         elif self.state is State.paused:
@@ -104,6 +104,7 @@ class GameLoop:
             self.level_creation_menu.draw(self.screen, self.img_hand)
         elif self.state is State.play:
             if self.level is None:
+                pygame.mixer.music.stop()
                 self.level = level.Level(self.level_select_menu.level_name)
 
             pygame.mixer.music.unpause()

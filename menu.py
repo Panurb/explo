@@ -77,38 +77,51 @@ class PauseMenu(Menu):
     def __init__(self):
         super().__init__(gameloop.State.paused)
         self.add_button(0, 6, ButtonType.resume)
-        self.add_button(0, 8, ButtonType.menu)
+        self.add_button(-6, 13, ButtonType.menu, 'MAIN MENU')
 
 
 class LevelSelectMenu(Menu):
     def __init__(self):
         super().__init__(gameloop.State.level_select)
+        self.add_button(-7, 13, ButtonType.menu, 'BACK')
 
-        dy = 4
+        dy = 2
         for filename in os.listdir('data/lvl'):
-            self.add_button(0, dy, ButtonType.level,
-                            filename.replace('.txt', ''))
+            self.add_button(0, dy, ButtonType.level, filename.replace('.txt', ''))
             dy += 2
-        self.add_button(-7, 13, ButtonType.menu)
 
         self.bg_sprite = animatedsprite.AnimatedSprite('image')
         self.bg_sprite.play('menu')
         self.level_name = ''
+        self.offset = 0
 
     def update(self):
         self.buttons = []
-        dy = 4
+        self.add_button(-7, 13, ButtonType.menu, 'BACK')
+
+        dy = 2
         for filename in os.listdir('data/lvl'):
-            self.add_button(0, dy, ButtonType.level,
-                            filename.replace('.txt', ''))
+            self.add_button(0, dy, ButtonType.level, filename.replace('.txt', ''))
             dy += 2
-        self.add_button(-7, 13, ButtonType.menu)
 
     def draw(self, screen, img_hand):
         self.bg_sprite.draw(screen, img_hand)
         super().draw(screen, img_hand)
 
+    def scroll(self, input_hand):
+        if input_hand.mouse_pressed[5]:
+            if len(self.buttons) * 2 * helpers.TILE_SIZE + self.offset - helpers.TILE_SIZE > helpers.SCREEN_HEIGHT:
+                self.offset -= helpers.TILE_SIZE
+        if input_hand.mouse_pressed[4]:
+            if self.offset < 0:
+                self.offset += helpers.TILE_SIZE
+
+        for i in range(1, len(self.buttons)):
+            self.buttons[i].set_height(2 * i * helpers.TILE_SIZE + self.offset - helpers.TILE_SIZE)
+
     def input(self, input_hand):
+        self.scroll(input_hand)
+
         for b in self.buttons:
             for s in b.sprites:
                 if s.rect.collidepoint(input_hand.mouse_x, input_hand.mouse_y):
@@ -124,33 +137,44 @@ class EditorSelectMenu(Menu):
     def __init__(self):
         super().__init__(gameloop.State.editor_select)
         self.add_button(-7, 13, ButtonType.menu)
+        self.add_button(7, 13, ButtonType.new)
         dy = 2
         for filename in os.listdir('data/lvl'):
-            self.add_button(0, 2 * dy, ButtonType.edit,
-                            filename.replace('.txt', ''))
-            dy += 1
-
-        self.add_button(7, 13, ButtonType.new)
+            self.add_button(0, dy, ButtonType.edit, filename.replace('.txt', ''))
+            dy += 2
 
         self.bg_sprite = animatedsprite.AnimatedSprite('image')
         self.bg_sprite.play('menu')
         self.level_name = ''
+        self.offset = 0
 
     def update(self):
         self.buttons = []
         self.add_button(-7, 13, ButtonType.menu)
+        self.add_button(7, 13, ButtonType.new)
         dy = 2
         for filename in os.listdir('data/lvl'):
-            self.add_button(0, 2 * dy, ButtonType.edit,
-                            filename.replace('.txt', ''))
-            dy += 1
-        self.add_button(7, 13, ButtonType.new)
+            self.add_button(0, dy, ButtonType.edit, filename.replace('.txt', ''))
+            dy += 2
 
     def draw(self, screen, img_hand):
         self.bg_sprite.draw(screen, img_hand)
         super().draw(screen, img_hand)
 
+    def scroll(self, input_hand):
+        if input_hand.mouse_pressed[5]:
+            if len(self.buttons) * 2 * helpers.TILE_SIZE + self.offset - helpers.TILE_SIZE > helpers.SCREEN_HEIGHT:
+                self.offset -= helpers.TILE_SIZE
+        if input_hand.mouse_pressed[4]:
+            if self.offset < 0:
+                self.offset += helpers.TILE_SIZE
+
+        for i in range(2, len(self.buttons)):
+            self.buttons[i].set_height(2 * (i - 1) * helpers.TILE_SIZE + self.offset - helpers.TILE_SIZE)
+
     def input(self, input_hand):
+        self.scroll(input_hand)
+
         for b in self.buttons:
             for s in b.sprites:
                 if s.rect.collidepoint(input_hand.mouse_x, input_hand.mouse_y):
@@ -179,7 +203,17 @@ class LevelCreationMenu(Menu):
 
     def input(self, input_hand):
         self.input_name.input(input_hand)
-        return super().input(input_hand)
+        state = super().input(input_hand)
+
+        if state is gameloop.State.editor:
+            if not self.input_name.txtbox.string:
+                return self.state
+
+            for filename in os.listdir('data/lvl'):
+                if filename.replace('.txt', '') == self.input_name.txtbox.string:
+                    return self.state
+
+        return state
 
 
 class EditorPauseMenu(Menu):
@@ -286,12 +320,12 @@ class Button:
         self.txtbox = textbox.Textbox(text, self.x, self.y)
         self.type = button_type
 
-        width = int(len(text) / 2 + 2)
+        self.width = int(len(text) / 2 + 2)
 
         self.sprites = []
-        for i in range(width):
+        for i in range(self.width):
             s = animatedsprite.AnimatedSprite('menu')
-            s.set_position(self.x - (width * 4) * helpers.SCALE + i * helpers.TILE_SIZE, self.y)
+            s.set_position(self.x - (self.width * 4) * helpers.SCALE + i * helpers.TILE_SIZE, self.y)
             self.sprites.append(s)
 
         if len(self.sprites) == 1:
@@ -301,6 +335,13 @@ class Button:
                 s.show_frame('button', 1)
             self.sprites[0].show_frame('button', 0)
             self.sprites[-1].show_frame('button', 2)
+
+    def set_height(self, y):
+        self.y = y
+        self.txtbox.set_position(self.txtbox.x, y)
+
+        for i, s in enumerate(self.sprites):
+            s.set_position(s.x, self.y)
 
     def draw(self, screen, img_hand):
         for s in self.sprites:
