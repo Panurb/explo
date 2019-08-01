@@ -286,7 +286,7 @@ class Flyer(Enemy):
         height = 8 * helpers.SCALE
         super().__init__(x, y, width, height, 1, ['flyer'])
         self.group = gameobject.CollisionGroup.boss
-        self.speed = 0.5 * helpers.SCALE
+        self.speed = 1 * helpers.SCALE
         self.dx = self.speed
         self.gravity_scale = 0
 

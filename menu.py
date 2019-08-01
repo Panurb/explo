@@ -85,7 +85,7 @@ class LevelSelectMenu(Menu):
         super().__init__(gameloop.State.level_select)
         self.add_button(-7, 13, ButtonType.menu, 'BACK')
 
-        dy = 2
+        dy = 1
         for filename in os.listdir('data/lvl'):
             self.add_button(0, dy, ButtonType.level, filename.replace('.txt', ''))
             dy += 2
@@ -99,7 +99,7 @@ class LevelSelectMenu(Menu):
         self.buttons = []
         self.add_button(-7, 13, ButtonType.menu, 'BACK')
 
-        dy = 2
+        dy = 1
         for filename in os.listdir('data/lvl'):
             self.add_button(0, dy, ButtonType.level, filename.replace('.txt', ''))
             dy += 2
@@ -137,9 +137,9 @@ class LevelSelectMenu(Menu):
 class EditorSelectMenu(Menu):
     def __init__(self):
         super().__init__(gameloop.State.editor_select)
-        self.add_button(-7, 13, ButtonType.menu)
+        self.add_button(-7, 13, ButtonType.menu, 'BACK')
         self.add_button(7, 13, ButtonType.new)
-        dy = 2
+        dy = 1
         for filename in os.listdir('data/lvl'):
             self.add_button(0, dy, ButtonType.edit, filename.replace('.txt', ''))
             dy += 2
@@ -153,7 +153,7 @@ class EditorSelectMenu(Menu):
         self.buttons = []
         self.add_button(-7, 13, ButtonType.menu)
         self.add_button(7, 13, ButtonType.new)
-        dy = 2
+        dy = 1
         for filename in os.listdir('data/lvl'):
             self.add_button(0, dy, ButtonType.edit, filename.replace('.txt', ''))
             dy += 2
@@ -192,7 +192,7 @@ class EditorSelectMenu(Menu):
 class LevelCreationMenu(Menu):
     def __init__(self):
         super().__init__(gameloop.State.level_creation)
-        self.input_name = TextInput(0, 6)
+        self.input_name = TextInput(0, 6, 9)
         self.add_button(7, 13, ButtonType.create)
         self.add_button(-7, 13, ButtonType.editor, 'BACK')
         self.bg_sprite = animatedsprite.AnimatedSprite('image')
@@ -236,7 +236,7 @@ class OptionsMenu(Menu):
         self.sliders = [Slider(0, 5, SliderType.resolution),
                         Slider(0, 8, SliderType.music),
                         Slider(0, 11, SliderType.sound)]
-        self.add_button(-7, 13, ButtonType.menu)
+        self.add_button(-7, 13, ButtonType.menu, 'BACK')
 
     def draw(self, screen, img_hand):
         self.bg_sprite.draw(screen, img_hand)
@@ -267,14 +267,13 @@ class Slider:
         if slider_type is SliderType.resolution:
             self.values = [(helpers.ROOM_WIDTH * 8 * x, helpers.ROOM_HEIGHT * 8 * x) for x in range(4, 10)]
             val_str = str(self.values[self.val]).strip('()').replace(',', ' *')
-            self.txtbox = TextInput(x, y, val_str)
+            self.txtbox = TextInput(x, y, 6, val_str)
         else:
             self.values = range(0, 110, 10)
             self.val = len(self.values) - 1
-            self.txtbox = TextInput(x, y, str(self.values[self.val]))
+            self.txtbox = TextInput(x, y, 6, str(self.values[self.val]))
 
-        self.title = TextInput(x, y - 1, slider_type.name)
-        #self.title = Button(x, y - 1, None, slider_type.name)
+        self.title = TextInput(x, y - 1, None, slider_type.name)
 
     def draw(self, screen, img_hand):
         self.button_up.draw(screen, img_hand)
@@ -379,16 +378,15 @@ class FullscreenButton(Button):
 
 
 class TextInput(Button):
-    def __init__(self, x, y, text=''):
-        super().__init__(x, y, None, 'asdfghjklm')
+    def __init__(self, x, y, width=None, text=''):
+        super().__init__(x, y, None, 'asd')
         self.x = x + 0.5 * helpers.SCREEN_WIDTH - 16 * helpers.SCALE
         self.y = y * helpers.TILE_SIZE
-        self.txtbox = textbox.Textbox(text, x + 0.5 * helpers.SCREEN_WIDTH, self.y)
-        self.max_length = 12
+        self.txtbox = textbox.Textbox(text, x + 0.5 * helpers.SCREEN_WIDTH, self.y, width, 1)
+        self.max_length = 15
 
     def draw(self, screen, img_hand):
         super().draw(screen, img_hand)
-        self.txtbox.draw(screen, img_hand)
         self.txtbox.draw(screen, img_hand)
 
     def input(self, input_hand):
@@ -409,7 +407,7 @@ class Credits(Menu):
         self.bg_sprite = animatedsprite.AnimatedSprite('image')
         self.bg_sprite.play('menu')
 
-        text = 'PROGRAMMING\\PANU KESKINEN\\ART\\PANU KESKINEN\\MUSIC\\PANU KESKINEN\\\\'
+        text = 'PROGRAMMING\\PANU KESKINEN\\ART\\PANU KESKINEN\\MUSIC AND SOUND\\PANU KESKINEN\\\\'
         text += 'SOFTWARE USED\\PYTHON 3    PYGAME    PY2EXE\\GIMP    ABLETON    BFXR'
         self.text = textbox.Textbox(text, 0.5 * helpers.SCREEN_WIDTH, helpers.TILE_SIZE)
 

@@ -64,10 +64,10 @@ class Editor:
         self.object = 0
         self.category_text.set_string(self.category)
 
-    def input(self, lvl, input_hand):
+    def input(self, lvl, input_hand, img_hand):
         room = lvl.room(self.room_x, self.room_y)
         if input_hand.mouse_down[0]:
-            x, y = helpers.mouse_to_grid(input_hand.mouse_x, input_hand.mouse_y)
+            x, y = helpers.mouse_to_grid(input_hand.mouse_x, input_hand.mouse_y, img_hand.scale)
 
             # TODO: Remove objects according to object size
             room.remove_object(x, y)
@@ -77,7 +77,7 @@ class Editor:
             room.update_visuals()
 
         if input_hand.mouse_down[2]:
-            x, y = helpers.mouse_to_grid(input_hand.mouse_x, input_hand.mouse_y)
+            x, y = helpers.mouse_to_grid(input_hand.mouse_x, input_hand.mouse_y, img_hand.scale)
 
             room.remove_object(x, y)
             room.update_visuals()

@@ -33,7 +33,7 @@ COLLISION_MATRIX = [[False, False, True, True, False, True, True, True],
 #
 #           p   b   e   w   d   c   s   b
 # player    0   0   0   0   0   0   1   0
-# bullets   0   0   0   0   0   0   0   0
+# bullets   0   0   0  0.5  0   0   0   0
 # enemies   0   0   0  0.5  0   0   1   1
 # walls     0   0   0   1   0   0   0   1
 # debris    0   0   0   0   0   0   0   0
@@ -42,7 +42,7 @@ COLLISION_MATRIX = [[False, False, True, True, False, True, True, True],
 # boss      1   0   1   1   0   0   1   0
 
 BOUNCE_MATRIX = [[0, 0, 0, 0, 0, 0, 1, 0],
-                 [0, 0, 0, 0, 0, 0, 0, 0],
+                 [0, 0, 0, 0.5, 0, 0, 0, 0],
                  [0, 0, 0, 0.5, 0, 0, 1, 1],
                  [0, 0, 0, 1, 0, 0, 0, 0],
                  [0, 0, 0, 0, 0, 0, 1, 0],
@@ -292,7 +292,7 @@ class PhysicsObject(GameObject):
             else:
                 bounce_scale = self.bounce_scale(c)
 
-            if abs(relative_vel) > helpers.SCALE:
+            if abs(relative_vel) >= helpers.SCALE:
                 if c.group is not CollisionGroup.springs:
                     self.sounds.add('bump')
 

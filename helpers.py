@@ -67,9 +67,11 @@ def limit_speed(dx, dy):
     return dx, dy
 
 
-def mouse_to_grid(mouse_x, mouse_y):
-    x = mouse_x - mouse_x % TILE_SIZE
-    y = mouse_y - mouse_y % TILE_SIZE
+def mouse_to_grid(mouse_x, mouse_y, scale):
+    x = int(mouse_x * SCALE / scale)
+    y = int(mouse_y * SCALE / scale)
+    x -= x % TILE_SIZE
+    y -= y % TILE_SIZE
 
     return x, y
 
@@ -81,6 +83,6 @@ def frames_to_time(frames):
     m = int(s // 60 - h * 60)
     s = int(s - m * 60)
 
-    time = str(h) + ' - ' + str(m) + ' - ' + str(s)
+    time = str(h) + ':' + str(m) + ':' + str(s)
 
     return time

@@ -86,7 +86,7 @@ ACTIONS = {
     'chars': [
         ['upper_case', 26],
         ['lower_case', 26],
-        ['numbers', 13]
+        ['numbers', 14]
     ],
     'chaser': [
         ['idle', 8],
@@ -176,7 +176,8 @@ ACTIONS = {
         ['gun_up', 8],
         ['gun_crouch', 1],
         ['gun_crouch_attack', 3],
-        ['gun_wall_hug', 1]
+        ['gun_wall_hug', 1],
+        ['swim', 6]
     ],
     'player_gibs': [
         ['head', 1],
@@ -191,7 +192,16 @@ ACTIONS = {
         ['jump', 3],
         ['climb', 6],
         ['wall_hug', 1],
-        ['explode', 1]
+        ['explode', 1],
+        ['gun_idle', 1],
+        ['gun_walk', 1],
+        ['gun_jump', 1],
+        ['gun_attack', 1],
+        ['gun_up', 1],
+        ['gun_crouch', 1],
+        ['gun_crouch_attack', 1],
+        ['gun_wall_hug', 1],
+        ['swim', 6]
     ],
     'powerup': [
         ['idle', 8]

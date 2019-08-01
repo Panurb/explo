@@ -28,6 +28,7 @@ WEAPON_COOLDOWN = 8
 BULLET_SPEED = 4 * helpers.SCALE
 WATER_SPEED = 0.6 * helpers.SCALE
 WATER_FRICTION = 0.05 * helpers.SCALE
+SWIM_HEIGHT = -1.75 * helpers.SCALE
 
 
 class WeaponMod(enum.Enum):
@@ -348,6 +349,10 @@ class Player(creature.Creature):
             self.dy = DOUBLE_JUMP_HEIGHT
             self.jump_count = 2
             self.jump_buffer = False
+        elif self.submerged:
+            self.dy = SWIM_HEIGHT
+            self.jump_count = 0
+            self.jump_buffer = False
         else:
             return
 
@@ -512,7 +517,9 @@ class Player(creature.Creature):
                     sprite_body.flip()
 
             # BODY
-            if self.climbing_ladder:
+            if self.submerged:
+                sprite_body.play('swim')
+            elif self.climbing_ladder:
                 if abs(self.dy) == LADDER_SPEED:
                     sprite_body.play('climb')
                 else:
@@ -574,10 +581,7 @@ class Player(creature.Creature):
 
             # LEGS
             if self.submerged:
-                if self.dy < -1 * helpers.SCALE:
-                    sprite_legs.play('jump')
-                else:
-                    sprite_legs.show_frame('jump', 0)
+                sprite_legs.play('swim')
             elif self.ground_collision:
                 if self.crouched:
                     sprite_legs.play('crouch')
@@ -615,7 +619,7 @@ class Player(creature.Creature):
         sprite_legs.animate()
 
     def attack(self, up=False):
-        if not self.abilities[Ability.gun] or self.climbing_ladder:
+        if not self.abilities[Ability.gun] or self.climbing_ladder or self.submerged:
             return
 
         if self.attack_buffer and self.cooldown == 0:
@@ -696,7 +700,7 @@ class Player(creature.Creature):
                     WeaponMod.triple]
 
     def crouch(self):
-        if self.ground_collision and not self.crouched:
+        if self.ground_collision and not self.crouched and not self.submerged:
             self.collider.height = CROUCHED_HEIGHT
             self.collider.y += HEIGHT - CROUCHED_HEIGHT
             self.y = self.collider.y
@@ -708,7 +712,7 @@ class Player(creature.Creature):
             self.collider.y -= HEIGHT - CROUCHED_HEIGHT
             self.y = self.collider.y
             for c in self.get_collisions(room):
-                if self.collides_with(c):
+                if self.collides_with(c) and type(c) is not tile.Spike:
                     self.collider.height = CROUCHED_HEIGHT
                     self.collider.y += HEIGHT - CROUCHED_HEIGHT
                     self.y = self.collider.y

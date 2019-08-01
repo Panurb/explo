@@ -137,7 +137,7 @@ class GameLoop:
                 self.editor = editor.Editor(self.level.player.room_x,
                                             self.level.player.room_y)
             try:
-                self.editor.input(self.level, self.input_hand)
+                self.editor.input(self.level, self.input_hand, self.img_hand)
                 room = self.level.room(self.editor.room_x, self.editor.room_y)
                 room.draw(self.screen, self.img_hand)
                 if room.music:
@@ -148,8 +148,8 @@ class GameLoop:
 
             self.editor.draw(self.screen, self.img_hand)
         elif self.state is State.level_end:
-            text = textbox.Textbox('YOU WON\\\\TIME    ' + helpers.frames_to_time(self.level.player.time) + '\\\\DEATHS    ' + str(self.level.player.deaths),
-                                   0.5 * helpers.SCREEN_WIDTH, 0.2 * helpers.SCREEN_HEIGHT)
+            text = textbox.Textbox('YOU WON\\TIME    ' + helpers.frames_to_time(self.level.player.time) + '\\DEATHS    ' + str(self.level.player.deaths) + '\\\\PRESS ENTER',
+                                   0.5 * helpers.SCREEN_WIDTH, 0.4 * helpers.SCREEN_HEIGHT)
             text.draw(self.screen, self.img_hand)
         elif self.state is State.credits:
             self.state = self.credits.input(self.input_hand)
@@ -181,9 +181,10 @@ class GameLoop:
                 self.state = State.menu
             elif self.state is State.level_creation:
                 self.state = State.editor_select
-            elif self.state is State.level_end:
-                self.state = State.menu
             elif self.state is State.editor_play:
                 self.level.room(self.level.player.room_x,
                                 self.level.player.room_y).reset()
                 self.state = State.editor
+        elif self.input_hand.keys_pressed[pygame.K_RETURN]:
+            if self.state is State.level_end:
+                self.state = State.menu

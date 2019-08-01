@@ -260,9 +260,9 @@ G   GGGGGGGGG^===^GG
 G    GGGGGGGG^===^GG
 G      GGGGGG^===^GG
 G C     GGGGG^===^GG
-G         GGG^===^GG
-GGGG~~~~~~GGG^===^GG
-GGGG=======GG^======
+G  4      GGG=====GG
+GGGG~~~~~~GGG=====GG
+GGGG================
 GGGGG===============
 GGGGGG==============
 GGGGGGG=============
@@ -787,15 +787,15 @@ MM               #MM
 MM               #MM
 MMMMMMMMMMMMMMMMMMMM
 MMMMMMMMMMMMMMMMMMMM
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
+MMM              MMM
+MMM              MMM
+MMM              MMM
+MMM~~~~~~~R------MMM
+MMM=======R______MMM
+MMM=======R______MMM
+MMM=======R______MMM
+MMMMMMMMMMMMMMMMMMMM
+MMMMMMMMMMMMMMMMMMMM
 
 (4, -4)
 III           =IIIII
@@ -1004,15 +1004,15 @@ IIIIIIIIIIIIIIIIIIII
 (8, 4)
 MMMMMMMMMMMMMMMMMMMM
 MMMMMMMMMMMMMMMMMMMM
+     MMMMMMMMM      
+     MMMMMMMMM      
+     MMMMMMMMM      
+     M              
                     
                     
                     
-                    
-                    
-                    
-                    
-                    
-IIIIIII     IIIIIIII
+      f      I      
+IIIIIII      IIIIIII
                     
 --------------------
 ____________________
@@ -1930,7 +1930,7 @@ M                 MM
 M                 MM
 M                 MM
 M         C       MM
-M                 MM
+M        1        MM
 M       MMMMM     MM
 M     MMMMMMMMM   MM
 M     MMMMMMMMMMMMMM

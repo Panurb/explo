@@ -4,13 +4,15 @@ import helpers
 
 UPPER_CASE = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
 LOWER_CASE = 'abcdefghijklmnopqrstuvwxyz'
-NUMBERS = '1234567890-+*'
+NUMBERS = '1234567890-+*:'
 
 
 class Textbox:
-    def __init__(self, string, x=0.5*helpers.SCREEN_WIDTH, y=0.5*helpers.SCREEN_HEIGHT):
+    def __init__(self, string, x=0.5*helpers.SCREEN_WIDTH, y=0.5*helpers.SCREEN_HEIGHT, width=None, height=None):
         self.x = x
         self.y = y
+        self.width = width
+        self.height = height
         self.chars = []
         self.time = -1
         self.string = string
@@ -20,12 +22,18 @@ class Textbox:
         self.update_sprites()
 
     def update_sprites(self):
-        rows = self.string.split('\\')
-        width = 0
-        for row in rows:
-            width = max(width, len(row))
-        width = int(width / 2 + 2)
-        height = len(rows)
+        if self.width:
+            width = self.width
+        else:
+            rows = self.string.split('\\')
+            width = 0
+            for row in rows:
+                width = max(width, len(row))
+            width = int(width / 2 + 2)
+        if self.height:
+            height = self.height
+        else:
+            height = len(rows)
 
         self.sprites = []
         for i in range(width):
@@ -115,7 +123,7 @@ class Textbox:
             self.set_string('')
 
     def draw(self, screen, img_hand):
-        if self.string:
+        if self.string or (self.width and self.height):
             for s in self.sprites:
                 s.draw(screen, img_hand)
         for char in self.chars:
