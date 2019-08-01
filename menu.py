@@ -44,7 +44,7 @@ class Menu:
 
     def input(self, input_hand):
         for b in self.buttons:
-            for s in b.sprites:
+            for s in b.txtbox.sprites:
                 if s.rect.collidepoint(input_hand.mouse_x, input_hand.mouse_y):
                     if input_hand.mouse_released[1]:
                         return b.press()
@@ -110,20 +110,21 @@ class LevelSelectMenu(Menu):
 
     def scroll(self, input_hand):
         if input_hand.mouse_pressed[5]:
-            if len(self.buttons) * 2 * helpers.TILE_SIZE + self.offset - helpers.TILE_SIZE > helpers.SCREEN_HEIGHT:
+            if (len(self.buttons) - 1) * 2 * helpers.TILE_SIZE + self.offset - helpers.TILE_SIZE > helpers.SCREEN_HEIGHT:
                 self.offset -= helpers.TILE_SIZE
+                for i in range(1, len(self.buttons)):
+                    self.buttons[i].set_height(2 * i * helpers.TILE_SIZE + self.offset - helpers.TILE_SIZE)
         if input_hand.mouse_pressed[4]:
             if self.offset < 0:
                 self.offset += helpers.TILE_SIZE
-
-        for i in range(1, len(self.buttons)):
-            self.buttons[i].set_height(2 * i * helpers.TILE_SIZE + self.offset - helpers.TILE_SIZE)
+                for i in range(1, len(self.buttons)):
+                    self.buttons[i].set_height(2 * i * helpers.TILE_SIZE + self.offset - helpers.TILE_SIZE)
 
     def input(self, input_hand):
         self.scroll(input_hand)
 
         for b in self.buttons:
-            for s in b.sprites:
+            for s in b.txtbox.sprites:
                 if s.rect.collidepoint(input_hand.mouse_x, input_hand.mouse_y):
                     if input_hand.mouse_released[1]:
                         if b.type is ButtonType.level:
@@ -163,20 +164,21 @@ class EditorSelectMenu(Menu):
 
     def scroll(self, input_hand):
         if input_hand.mouse_pressed[5]:
-            if len(self.buttons) * 2 * helpers.TILE_SIZE + self.offset - helpers.TILE_SIZE > helpers.SCREEN_HEIGHT:
+            if (len(self.buttons) - 2) * 2 * helpers.TILE_SIZE + self.offset - helpers.TILE_SIZE > helpers.SCREEN_HEIGHT:
                 self.offset -= helpers.TILE_SIZE
+                for i in range(2, len(self.buttons)):
+                    self.buttons[i].set_height(2 * (i - 1) * helpers.TILE_SIZE + self.offset - helpers.TILE_SIZE)
         if input_hand.mouse_pressed[4]:
             if self.offset < 0:
                 self.offset += helpers.TILE_SIZE
-
-        for i in range(2, len(self.buttons)):
-            self.buttons[i].set_height(2 * (i - 1) * helpers.TILE_SIZE + self.offset - helpers.TILE_SIZE)
+                for i in range(2, len(self.buttons)):
+                    self.buttons[i].set_height(2 * (i - 1) * helpers.TILE_SIZE + self.offset - helpers.TILE_SIZE)
 
     def input(self, input_hand):
         self.scroll(input_hand)
 
         for b in self.buttons:
-            for s in b.sprites:
+            for s in b.txtbox.sprites:
                 if s.rect.collidepoint(input_hand.mouse_x, input_hand.mouse_y):
                     if input_hand.mouse_released[1]:
                         if b.type is ButtonType.edit:
@@ -283,13 +285,13 @@ class Slider:
     def input(self, input_hand, snd_hand, img_hand):
         changed = False
 
-        for s in self.button_up.sprites:
+        for s in self.button_up.txtbox.sprites:
             if s.rect.collidepoint(input_hand.mouse_x, input_hand.mouse_y):
                 if input_hand.mouse_released[1]:
                     if self.val < len(self.values) - 1:
                         self.val += 1
                         changed = True
-        for s in self.button_down.sprites:
+        for s in self.button_down.txtbox.sprites:
             if s.rect.collidepoint(input_hand.mouse_x, input_hand.mouse_y):
                 if input_hand.mouse_released[1]:
                     if self.val > 0:
@@ -322,30 +324,11 @@ class Button:
 
         self.width = int(len(text) / 2 + 2)
 
-        self.sprites = []
-        for i in range(self.width):
-            s = animatedsprite.AnimatedSprite('menu')
-            s.set_position(self.x - (self.width * 4) * helpers.SCALE + i * helpers.TILE_SIZE, self.y)
-            self.sprites.append(s)
-
-        if len(self.sprites) == 1:
-            self.sprites[0].show_frame('button', 3)
-        else:
-            for s in self.sprites:
-                s.show_frame('button', 1)
-            self.sprites[0].show_frame('button', 0)
-            self.sprites[-1].show_frame('button', 2)
-
     def set_height(self, y):
         self.y = y
         self.txtbox.set_position(self.txtbox.x, y)
 
-        for i, s in enumerate(self.sprites):
-            s.set_position(s.x, self.y)
-
     def draw(self, screen, img_hand):
-        for s in self.sprites:
-            s.draw(screen, img_hand)
         self.txtbox.draw(screen, img_hand)
 
     def press(self):
@@ -382,7 +365,7 @@ class FullscreenButton(Button):
         super().__init__(x, y, None, 'fullscreen')
 
     def input(self, input_hand, img_hand, scale):
-        for s in self.sprites:
+        for s in self.txtbox.sprites:
             if s.rect.collidepoint(input_hand.mouse_x, input_hand.mouse_y):
                 if input_hand.mouse_released[1]:
                     if self.txtbox.string == 'fullscreen':
@@ -421,11 +404,16 @@ class TextInput(Button):
 class Credits(Menu):
     def __init__(self):
         super().__init__(gameloop.State.credits)
-        self.add_button(-7, 13, ButtonType.menu)
+        self.add_button(-7, 13, ButtonType.menu, 'BACK')
 
         self.bg_sprite = animatedsprite.AnimatedSprite('image')
         self.bg_sprite.play('menu')
 
+        text = 'PROGRAMMING\\PANU KESKINEN\\ART\\PANU KESKINEN\\MUSIC\\PANU KESKINEN\\\\'
+        text += 'SOFTWARE USED\\PYTHON 3    PYGAME    PY2EXE\\GIMP    ABLETON    BFXR'
+        self.text = textbox.Textbox(text, 0.5 * helpers.SCREEN_WIDTH, helpers.TILE_SIZE)
+
     def draw(self, screen, img_hand):
         self.bg_sprite.draw(screen, img_hand)
+        self.text.draw(screen, img_hand)
         super().draw(screen, img_hand)

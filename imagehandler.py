@@ -93,7 +93,8 @@ ACTIONS = {
         ['die', 6]
     ],
     'checkpoint': [
-        ['idle', 1]
+        ['active', 1],
+        ['inactive', 1]
     ],
     'crawler': [
         ['idle', 4],
@@ -138,7 +139,10 @@ ACTIONS = {
         ['idle', 16]
     ],
     'menu': [
-        ['button', 4]
+        ['button', 4],
+        ['top', 3],
+        ['middle', 3],
+        ['bottom', 3]
     ],
     'mods': [
         ['up', 2],

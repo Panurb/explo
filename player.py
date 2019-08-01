@@ -82,10 +82,6 @@ class Player(creature.Creature):
         for a in Ability:
             self.abilities[a] = False
         self.abilities[Ability.run] = True
-        #self.abilities[Ability.double_jump] = True
-        #self.abilities[Ability.gun] = True
-        #self.abilities[Ability.wall_jump] = True
-        #self.abilities[Ability.rebreather] = True
 
         self.save = save.Save(self.x, self.y, self.room_x, self.room_y, self.direction, self.abilities,
                               self.weapon_mods)
@@ -96,6 +92,7 @@ class Player(creature.Creature):
         self.modifying_weapon = False
 
         self.level_over = False
+        self.reseted = False
 
     def update(self, room):
         self.time += 1
@@ -128,9 +125,14 @@ class Player(creature.Creature):
 
         self.apply_room_change()
 
+        if self.reseted:
+            self.reseted = False
+            room.reset()
+            self.reset()
+
     def apply_damage(self, room):
         for c in self.collisions:
-            if c.obj.group is gameobject.CollisionGroup.enemies:
+            if c.obj.group is gameobject.CollisionGroup.enemies or c.obj.group is gameobject.CollisionGroup.boss:
                 self.damage(1, 0, 0)
             elif type(c.obj) is tile.Spike:
                 self.damage(1, 0, 0)
@@ -141,7 +143,7 @@ class Player(creature.Creature):
                 self.save.room_x = room.x
                 self.save.room_y = room.y
                 self.save.x = cp.collider.x
-                self.save.y = cp.collider.y
+                self.save.y = cp.collider.bottom - HEIGHT
                 self.save.direction = self.direction
                 self.save.abilities = self.abilities.copy()
 
@@ -292,8 +294,7 @@ class Player(creature.Creature):
             if not keys_down[pygame.K_s]:
                 self.attack_buffer = True
         if input_hand.keys_pressed[pygame.K_r]:
-            room.reset()
-            self.reset()
+            self.reseted = True
 
     def move(self, velocity):
         if not self.climbing_ladder:
@@ -433,8 +434,7 @@ class Player(creature.Creature):
         super().die()
 
     def apply_room_change(self):
-        window_rect = pygame.Rect(0, 0, helpers.SCREEN_WIDTH,
-                                  helpers.SCREEN_HEIGHT)
+        window_rect = pygame.Rect(0, 0, helpers.SCREEN_WIDTH, helpers.SCREEN_HEIGHT)
         if not window_rect.collidepoint(self.collider.centerx, self.collider.centery):
             self.bullets.clear()
 
@@ -608,7 +608,7 @@ class Player(creature.Creature):
             sprite_legs.play_once('explode')
 
         x = self.collider.centerx - helpers.TILE_SIZE
-        y = self.collider.y + self.collider.height - 16 * helpers.SCALE
+        y = self.collider.y + self.collider.height - HEIGHT
         sprite_body.set_position(x, y)
         sprite_legs.set_position(x, y)
         sprite_body.animate()
@@ -698,19 +698,19 @@ class Player(creature.Creature):
     def crouch(self):
         if self.ground_collision and not self.crouched:
             self.collider.height = CROUCHED_HEIGHT
-            self.collider.y += 7 * helpers.SCALE
+            self.collider.y += HEIGHT - CROUCHED_HEIGHT
             self.y = self.collider.y
             self.crouched = True
 
     def uncrouch(self, room):
         if self.crouched:
             self.collider.height = HEIGHT
-            self.collider.y -= 7 * helpers.SCALE
+            self.collider.y -= HEIGHT - CROUCHED_HEIGHT
             self.y = self.collider.y
             for c in self.get_collisions(room):
                 if self.collides_with(c):
-                    self.collider.height = helpers.TILE_SIZE
-                    self.collider.y += helpers.TILE_SIZE
+                    self.collider.height = CROUCHED_HEIGHT
+                    self.collider.y += HEIGHT - CROUCHED_HEIGHT
                     self.y = self.collider.y
                     return
             self.crouched = False

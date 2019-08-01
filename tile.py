@@ -126,12 +126,20 @@ class Spike(Wall):
 
 class Checkpoint(gameobject.GameObject):
     def __init__(self, x, y):
-        super().__init__(x, y, helpers.TILE_SIZE, 2 * helpers.TILE_SIZE,
-                         ['checkpoint'])
+        super().__init__(x, y, helpers.TILE_SIZE, 2 * helpers.TILE_SIZE, ['checkpoint'])
         for s in self.sprites:
-            s.show_frame('idle', 0)
+            s.show_frame('inactive', 0)
 
         self.active = False
+
+    def draw(self, screen, img_hand):
+        for s in self.sprites:
+            if self.active:
+                s.show_frame('active', 0)
+            else:
+                s.show_frame('inactive', 0)
+
+        super().draw(screen, img_hand)
 
 
 class End(gameobject.GameObject):
