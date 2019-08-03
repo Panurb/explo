@@ -43,7 +43,12 @@ OBJECTS = {'WALLS': (('W', 'WALL'),
            'MUSIC': (('m', 'TRACK 1'),
                      ('n', 'TRACK 2'),
                      ('l', 'TRACK 3'),
-                     ('k', 'NONE'))}
+                     ('k', 'NONE')),
+           'TUTORIAL': (('q', 'WALKING'),
+                        ('w', 'JUMPING'),
+                        ('e', 'LADDERS'),
+                        ('r', 'CROUCHING'),
+                        ('t', 'SPRINGS'))}
 
 
 class Editor:
@@ -52,12 +57,9 @@ class Editor:
         self.room_y = y
         self.category = 'WALLS'
         self.object = 0
-        self.category_text = textbox.Textbox(self.category,
-                                             0.2 * helpers.SCREEN_WIDTH, 0)
-        self.object_text = textbox.Textbox(OBJECTS[self.category][self.object][1],
-                                           0.5 * helpers.SCREEN_WIDTH, 0)
-        self.coord_text = textbox.Textbox('0 0',
-                                          0.9 * helpers.SCREEN_WIDTH, 0)
+        self.category_text = textbox.Textbox(self.category, 0.2 * helpers.SCREEN_WIDTH, 0)
+        self.object_text = textbox.Textbox(OBJECTS[self.category][self.object][1], 0.5 * helpers.SCREEN_WIDTH, 0)
+        self.coord_text = textbox.Textbox('0 0', 0.9 * helpers.SCREEN_WIDTH, 0)
 
     def change_category(self, category):
         self.category = category
@@ -96,6 +98,8 @@ class Editor:
             self.change_category('MISC')
         elif input_hand.keys_pressed[pygame.K_7]:
             self.change_category('MUSIC')
+        elif input_hand.keys_pressed[pygame.K_8]:
+            self.change_category('TUTORIAL')
 
         if input_hand.mouse_pressed[4] or input_hand.keys_pressed[pygame.K_COMMA]:
             if self.object > 0:

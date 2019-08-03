@@ -41,6 +41,7 @@ SIZES = {
     'spring': (8, 16),
     'thorns': (8, 8),
     'title': (136, 32),
+    'tutorial': (8, 8),
     'wall': (8, 8),
     'water': (8, 8),
     'zombie': (8, 16),
@@ -225,6 +226,9 @@ ACTIONS = {
         ['idle', 16]
     ],
     'title': [
+        ['idle', 1]
+    ],
+    'tutorial': [
         ['idle', 1]
     ],
     'wall': [

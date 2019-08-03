@@ -222,7 +222,7 @@ ________________GGGG
 (4, 0)
                     
                     
-                    
+    r               
                     
                     
                     
@@ -288,9 +288,9 @@ GGGGG^^^^^^^GGGGGGGG
 GGGGGGGGGGGGGGGGGGGG
 
 (8, -1)
-       IIIIIIIIIIIs 
-       III      II  
-       II        III
+       IIIIIIIIIIIII
+       III       s I
+       II          I
   III  II          I
 IIII   II          I
 IIII   II    II    I
@@ -461,7 +461,7 @@ WWWWWWWWWWWWWWWWW
                     
                  m  
                     
-                    
+         q          
                     
                     
                     
@@ -469,7 +469,7 @@ WWWWWWWWWWWWWWWWW
                     
   MMMMMMMM          
  M  MMM C           
-MMMMMMM       MM    
+MMMMMMM             
 MMMMMMMMMMGGGMMMGGGG
 GGGGGGGGGGGGGMMGGGGG
 GGGGGGGGGGGGGGGGGGGG
@@ -817,7 +817,7 @@ III=      =IIIIIIIII
 (7, 0)
                     
                     
-                    
+              t     
                     
                     
                     
@@ -1534,7 +1534,7 @@ MMMMMMMMMMMMMMMMMMMM
                MMM  
                MMM  
                MMM  
-               ***  
+ C             ***  
                     
 III         IIIIIIII
                     
@@ -1736,7 +1736,7 @@ MMMMMMMMMMMMMMMMMMMM
                     
                     
                     
-                    
+        w           
                     
                     
                     
@@ -1905,7 +1905,7 @@ ____________________
 (2, 0)
                     
                     
-                    
+      e             
                     
                     
                     
@@ -1982,7 +1982,7 @@ MMMMMM  MMMMMMMMMMMM
 MMMMMM              
 MMMMMM              
 MMMMMM      C       
-MMMMMM              
+MMMMMM k            
 MMMMMM     MMM      
 MMMMMM    MMMMM     
 MMMMMMMMMMMMMMMMMMMM

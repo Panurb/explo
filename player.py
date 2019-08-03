@@ -105,6 +105,9 @@ class Player(creature.Creature):
         self.apply_wall_hugging(room)
         self.apply_ladders(room)
 
+        if room.tutorial:
+            self.txtbox.set_string(room.tutorial.string)
+
         self.txtbox.update()
 
         self.cooldown = max(0, self.cooldown - 1)
@@ -295,7 +298,10 @@ class Player(creature.Creature):
             if not keys_down[pygame.K_s]:
                 self.attack_buffer = True
         if input_hand.keys_pressed[pygame.K_r]:
-            self.reseted = True
+            if self.alive:
+                self.die()
+            else:
+                self.reseted = True
 
     def move(self, velocity):
         if not self.climbing_ladder:
@@ -433,7 +439,7 @@ class Player(creature.Creature):
                 self.add_gib(0.5, 4, 0.5, -1.25, path, 'leg')
 
             self.sounds.add('squish')
-        self.txtbox.set_string('You died\\press R to reset')
+        self.txtbox.set_string('YOU DIED\\PRESS R')
         self.txtbox.time = -1
 
         super().die()
@@ -470,8 +476,7 @@ class Player(creature.Creature):
     def give_powerup(self, p):
         if self.abilities[p.ability] is False:
             self.abilities[p.ability] = True
-            self.txtbox.set_string(
-                p.ability.name.upper() + '\\' + p.text)
+            self.txtbox.set_string(p.ability.name.upper() + '\\' + p.text)
             self.txtbox.time = -1
             if p.ability.name in self.weapon_mods:
                 self.weapon_mods[p.ability.name] = True

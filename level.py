@@ -9,8 +9,11 @@ import tile
 
 
 class Level:
-    def __init__(self, filename):
-        self.path = 'data/lvl/' + filename + '.txt'
+    def __init__(self, filename=None):
+        if not filename:
+            self.path = 'world.txt'
+        else:
+            self.path = 'data/lvl/' + filename + '.txt'
         f = open(self.path, 'a+')
         f.seek(0)
         lines = f.readlines()
@@ -159,6 +162,11 @@ class Level:
             if room.boss:
                 tilemap[room.boss.y // helpers.TILE_SIZE][room.boss.x // helpers.TILE_SIZE] = 'b'
 
+            tut = room.tutorial
+            if tut:
+                char = ['q', 'w', 'e', 'r', 't'][tut.number]
+                tilemap[tut.y // helpers.TILE_SIZE][tut.x // helpers.TILE_SIZE] = char
+
             empty = True
             for row in tilemap:
                 for char in row:
@@ -229,6 +237,7 @@ class Room:
         self.end = None
         self.music = None
         self.boss = None
+        self.tutorial = None
 
         self.x = x
         self.y = y
@@ -511,6 +520,8 @@ class Room:
             self.music = tile.Music(x, y, '')
         elif char == 'b':
             self.boss = enemy.Boss(x, y)
+        elif char in ['q', 'w', 'e', 'r', 't']:
+            self.tutorial = tile.Tutorial(x, y, ['q', 'w', 'e', 'r', 't'].index(char))
 
     def remove_object(self, x, y, width=helpers.TILE_SIZE, height=helpers.TILE_SIZE):
         collider = pygame.Rect(x, y, width, height)
@@ -529,6 +540,8 @@ class Room:
             self.music = None
         if self.boss and collider.colliderect(self.boss.collider):
             self.boss = None
+        if self.tutorial and collider.colliderect(self.tutorial.collider):
+            self.tutorial = None
 
     def clear(self):
         self.walls = [[None] * helpers.ROOM_WIDTH for _ in range(helpers.ROOM_HEIGHT)]
@@ -543,3 +556,4 @@ class Room:
         self.end = None
         self.music = None
         self.boss = None
+        self.tutorial = None

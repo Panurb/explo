@@ -142,6 +142,8 @@ class GameLoop:
                 room.draw(self.screen, self.img_hand)
                 if room.music:
                     room.music.draw(self.screen, self.img_hand)
+                if room.tutorial:
+                    room.tutorial.draw(self.screen, self.img_hand)
             except KeyError:
                 room = level.Room(self, [], self.editor.room_x, self.editor.room_y)
                 self.level.rooms[(self.editor.room_x, self.editor.room_y)] = room
@@ -182,9 +184,10 @@ class GameLoop:
             elif self.state is State.level_creation:
                 self.state = State.editor_select
             elif self.state is State.editor_play:
-                self.level.room(self.level.player.room_x,
-                                self.level.player.room_y).reset()
+                self.level.room(self.level.player.room_x, self.level.player.room_y).reset()
                 self.state = State.editor
+            elif self.state is State.credits:
+                self.state = State.menu
         elif self.input_hand.keys_pressed[pygame.K_RETURN]:
             if self.state is State.level_end:
                 self.state = State.menu

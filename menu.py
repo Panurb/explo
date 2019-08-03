@@ -22,6 +22,7 @@ class ButtonType(enum.Enum):
     save = 12
     test = 13
     credits = 14
+    levels = 15
 
 
 class SliderType(enum.Enum):
@@ -55,7 +56,7 @@ class Menu:
 class MainMenu(Menu):
     def __init__(self):
         super().__init__(gameloop.State.menu)
-        self.add_button(0, 7, ButtonType.play)
+        self.add_button(0, 7, ButtonType.levels, 'PLAY')
         self.add_button(0, 9, ButtonType.editor)
         self.add_button(0, 11, ButtonType.options)
         self.add_button(-7, 13, ButtonType.quit)
@@ -332,7 +333,7 @@ class Button:
 
     def press(self):
         if self.type is ButtonType.play:
-            return gameloop.State.level_select
+            return gameloop.State.play
         elif self.type is ButtonType.options:
             return gameloop.State.options
         elif self.type is ButtonType.resume:
@@ -357,6 +358,8 @@ class Button:
             return gameloop.State.editor_play
         elif self.type is ButtonType.credits:
             return gameloop.State.credits
+        elif self.type is ButtonType.levels:
+            return gameloop.State.level_select
 
 
 class FullscreenButton(Button):
@@ -407,11 +410,13 @@ class Credits(Menu):
         self.bg_sprite = animatedsprite.AnimatedSprite('image')
         self.bg_sprite.play('menu')
 
-        text = 'PROGRAMMING\\PANU KESKINEN\\ART\\PANU KESKINEN\\MUSIC AND SOUND\\PANU KESKINEN\\\\'
-        text += 'SOFTWARE USED\\PYTHON 3    PYGAME    PY2EXE\\GIMP    ABLETON    BFXR'
-        self.text = textbox.Textbox(text, 0.5 * helpers.SCREEN_WIDTH, helpers.TILE_SIZE)
+        text1 = 'PROGRAMMING\\PANU KESKINEN\\ART\\PANU KESKINEN\\MUSIC AND SOUND\\PANU KESKINEN'
+        text2 = 'MADE WITH\\PYTHON 3    PYGAME    PY2EXE\\GIMP    ABLETON LIVE LITE    BFXR'
+        self.text1 = textbox.Textbox(text1, 0.5 * helpers.SCREEN_WIDTH, helpers.TILE_SIZE)
+        self.text2 = textbox.Textbox(text2, 0.5 * helpers.SCREEN_WIDTH, 8 * helpers.TILE_SIZE)
 
     def draw(self, screen, img_hand):
         self.bg_sprite.draw(screen, img_hand)
-        self.text.draw(screen, img_hand)
+        self.text1.draw(screen, img_hand)
+        self.text2.draw(screen, img_hand)
         super().draw(screen, img_hand)

@@ -309,6 +309,23 @@ class Music(gameobject.GameObject):
         self.track = track
 
 
+class Tutorial(gameobject.GameObject):
+    def __init__(self, x, y, number):
+        super().__init__(x, y, helpers.TILE_SIZE, helpers.TILE_SIZE, ['tutorial'])
+        self.number = number
+
+        if self.number == 0:
+            self.string = 'ARROW KEYS TO RUN\\HOLD SHIFT TO WALK'
+        elif self.number == 1:
+            self.string = 'A TO JUMP\\HOLD A TO JUMP HIGHER'
+        elif self.number == 2:
+            self.string = 'UP AND DOWN TO CLIMB LADDERS'
+        elif self.number == 3:
+            self.string = 'DOWN TO CROUCH'
+        elif self.number == 4:
+            self.string = 'HOLD A TO BOUNCE HIGHER'
+
+
 class BossWall(Wall):
     def __init__(self, x, y):
         super().__init__(x, y, 'bosswall')
