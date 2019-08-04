@@ -17,8 +17,8 @@ TEXTS = {
     Ability.run: 'Hold shift to walk',
     Ability.double_jump: 'Press A in midair',
     Ability.wall_jump: 'Press A while against a wall',
-    Ability.gun: 'Press S to shoot',
-    Ability.rebreather: 'Breathe underwater'
+    Ability.gun: 'Press S to shoot\\Press up to aim upwards',
+    Ability.rebreather: 'Breathe underwater\\Press A to swim upwards'
 }
 
 

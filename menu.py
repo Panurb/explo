@@ -152,7 +152,7 @@ class EditorSelectMenu(Menu):
 
     def update(self):
         self.buttons = []
-        self.add_button(-7, 13, ButtonType.menu)
+        self.add_button(-7, 13, ButtonType.menu, 'BACK')
         self.add_button(7, 13, ButtonType.new)
         dy = 1
         for filename in os.listdir('data/lvl'):

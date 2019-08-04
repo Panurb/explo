@@ -260,7 +260,7 @@ G   GGGGGGGGG^===^GG
 G    GGGGGGGG^===^GG
 G      GGGGGG^===^GG
 G C     GGGGG^===^GG
-G  4      GGG=====GG
+G         GGG=====GG
 GGGG~~~~~~GGG=====GG
 GGGG================
 GGGGG===============
@@ -468,7 +468,7 @@ WWWWWWWWWWWWWWWWW
                     
                     
   MMMMMMMM          
- M  MMM C           
+ MDDMMM C           
 MMMMMMM             
 MMMMMMMMMMGGGMMMGGGG
 GGGGGGGGGGGGGMMGGGGG
@@ -1811,7 +1811,7 @@ W                 WW
 W                 WW
 W                ZWW
 W     Z  Z  Z    WWW
-W WW**W**W**W**WWWWW
+W#WW**W**W**W**WWWWW
 W#WWWWWWWWWWWWWWWWWW
 W#                WW
 W#                WW

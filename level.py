@@ -281,11 +281,7 @@ class Room:
                         if y + j < 0 or y + j >= helpers.ROOM_HEIGHT:
                             continue
 
-                        action = 'ground'
-                        #if wall.path in ['rock', 'ice']:
-                        #    action = wall.path
-
-                        self.bg[y + j][x + i].show_frame(action, 0)
+                        self.bg[y + j][x + i].show_frame('ground', 0)
 
         for x in range(helpers.ROOM_WIDTH):
             for y in range(helpers.ROOM_HEIGHT):

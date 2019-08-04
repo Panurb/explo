@@ -12,7 +12,7 @@ class Direction(Enum):
 class AnimatedSprite(pygame.sprite.Sprite):
     def __init__(self, path, offset_x=0, offset_y=0):
         if not path in imagehandler.ACTIONS:
-            raise Exception('Invalid image path!')
+            raise Exception('Invalid image path ' + str(path))
 
         pygame.sprite.Sprite.__init__(self)
         self.sprite = pygame.sprite.RenderPlain(self)

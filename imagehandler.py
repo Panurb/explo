@@ -24,10 +24,8 @@ SIZES = {
     'image': (160, 120),
     'ladder': (8, 8),
     'lava': (8, 8),
-    'map': (7, 6),
     'menu': (8, 8),
     'metal': (8, 8),
-    'mods': (48, 48),
     'music': (8, 8),
     'particle': (4, 4),
     'platform': (24, 8),
@@ -39,22 +37,16 @@ SIZES = {
     'spawner': (16, 16),
     'spike': (8, 8),
     'spring': (8, 16),
-    'thorns': (8, 8),
     'title': (136, 32),
     'tutorial': (8, 8),
     'wall': (8, 8),
-    'water': (8, 8),
-    'zombie': (8, 16),
-    'zombie_gibs': (4, 4)
+    'water': (8, 8)
 }
 
 ACTIONS = {
     'bg': [
         ['sky', 1],
         ['ground', 16],
-        ['rock', 16],
-        ['ice', 16],
-        ['water', 16]
     ],
     'boss': [
         ['idle', 5],
@@ -132,10 +124,6 @@ ACTIONS = {
         ['surface', 8],
         ['idle', 8]
     ],
-    'map': [
-        ['idle', 1],
-        ['active', 1]
-    ],
     'metal': [
         ['idle', 16]
     ],
@@ -144,12 +132,6 @@ ACTIONS = {
         ['top', 3],
         ['middle', 3],
         ['bottom', 3]
-    ],
-    'mods': [
-        ['up', 2],
-        ['right', 2],
-        ['down', 2],
-        ['left', 2],
     ],
     'music': [
         ['idle', 1]
@@ -222,9 +204,6 @@ ACTIONS = {
         ['idle', 1],
         ['bounce', 5]
     ],
-    'thorns': [
-        ['idle', 16]
-    ],
     'title': [
         ['idle', 1]
     ],
@@ -237,16 +216,6 @@ ACTIONS = {
     'water': [
         ['surface', 8],
         ['idle', 8]
-    ],
-    'zombie': [
-        ['armored', 12],
-        ['nude', 12],
-        ['die', 10]
-    ],
-    'zombie_gibs': [
-        ['head', 4],
-        ['arm', 4],
-        ['armor', 4]
     ]
 }
 

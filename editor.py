@@ -10,8 +10,6 @@ OBJECTS = {'WALLS': (('W', 'WALL'),
                      ('M', 'METAL'),
                      ('I', 'ICE')),
            'OBSTACLES': (('P', 'PLATFORM'),
-                         ('V', 'VERTICAL PLATFORM'),
-                         ('F', 'FALLING PLATFORM'),
                          ('D', 'DESTROYABLE'),
                          ('#', 'LADDER'),
                          ('Z', 'SPRING'),
@@ -24,11 +22,9 @@ OBJECTS = {'WALLS': (('W', 'WALL'),
                        ('^', 'WATER SPIKES'),
                        ('N', 'CANNON')),
            'ENEMIES': (('c', 'CRAWLER'),
-                       ('z', 'ZOMBIE'),
                        ('s', 'SPWANER'),
                        ('f', 'FLYER'),
                        ('h', 'CHARGER'),
-                       ('d', 'DROPPER'),
                        ('b', 'BOSS')),
            'MISC': (('C', 'CHECKPOINT'),
                     ('E', 'END')),
@@ -36,10 +32,7 @@ OBJECTS = {'WALLS': (('W', 'WALL'),
                         ('1', 'DOUBLE JUMP'),
                         ('2', 'WALL JUMP'),
                         ('3', 'GUN'),
-                        ('4', 'REBREATHER'),
-                        ('5', 'FULL AUTO'),
-                        ('6', 'SPREAD'),
-                        ('7', 'GRAVITY')),
+                        ('4', 'REBREATHER')),
            'MUSIC': (('m', 'TRACK 1'),
                      ('n', 'TRACK 2'),
                      ('l', 'TRACK 3'),
@@ -57,9 +50,10 @@ class Editor:
         self.room_y = y
         self.category = 'WALLS'
         self.object = 0
-        self.category_text = textbox.Textbox(self.category, 0.2 * helpers.SCREEN_WIDTH, 0)
+        self.category_text = textbox.Textbox(self.category, 3 * helpers.TILE_SIZE, 0)
         self.object_text = textbox.Textbox(OBJECTS[self.category][self.object][1], 0.5 * helpers.SCREEN_WIDTH, 0)
         self.coord_text = textbox.Textbox('0 0', 0.9 * helpers.SCREEN_WIDTH, 0)
+        self.toolbar = True
 
     def change_category(self, category):
         self.category = category
@@ -132,6 +126,9 @@ class Editor:
         if input_hand.keys_pressed[pygame.K_LEFT]:
             self.room_x = max(self.room_x - 1, -int(WORLD_WIDTH / 2))
 
+        if input_hand.keys_pressed[pygame.K_SPACE]:
+            self.toolbar = not self.toolbar
+
     def setup_play(self, lvl):
         lvl.player.save.room_x = self.room_x
         lvl.player.save.room_y = self.room_y
@@ -147,9 +144,10 @@ class Editor:
         lvl.player.reset()
 
     def draw(self, screen, img_hand):
-        self.category_text.draw(screen, img_hand)
-        self.object_text.draw(screen, img_hand)
-        self.coord_text.draw(screen, img_hand)
+        if self.toolbar:
+            self.category_text.draw(screen, img_hand)
+            self.object_text.draw(screen, img_hand)
+            self.coord_text.draw(screen, img_hand)
 
     def draw_grid(self, screen):
         color = (50, 50, 50)

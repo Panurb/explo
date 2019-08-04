@@ -88,8 +88,6 @@ class Player(creature.Creature):
                               self.weapon_mods)
 
         self.txtbox = textbox.Textbox('', 0.5 * helpers.SCREEN_WIDTH, 4 * helpers.SCALE)
-        self.map = hud.Map(level)
-        self.mods = hud.Mods()
         self.modifying_weapon = False
 
         self.level_over = False
@@ -216,9 +214,6 @@ class Player(creature.Creature):
         for b in self.bullets:
             b.draw(screen, img_hand)
 
-        if self.show_map:
-            self.map.draw(screen, img_hand, self.room_x, self.room_y)
-
         if self.modifying_weapon:
             self.mods.draw(screen, img_hand, self.weapon_mods)
 
@@ -290,8 +285,6 @@ class Player(creature.Creature):
                     self.attack(True)
                 else:
                     self.attack()
-
-            self.show_map = keys_down[pygame.K_d]
 
             if not self.ground_collision or not keys_down[pygame.K_DOWN]:
                 self.uncrouch(room)
@@ -466,8 +459,6 @@ class Player(creature.Creature):
             self.y = self.collider.y
 
             self.txtbox.clear()
-
-            self.map.rooms_visited[(self.room_x, self.room_y)] = True
 
             return True
         else:
