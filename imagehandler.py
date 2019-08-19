@@ -21,6 +21,7 @@ SIZES = {
     'flyer': (8, 8),
     'ground': (8, 8),
     'ice': (8, 8),
+    'icon': (8, 8),
     'image': (160, 120),
     'ladder': (8, 8),
     'lava': (8, 8),
@@ -110,6 +111,9 @@ ACTIONS = {
     ],
     'ground': [
         ['idle', 16]
+    ],
+    'icon': [
+        ['idle', 1]
     ],
     'ice': [
         ['idle', 16]

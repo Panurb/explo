@@ -637,13 +637,13 @@ class Player(creature.Creature):
                 angle = 270
             else:
                 if self.direction is gameobject.Direction.left:
-                    if self.hugging_wall:
+                    if self.hugging_wall and self.abilities[Ability.wall_jump]:
                         if self.ground_collision:
                             angle = 180
                     else:
                         angle = 180
                 elif self.direction is gameobject.Direction.right:
-                    if self.hugging_wall:
+                    if self.hugging_wall and self.abilities[Ability.wall_jump]:
                         if not self.ground_collision:
                             angle = 180
                     else:

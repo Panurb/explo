@@ -88,6 +88,7 @@ class LevelSelectMenu(Menu):
 
         dy = 1
         for filename in os.listdir('data/lvl'):
+            filename.strip('_')
             self.add_button(0, dy, ButtonType.level, filename.replace('.txt', ''))
             dy += 2
 
@@ -142,6 +143,8 @@ class EditorSelectMenu(Menu):
         self.add_button(7, 13, ButtonType.new)
         dy = 1
         for filename in os.listdir('data/lvl'):
+            if filename[0] == '_':
+                continue
             self.add_button(0, dy, ButtonType.edit, filename.replace('.txt', ''))
             dy += 2
 
@@ -156,6 +159,8 @@ class EditorSelectMenu(Menu):
         self.add_button(7, 13, ButtonType.new)
         dy = 1
         for filename in os.listdir('data/lvl'):
+            if filename[0] == '_':
+                continue
             self.add_button(0, dy, ButtonType.edit, filename.replace('.txt', ''))
             dy += 2
 
@@ -410,10 +415,10 @@ class Credits(Menu):
         self.bg_sprite = animatedsprite.AnimatedSprite('image')
         self.bg_sprite.play('menu')
 
-        text1 = 'PROGRAMMING\\PANU KESKINEN\\ART\\PANU KESKINEN\\MUSIC AND SOUND\\PANU KESKINEN'
-        text2 = 'MADE WITH\\PYTHON 3    PYGAME    PY2EXE\\GIMP    ABLETON LIVE LITE    BFXR'
+        text1 = 'PROGRAMMING\\ART\\MUSIC\\\\PANU KESKINEN'
+        text2 = 'MADE WITH\\\\PYTHON 3    PYGAME    PY2EXE\\PYCHARM    GIMP    BFXR\\ABLETON LIVE LITE'
         self.text1 = textbox.Textbox(text1, 0.5 * helpers.SCREEN_WIDTH, helpers.TILE_SIZE)
-        self.text2 = textbox.Textbox(text2, 0.5 * helpers.SCREEN_WIDTH, 8 * helpers.TILE_SIZE)
+        self.text2 = textbox.Textbox(text2, 0.5 * helpers.SCREEN_WIDTH, 7 * helpers.TILE_SIZE)
 
     def draw(self, screen, img_hand):
         self.bg_sprite.draw(screen, img_hand)

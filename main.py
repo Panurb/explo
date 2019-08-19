@@ -28,8 +28,7 @@ class Main:
         self.clock = pygame.time.Clock()
         self.fps = helpers.FPS
 
-        # TODO make icon
-        pygame.display.set_icon(self.img_hand.animations['ladder']['idle'][0])
+        pygame.display.set_icon(self.img_hand.animations['icon']['idle'][0])
 
         self.snd_hand.set_music('menu')
         pygame.mixer.music.set_volume(1)
