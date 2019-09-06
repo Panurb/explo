@@ -15,12 +15,9 @@ class Main:
         pygame.init()
         pygame.display.set_caption('EXPLO')
 
-        # TODO: gamepad support
-        pygame.joystick.init()
-        joysticks = [pygame.joystick.Joystick(x) for x in range(pygame.joystick.get_count())]
-
+        self.info = pygame.display.Info()
         self.screen = pygame.display.set_mode((width, height))
-        self.img_hand = imagehandler.ImageHandler()
+        self.img_hand = imagehandler.ImageHandler(self.info)
         self.snd_hand = soundhandler.SoundHandler()
         self.inp_hand = inputhandler.InputHandler()
         self.loop = gameloop.GameLoop(self.screen, self.img_hand, self.snd_hand,

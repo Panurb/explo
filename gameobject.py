@@ -10,45 +10,49 @@ import platform
 
 # COLLISION MATRIX
 #
-#           p   b   e   w   d   c   s   b
-# player    -   -   X   X   -   X   X   X
-# bullets   -   -   X   X   -   X   -   X
-# enemies   -   X   -   X   -   -   X   X
-# walls     -   -   -   X   -   -   -   -
-# debris    -   -   -   -   -   -   -   -
-# chaser    -   X   -   -   -   -   -   -
-# springs   -   -   -   -   -   -   -   -
-# boss      X   -   X   X   -   -   X   -
+#           p   b   e   w   d   c   s   b   f
+# player    -   -   X   X   -   X   X   X   X
+# bullets   -   -   X   X   -   X   -   X   X
+# enemies   -   X   -   X   -   -   X   X   -
+# walls     -   -   -   X   -   -   -   -   -
+# debris    -   -   -   -   -   -   -   -   -
+# chaser    -   X   -   -   -   -   -   -   -
+# springs   -   -   -   -   -   -   -   -   -
+# boss      X   -   X   X   -   -   X   -   -
+# flyer     X   -   -   X   -   -   -   -   -
 
-COLLISION_MATRIX = [[False, False, True, True, False, True, True, True],
-                    [False, False, True, True, False, True, False, True],
-                    [False, True, False, True, False, False, True, True],
-                    [False, False, False, True, False, False, False, False],
-                    [False, False, False, False, False, False, False, False],
-                    [False, True, False, False, False, False, False, False],
-                    [False, False, False, False, False, False, False, False],
-                    [True, False, True, True, False, False, True, False]]
+COLLISION_MATRIX = [[False, False, True, True, False, True, True, True, True],
+                    [False, False, True, True, False, True, False, True, True],
+                    [False, True, False, True, False, False, True, True, False],
+                    [False, False, False, True, False, False, False, False, False],
+                    [False, False, False, False, False, False, False, False, False],
+                    [False, True, False, False, False, False, False, False, False],
+                    [False, False, False, False, False, False, False, False, False],
+                    [True, False, True, True, False, False, True, False, False],
+                    [True, False, False, True, False, False, False, False, False]]
 
 # BOUNCE MATRIX
 #
-#           p   b   e   w   d   c   s   b
-# player    0   0   0   0   0   0   1   0
-# bullets   0   0   0  0.5  0   0   0   0
-# enemies   0   0   0  0.5  0   0   1   1
-# walls     0   0   0   1   0   0   0   1
-# debris    0   0   0   0   0   0   0   0
-# chaser    0   0   0   0   0   0   0   0
-# springs   0   0   0   0   0   0   0   0
-# boss      1   0   1   1   0   0   1   0
+#           p   b   e   w   d   c   s   b   f
+# player    0   0   0   0   0   0   1   0   0
+# bullets   0   0   0  0.5  0   0   0   0   1
+# enemies   0   0   0  0.5  0   0   1   1   0
+# walls     0   0   0   1   0   0   0   1   0
+# debris    0   0   0   0   0   0   0   0   0
+# chaser    0   0   0   0   0   0   0   0   0
+# springs   0   0   0   0   0   0   0   0   0
+# boss      1   0   1   1   0   0   1   0   0
+# flyer     0   0   0   1   0   0   0   0   0
 
-BOUNCE_MATRIX = [[0, 0, 0, 0, 0, 0, 1, 0],
-                 [0, 0, 0, 0.5, 0, 0, 0, 0],
-                 [0, 0, 0, 0.5, 0, 0, 1, 1],
-                 [0, 0, 0, 1, 0, 0, 0, 0],
-                 [0, 0, 0, 0, 0, 0, 1, 0],
-                 [0, 0, 0, 0, 0, 0, 0, 0],
-                 [0, 0, 0, 0, 0, 0, 0, 0],
-                 [1, 0, 1, 1, 0, 0, 1, 0]]
+BOUNCE_MATRIX = [[0, 0, 0, 0, 0, 0, 1, 0, 0],
+                 [0, 0, 0, 0.5, 0, 0, 0, 0, 1],
+                 [0, 0, 0, 0.5, 0, 0, 1, 1, 0],
+                 [0, 0, 0, 1, 0, 0, 0, 0, 0],
+                 [0, 0, 0, 0, 0, 0, 1, 0, 0],
+                 [0, 0, 0, 0, 0, 0, 0, 0, 0],
+                 [0, 0, 0, 0, 0, 0, 0, 0, 0],
+                 [1, 0, 1, 1, 0, 0, 1, 0, 0],
+                 [0, 0, 0, 1, 0, 0, 0, 0, 0]]
 
 
 class CollisionGroup:
@@ -61,6 +65,7 @@ class CollisionGroup:
     chaser = 7
     springs = 8
     boss = 9
+    flyer = 10
 
 
 class Direction(Enum):
@@ -287,8 +292,9 @@ class PhysicsObject(GameObject):
 
             if c.group is CollisionGroup.springs:
                 c.bounce()
-                bounce_scale = 3 * helpers.SCALE / self.dy
-                self.sounds.add('spring')
+                if self.dy != 0:
+                    bounce_scale = 3 * helpers.SCALE / self.dy
+                    self.sounds.add('spring')
             else:
                 bounce_scale = self.bounce_scale(c)
 

@@ -225,20 +225,26 @@ ACTIONS = {
 
 
 class ImageHandler:
-    def __init__(self):
+    def __init__(self, info):
         self.animations = {}
         self.load()
         self.scale = helpers.SCALE
         self.fullscreen = False
+        self.info = info
+
         self.rescale(self.scale)
 
     def rescale(self, scale, fullscreen=None):
+        s = scale / helpers.SCALE
+        size = (int(helpers.SCREEN_WIDTH * s), int(helpers.SCREEN_HEIGHT * s))
+
+        if fullscreen or self.fullscreen:
+            if size[0] > self.info.current_w or size[1] > self.info.current_h:
+                return False
+
         self.scale = scale
         if fullscreen is not None:
             self.fullscreen = fullscreen
-
-        s = self.scale / helpers.SCALE
-        size = (int(helpers.SCREEN_WIDTH * s), int(helpers.SCREEN_HEIGHT * s))
 
         if self.fullscreen:
             pygame.display.set_mode(size, pygame.FULLSCREEN)
@@ -251,6 +257,8 @@ class ImageHandler:
                     width = SIZES[name][0] * self.scale
                     height = SIZES[name][1] * self.scale
                     self.animations[name][action][i] = pygame.transform.scale(image, (width, height))
+
+        return True
 
     def load(self):
         for name in ACTIONS.keys():

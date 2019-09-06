@@ -27,9 +27,11 @@ class InputHandler:
                 if event.type == pygame.KEYDOWN:
                     self.keys_pressed[event.key] = True
                 elif event.type == pygame.MOUSEBUTTONDOWN:
-                    self.mouse_pressed[event.button] = True
+                    if event.button < len(self.mouse_pressed):
+                        self.mouse_pressed[event.button] = True
                 elif event.type == pygame.MOUSEBUTTONUP:
-                    self.mouse_released[event.button] = True
+                    if event.button < len(self.mouse_pressed):
+                        self.mouse_released[event.button] = True
 
                 self.mouse_x = pygame.mouse.get_pos()[0]
                 self.mouse_y = pygame.mouse.get_pos()[1]

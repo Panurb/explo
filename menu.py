@@ -271,7 +271,7 @@ class Slider:
         self.val = 0
 
         if slider_type is SliderType.resolution:
-            self.values = [(helpers.ROOM_WIDTH * 8 * x, helpers.ROOM_HEIGHT * 8 * x) for x in range(4, 10)]
+            self.values = [(helpers.ROOM_WIDTH * 8 * x, helpers.ROOM_HEIGHT * 8 * x) for x in range(4, 19)]
             val_str = str(self.values[self.val]).strip('()').replace(',', ' *')
             self.txtbox = TextInput(x, y, 6, val_str)
         else:
@@ -313,9 +313,11 @@ class Slider:
                 snd_hand.sounds[sound].play()
                 self.txtbox.txtbox.set_string(str(self.values[self.val]))
             elif self.type is SliderType.resolution:
-                val_str = str(self.values[self.val]).strip('()').replace(',', ' *')
-                self.txtbox.txtbox.set_string(val_str)
-                img_hand.rescale(self.val + helpers.SCALE)
+                if img_hand.rescale(self.val + helpers.SCALE):
+                    val_str = str(self.values[self.val]).strip('()').replace(',', ' *')
+                    self.txtbox.txtbox.set_string(val_str)
+                else:
+                    self.val -= 1
 
 
 class Button:

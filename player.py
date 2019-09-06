@@ -7,7 +7,6 @@ import animatedsprite
 import bullet
 import gameobject
 import helpers
-import hud
 import creature
 import save
 import textbox
@@ -29,6 +28,7 @@ BULLET_SPEED = 4 * helpers.SCALE
 WATER_SPEED = 0.6 * helpers.SCALE
 WATER_FRICTION = 0.05 * helpers.SCALE
 SWIM_HEIGHT = -1.75 * helpers.SCALE
+COYOTE_TIME = 5
 
 
 class WeaponMod(enum.Enum):
@@ -93,7 +93,13 @@ class Player(creature.Creature):
         self.level_over = False
         self.reseted = False
 
+        self.ground_timer = 0
+        self.wall_timer = 0
+
     def update(self, room):
+        self.ground_timer += 1
+        self.wall_timer += 1
+
         self.time += 1
         self.apply_water(room)
         super().update(room)
@@ -132,9 +138,15 @@ class Player(creature.Creature):
             room.reset()
             self.reset()
 
+        if self.ground_collision:
+            self.ground_timer = 0
+        if self.wall_collision:
+            self.wall_timer = 0
+
     def apply_damage(self, room):
         for c in self.collisions:
-            if c.obj.group is gameobject.CollisionGroup.enemies or c.obj.group is gameobject.CollisionGroup.boss:
+            if c.obj.group is gameobject.CollisionGroup.enemies or c.obj.group is gameobject.CollisionGroup.boss \
+                    or c.obj.group is gameobject.CollisionGroup.flyer:
                 self.damage(1, 0, 0)
             elif type(c.obj) is tile.Spike:
                 self.damage(1, 0, 0)
@@ -253,16 +265,14 @@ class Player(creature.Creature):
             if keys_down[pygame.K_RIGHT]:
                 self.moving = True
                 self.uncrouch(room)
-                if self.abilities[Ability.run] and not keys_down[
-                        pygame.K_LSHIFT]:
+                if self.abilities[Ability.run] and not keys_down[pygame.K_LSHIFT]:
                     self.move(RUN_SPEED)
                 else:
                     self.move(WALK_SPEED)
             if keys_down[pygame.K_LEFT]:
                 self.moving = True
                 self.uncrouch(room)
-                if self.abilities[Ability.run] and not keys_down[
-                        pygame.K_LSHIFT]:
+                if self.abilities[Ability.run] and not keys_down[pygame.K_LSHIFT]:
                     self.move(-RUN_SPEED)
                 else:
                     self.move(-WALK_SPEED)
@@ -271,15 +281,15 @@ class Player(creature.Creature):
                 self.climb(room, -LADDER_SPEED)
             if keys_down[pygame.K_DOWN]:
                 self.sliding = True
-                if not keys_down[pygame.K_LEFT] and not keys_down[
-                        pygame.K_RIGHT]:
+                if not keys_down[pygame.K_LEFT] and not keys_down[pygame.K_RIGHT]:
                     self.crouch()
                     self.climb(room, LADDER_SPEED)
 
-            if keys_down[pygame.K_a]:
-                self.jump()
             if not keys_down[pygame.K_a]:
                 self.jump_buffer = True
+            if keys_down[pygame.K_a]:
+                self.jump()
+
             if keys_down[pygame.K_s]:
                 if keys_down[pygame.K_UP]:
                     self.attack(True)
@@ -320,9 +330,7 @@ class Player(creature.Creature):
         if not self.jump_buffer or self.crouched:
             return
 
-        self.base_dx = 0
-        self.base_dy = 0
-        if self.ground_collision:
+        if self.ground_timer < COYOTE_TIME:
             self.dy = JUMP_HEIGHT
             self.jump_buffer = False
             self.jump_count = 1
@@ -331,7 +339,7 @@ class Player(creature.Creature):
             self.jump_buffer = False
             self.jump_count = 1
             self.climbing_ladder = False
-        elif self.hugging_wall and self.abilities[Ability.wall_jump]:
+        elif self.abilities[Ability.wall_jump] and self.wall_timer < COYOTE_TIME:
             self.flip()
             speed = WALK_SPEED
             if self.abilities[Ability.run]:
@@ -354,6 +362,9 @@ class Player(creature.Creature):
             self.jump_buffer = False
         else:
             return
+
+        self.base_dx = 0
+        self.base_dy = 0
 
         self.sounds.add('jump')
 

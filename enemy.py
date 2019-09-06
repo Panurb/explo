@@ -286,7 +286,7 @@ class Flyer(Enemy):
         width = 8 * helpers.SCALE
         height = 8 * helpers.SCALE
         super().__init__(x, y, width, height, 1, ['flyer'])
-        self.group = gameobject.CollisionGroup.boss
+        self.group = gameobject.CollisionGroup.flyer
         self.speed = 1 * helpers.SCALE
         self.dx = self.speed
         self.gravity_scale = 0
@@ -303,6 +303,9 @@ class Flyer(Enemy):
         if self.ceiling_collision:
             self.dx = -self.dy
             self.dy = 0
+
+    def damage(self, amount, dx=0, dy=0):
+        pass
 
     def reset(self):
         super().reset()
@@ -544,10 +547,16 @@ class Boss(Enemy):
         self.dx = dx * self.speed / math.sqrt(dx**2 + dy**2)
         self.dy = dy * self.speed / math.sqrt(dx**2 + dy**2)
 
+    def damage(self, amount, dx=0, dy=0):
+        super().damage(amount, dx, dy)
+
+        if not self.active:
+            self.active = True
+
     def update(self, room):
         super().update(room)
 
-        if not self.active and abs(self.collider.centerx - room.level.player.x) < 2 * helpers.TILE_SIZE:
+        if not self.active and abs(self.collider.centerx - room.level.player.x) < 2.5 * helpers.TILE_SIZE:
             self.active = True
             self.random_direction()
 

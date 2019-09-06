@@ -81,7 +81,7 @@ def frames_to_time(frames):
     h = int(s // 3600)
 
     m = int(s // 60 - h * 60)
-    s = int(s - m * 60)
+    s = int(s - m * 60 - h * 3600)
 
     time = str(h) + ':' + str(m) + ':' + str(s)
 

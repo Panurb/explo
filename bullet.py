@@ -92,8 +92,7 @@ class Bullet(gameobject.PhysicsObject):
             dx = math.copysign(helpers.SCALE * speed, self.dx)
             dy = random.uniform(-spread, spread) * helpers.SCALE
 
-        p = particle.Particle(self.x + x, self.y + y, dx, dy, particle_type,
-                              0.5)
+        p = particle.Particle(self.x + x, self.y + y, dx, dy, particle_type, 0.5)
 
         self.particles.append(p)
 
