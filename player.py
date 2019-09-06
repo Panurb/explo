@@ -140,7 +140,7 @@ class Player(creature.Creature):
 
         if self.ground_collision:
             self.ground_timer = 0
-        if self.wall_collision:
+        if self.hugging_wall:
             self.wall_timer = 0
 
     def apply_damage(self, room):
@@ -719,7 +719,10 @@ class Player(creature.Creature):
             self.collider.y -= HEIGHT - CROUCHED_HEIGHT
             self.y = self.collider.y
             for c in self.get_collisions(room):
-                if self.collides_with(c) and type(c) is not tile.Spike:
+                if self.collides_with(c):
+                    if type(c) is tile.Spike:
+                        self.damage(1, 0, 0)
+
                     self.collider.height = CROUCHED_HEIGHT
                     self.collider.y += HEIGHT - CROUCHED_HEIGHT
                     self.y = self.collider.y
