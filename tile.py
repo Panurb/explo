@@ -261,7 +261,25 @@ class Cannon(Wall):
         self.sounds = set()
         self.alive = False
 
+        self.angles = []
+
+    def update_angles(self, room):
+        i = int(self.x / helpers.TILE_SIZE)
+        j = int(self.y / helpers.TILE_SIZE)
+
+        if not room.walls[j][i + 1]:
+            self.angles.append(0)
+        if not room.walls[j][i - 1]:
+            self.angles.append(2)
+        if not room.walls[j + 1][i]:
+            self.angles.append(1)
+        if not room.walls[j - 1][i]:
+            self.angles.append(3)
+
     def update(self, room):
+        if not self.angles:
+            self.update_angles(room)
+
         self.animate()
 
         for b in self.bullets:
@@ -270,15 +288,14 @@ class Cannon(Wall):
                 self.bullets.remove(b)
 
         if self.timer == 0:
-            angles = (0, 90, 180, 270)
             dx = (7, 0, -7, 0)
             dy = (0, 7, 0, -7)
-            for i in range(len(angles)):
-                angle = angles[i]
+            for i in self.angles:
+                angle = i * 90
                 x = self.x + dx[i] * helpers.SCALE
                 y = self.y + dy[i] * helpers.SCALE
                 b = bullet.Bullet(self, x, y, 1 * helpers.SCALE, angle)
-                b.group = gameobject.CollisionGroup.enemies
+                b.group = gameobject.CollisionGroup.ebullets
                 self.bullets.append(b)
             self.timer = self.cooldown
             self.sounds.add('shoot')

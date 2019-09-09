@@ -45,7 +45,7 @@ COLLISION_MATRIX = [[False, False, True, True, False, True, True, True, True, Fa
 # springs   0   0   0   0   0   0   0   0   0   0
 # boss      1   0   1   1   0   0   1   0   0   0
 # flyer     0   0   0   1   0   0   0   0   0   0
-# ebullets  0   0   0   0   0   0   0   0   0   0
+# ebullets 0.5  0   0  0.5  0   0   0   0  0.5  0
 
 BOUNCE_MATRIX = [[0, 0, 0, 0, 0, 0, 1, 0, 0, 0],
                  [0, 0, 0, 0.5, 0, 0, 0, 0, 1, 0],
@@ -56,7 +56,7 @@ BOUNCE_MATRIX = [[0, 0, 0, 0, 0, 0, 1, 0, 0, 0],
                  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
                  [1, 0, 1, 1, 0, 0, 1, 0, 0, 0],
                  [0, 0, 0, 1, 0, 0, 0, 0, 0, 0],
-                 [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
+                 [0.5, 0, 0, 0.5, 0, 0, 0, 0, 0.5, 0]]
 
 
 class CollisionGroup:

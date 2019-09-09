@@ -59,13 +59,12 @@ class Bullet(gameobject.PhysicsObject):
 
                 if c.obj.group is gameobject.CollisionGroup.enemies or c.obj.group is gameobject.CollisionGroup.boss \
                         or c.obj.group is gameobject.CollisionGroup.chaser:
-                    if type(c.obj) is not Bullet:
-                        c.obj.damage(1, 0, 0)
-                        self.destroy('blood', vert)
-                        for p in c.obj.bullets:
-                            if p.alive:
-                                c.obj.bullets.remove(p)
-                                self.destroy('blood', vert)
+                    c.obj.damage(1, 0, 0)
+                    self.destroy('blood', vert)
+                    for p in c.obj.bullets:
+                        if p.alive:
+                            c.obj.bullets.remove(p)
+                            self.destroy('blood', vert)
                 else:
                     self.destroy('spark', vert)
 

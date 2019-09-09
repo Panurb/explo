@@ -332,7 +332,7 @@ class Player(creature.Creature):
                     self.move(-RUN_SPEED)
                 else:
                     self.move(-WALK_SPEED)
-            elif controller.left_stick[1] < -0.5:
+            elif controller.left_stick[1] < -0.3:
                 self.sliding = True
                 self.crouch()
                 self.climb(room, LADDER_SPEED)

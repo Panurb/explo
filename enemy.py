@@ -176,6 +176,7 @@ class Crawler(Enemy):
         super().reset()
         self.speed = 0.25 * helpers.SCALE
         self.dx = self.speed
+        self.stun = 0
 
 
 class Shrapnel(creature.Gib):
