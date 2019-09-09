@@ -14,6 +14,11 @@ class InputHandler:
         self.mouse_pressed = []
         self.mouse_released = []
 
+        self.controller = None
+
+        if pygame.joystick.get_count() > 0:
+            self.controller = Controller(0)
+
     def update(self):
         for key in self.keys_pressed:
             self.keys_pressed[key] = False
@@ -38,3 +43,58 @@ class InputHandler:
 
         self.keys_down = pygame.key.get_pressed()
         self.mouse_down = pygame.mouse.get_pressed()
+
+        if self.controller:
+            self.controller.update()
+
+
+class Controller:
+    def __init__(self, index):
+        self.joystick = pygame.joystick.Joystick(index)
+        self.joystick.init()
+
+        self.left_stick = [0, 0]
+        self.right_stick = [0, 0]
+
+        self.left_trigger = 0.0
+        self.right_trigger = 0.0
+
+        self.button_down = {}
+        self.button_pressed = {}
+        self.button_released = {}
+        for b in ['A', 'B', 'X', 'Y', 'LB', 'RB', 'SELECT', 'START']:
+            self.button_down[b] = False
+            self.button_pressed[b] = False
+            self.button_released[b] = False
+
+        self.deadzone = 0.3
+
+    def update(self):
+        self.left_stick[0] = self.joystick.get_axis(0)
+        self.left_stick[1] = -self.joystick.get_axis(1)
+
+        self.right_stick[0] = self.joystick.get_axis(4)
+        self.right_stick[1] = -self.joystick.get_axis(3)
+
+        for stick in [self.left_stick, self.right_stick]:
+            if stick[0]**2 + stick[1]**2 < self.deadzone**2:
+                stick[:] = [0, 0]
+
+        trigger = self.joystick.get_axis(2)
+        if trigger > 0:
+            self.left_trigger = trigger
+        else:
+            self.right_trigger = -trigger
+
+        for i, b in enumerate(['A', 'B', 'X', 'Y', 'LB', 'RB', 'SELECT', 'START']):
+            self.button_pressed[b] = False
+            self.button_released[b] = False
+
+            if self.joystick.get_button(i):
+                if not self.button_down[b]:
+                    self.button_pressed[b] = True
+            else:
+                if self.button_down[b]:
+                    self.button_released[b] = True
+
+            self.button_down[b] = self.joystick.get_button(i)

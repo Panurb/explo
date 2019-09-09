@@ -255,6 +255,10 @@ class Player(creature.Creature):
             self.jump_count = 0
 
     def input(self, input_hand, room):
+        if input_hand.controller:
+            self.controller_input(input_hand, room)
+            return
+
         self.moving = False
         self.looking_up = False
         self.sliding = False
@@ -265,14 +269,14 @@ class Player(creature.Creature):
             if keys_down[pygame.K_RIGHT]:
                 self.moving = True
                 self.uncrouch(room)
-                if self.abilities[Ability.run] and not keys_down[pygame.K_LSHIFT]:
+                if not keys_down[pygame.K_LSHIFT]:
                     self.move(RUN_SPEED)
                 else:
                     self.move(WALK_SPEED)
             if keys_down[pygame.K_LEFT]:
                 self.moving = True
                 self.uncrouch(room)
-                if self.abilities[Ability.run] and not keys_down[pygame.K_LSHIFT]:
+                if not keys_down[pygame.K_LSHIFT]:
                     self.move(-RUN_SPEED)
                 else:
                     self.move(-WALK_SPEED)
@@ -301,6 +305,58 @@ class Player(creature.Creature):
             if not keys_down[pygame.K_s]:
                 self.attack_buffer = True
         if input_hand.keys_pressed[pygame.K_r]:
+            if self.alive:
+                self.die()
+            else:
+                self.reseted = True
+
+    def controller_input(self, input_hand, room):
+        self.moving = False
+        self.looking_up = False
+        self.sliding = False
+
+        controller = input_hand.controller
+
+        if self.alive:
+            if controller.left_stick[0] > 0.5:
+                self.moving = True
+                self.uncrouch(room)
+                if not controller.right_trigger > 0.5:
+                    self.move(RUN_SPEED)
+                else:
+                    self.move(WALK_SPEED)
+            elif controller.left_stick[0] < -0.5:
+                self.moving = True
+                self.uncrouch(room)
+                if not controller.right_trigger > 0.5:
+                    self.move(-RUN_SPEED)
+                else:
+                    self.move(-WALK_SPEED)
+            elif controller.left_stick[1] < -0.5:
+                self.sliding = True
+                self.crouch()
+                self.climb(room, LADDER_SPEED)
+
+            if controller.left_stick[1] > 0.5:
+                self.looking_up = True
+                self.climb(room, -LADDER_SPEED)
+
+            if not controller.button_down['A']:
+                self.jump_buffer = True
+            if controller.button_down['A']:
+                self.jump()
+
+            if controller.button_down['X']:
+                if controller.left_stick[1] > 0.5:
+                    self.attack(True)
+                else:
+                    self.attack()
+
+            if not self.ground_collision or not controller.left_stick[1] < -0.5:
+                self.uncrouch(room)
+            if not controller.button_down['X']:
+                self.attack_buffer = True
+        if controller.button_pressed['Y']:
             if self.alive:
                 self.die()
             else:
@@ -720,7 +776,7 @@ class Player(creature.Creature):
             self.y = self.collider.y
             for c in self.get_collisions(room):
                 if self.collides_with(c):
-                    if type(c) is tile.Spike:
+                    if type(c) is tile.Spike or c.group is gameobject.CollisionGroup.enemies:
                         self.damage(1, 0, 0)
 
                     self.collider.height = CROUCHED_HEIGHT

@@ -10,49 +10,53 @@ import platform
 
 # COLLISION MATRIX
 #
-#           p   b   e   w   d   c   s   b   f
-# player    -   -   X   X   -   X   X   X   X
-# bullets   -   -   X   X   -   X   -   X   X
-# enemies   -   X   -   X   -   -   X   X   -
-# walls     -   -   -   X   -   -   -   -   -
-# debris    -   -   -   -   -   -   -   -   -
-# chaser    -   X   -   -   -   -   -   -   -
-# springs   -   -   -   -   -   -   -   -   -
-# boss      X   -   X   X   -   -   X   -   -
-# flyer     X   -   -   X   -   -   -   -   -
+#           p   b   e   w   d   c   s   b   f   e
+# player    -   -   X   X   -   X   X   X   X   -
+# bullets   -   -   X   X   -   X   -   X   X   -
+# enemies   -   X   -   X   -   -   X   X   -   -
+# walls     -   -   -   X   -   -   -   -   -   -
+# debris    -   -   -   -   -   -   -   -   -   -
+# chaser    -   X   -   -   -   -   -   -   -   -
+# springs   -   -   -   -   -   -   -   -   -   -
+# boss      X   -   X   X   -   -   X   -   -   -
+# flyer     X   -   -   X   -   -   -   -   -   -
+# ebullets  X   -   X   X   -   X   X   -   X   -
 
-COLLISION_MATRIX = [[False, False, True, True, False, True, True, True, True],
-                    [False, False, True, True, False, True, False, True, True],
-                    [False, True, False, True, False, False, True, True, False],
-                    [False, False, False, True, False, False, False, False, False],
-                    [False, False, False, False, False, False, False, False, False],
-                    [False, True, False, False, False, False, False, False, False],
-                    [False, False, False, False, False, False, False, False, False],
-                    [True, False, True, True, False, False, True, False, False],
-                    [True, False, False, True, False, False, False, False, False]]
+COLLISION_MATRIX = [[False, False, True, True, False, True, True, True, True, False],
+                    [False, False, True, True, False, True, False, True, True, False],
+                    [False, True, False, True, False, False, True, True, False, False],
+                    [False, False, False, True, False, False, False, False, False, False],
+                    [False, False, False, False, False, False, False, False, False, False],
+                    [False, True, False, False, False, False, False, False, False, False],
+                    [False, False, False, False, False, False, False, False, False, False],
+                    [True, False, True, True, False, False, True, False, False, False],
+                    [True, False, False, True, False, False, False, False, False, False],
+                    [True, False, True, True, False, True, True, False, True, False]]
 
 # BOUNCE MATRIX
 #
-#           p   b   e   w   d   c   s   b   f
-# player    0   0   0   0   0   0   1   0   0
-# bullets   0   0   0  0.5  0   0   0   0   1
-# enemies   0   0   0  0.5  0   0   1   1   0
-# walls     0   0   0   1   0   0   0   1   0
-# debris    0   0   0   0   0   0   0   0   0
-# chaser    0   0   0   0   0   0   0   0   0
-# springs   0   0   0   0   0   0   0   0   0
-# boss      1   0   1   1   0   0   1   0   0
-# flyer     0   0   0   1   0   0   0   0   0
+#           p   b   e   w   d   c   s   b   f   e
+# player    0   0   0   0   0   0   1   0   0   0
+# bullets   0   0   0  0.5  0   0   0   0   1   0
+# enemies   0   0   0  0.5  0   0   1   1   0   0
+# walls     0   0   0   1   0   0   0   1   0   0
+# debris    0   0   0   0   0   0   0   0   0   0
+# chaser    0   0   0   0   0   0   0   0   0   0
+# springs   0   0   0   0   0   0   0   0   0   0
+# boss      1   0   1   1   0   0   1   0   0   0
+# flyer     0   0   0   1   0   0   0   0   0   0
+# ebullets  0   0   0   0   0   0   0   0   0   0
 
-BOUNCE_MATRIX = [[0, 0, 0, 0, 0, 0, 1, 0, 0],
-                 [0, 0, 0, 0.5, 0, 0, 0, 0, 1],
-                 [0, 0, 0, 0.5, 0, 0, 1, 1, 0],
-                 [0, 0, 0, 1, 0, 0, 0, 0, 0],
-                 [0, 0, 0, 0, 0, 0, 1, 0, 0],
-                 [0, 0, 0, 0, 0, 0, 0, 0, 0],
-                 [0, 0, 0, 0, 0, 0, 0, 0, 0],
-                 [1, 0, 1, 1, 0, 0, 1, 0, 0],
-                 [0, 0, 0, 1, 0, 0, 0, 0, 0]]
+BOUNCE_MATRIX = [[0, 0, 0, 0, 0, 0, 1, 0, 0, 0],
+                 [0, 0, 0, 0.5, 0, 0, 0, 0, 1, 0],
+                 [0, 0, 0, 0.5, 0, 0, 1, 1, 0, 0],
+                 [0, 0, 0, 1, 0, 0, 0, 0, 0, 0],
+                 [0, 0, 0, 0, 0, 0, 1, 0, 0, 0],
+                 [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                 [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                 [1, 0, 1, 1, 0, 0, 1, 0, 0, 0],
+                 [0, 0, 0, 1, 0, 0, 0, 0, 0, 0],
+                 [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
 
 
 class CollisionGroup:
@@ -66,6 +70,7 @@ class CollisionGroup:
     springs = 8
     boss = 9
     flyer = 10
+    ebullets = 11
 
 
 class Direction(Enum):
