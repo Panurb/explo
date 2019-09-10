@@ -244,13 +244,11 @@ class PhysicsObject(GameObject):
             if relative_vel > 0:
                 self.collider.right = c.collider.left
                 self.x = self.collider.x
-                self.collisions.append(
-                    collision.Collision(c, collision.Direction.right))
+                self.collisions.append(collision.Collision(c, collision.Direction.right))
             elif relative_vel < 0:
                 self.collider.left = c.collider.right
                 self.x = self.collider.x
-                self.collisions.append(
-                    collision.Collision(c, collision.Direction.left))
+                self.collisions.append(collision.Collision(c, collision.Direction.left))
 
             if c.group is not CollisionGroup.springs:
                 bounce_scale = self.bounce_scale(c)
@@ -299,7 +297,6 @@ class PhysicsObject(GameObject):
                 c.bounce()
                 if self.dy != 0:
                     bounce_scale = 3 * helpers.SCALE / self.dy
-                    self.sounds.add('spring')
             else:
                 bounce_scale = self.bounce_scale(c)
 

@@ -15,7 +15,7 @@ class Bullet(gameobject.PhysicsObject):
         dx = speed * math.cos(math.radians(angle))
         dy = speed * math.sin(math.radians(angle))
 
-        super().__init__(x, y, 4 * helpers.SCALE, 4 * helpers.SCALE, dx, dy,
+        super().__init__(x, y, 6 * helpers.SCALE, 6 * helpers.SCALE, dx, dy,
                          ['bullet'], gameobject.CollisionGroup.bullets)
 
         self.alive = True
@@ -25,6 +25,8 @@ class Bullet(gameobject.PhysicsObject):
         self.lifetime = 0
 
         for s in self.sprites:
+            s.offset_x = -1 * helpers.SCALE
+            s.offset_y = -1 * helpers.SCALE
             s.show_frame('idle', size)
 
     def get_collisions(self, room, collider=None):

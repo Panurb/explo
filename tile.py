@@ -244,9 +244,7 @@ class Spring(Wall):
         for s in self.sprites:
             s.frame = 0
             s.play_once('bounce')
-
-    def play_sounds(self, snd_hand):
-        pass
+            self.sounds.add('spring')
 
     def reset(self):
         pass
@@ -268,11 +266,11 @@ class Cannon(Wall):
         i = int(self.x / helpers.TILE_SIZE)
         j = int(self.y / helpers.TILE_SIZE)
 
-        if not room.walls[j][i + 1]:
+        if i + 1 != helpers.ROOM_WIDTH and not room.walls[j][i + 1]:
             self.angles.append(0)
         if not room.walls[j][i - 1]:
             self.angles.append(2)
-        if not room.walls[j + 1][i]:
+        if j + 1 != helpers.ROOM_HEIGHT and not room.walls[j + 1][i]:
             self.angles.append(1)
         if not room.walls[j - 1][i]:
             self.angles.append(3)
