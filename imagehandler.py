@@ -47,7 +47,7 @@ SIZES = {
 ACTIONS = {
     'bg': [
         ['sky', 1],
-        ['ground', 16],
+        ['ground', 10],
     ],
     'boss': [
         ['idle', 5],

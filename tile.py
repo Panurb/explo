@@ -51,6 +51,7 @@ class Wall(gameobject.GameObject):
             left = 1
 
         self.index = 8 * up + 4 * right + 2 * down + left
+
         for s in self.sprites:
             s.show_frame('idle', self.index)
 

@@ -28,8 +28,8 @@ class Main:
         pygame.display.set_icon(self.img_hand.animations['icon']['idle'][0])
 
         self.snd_hand.set_music('menu')
-        pygame.mixer.music.set_volume(1)
-        self.snd_hand.set_volume(1)
+        pygame.mixer.music.set_volume(0)
+        self.snd_hand.set_volume(0)
 
     def main_loop(self):
         while self.loop.state != gameloop.State.quit:

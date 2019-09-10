@@ -278,6 +278,9 @@ class Room:
                         continue
 
                     for j in range(-2, 3):
+                        if abs(i) == 2 and abs(j) == 2:
+                            continue
+
                         if y + j < 0 or y + j >= helpers.ROOM_HEIGHT:
                             continue
 
@@ -289,35 +292,80 @@ class Room:
                 if action == 'sky':
                     continue
 
-                up = right = down = left = 0
+                up = False
+                down = False
+                right = False
+                left = False
+                upright = False
+                upleft = False
+                downright = False
+                downleft = False
 
                 if y - 1 >= 0:
                     if self.bg[y - 1][x].action == action:
-                        up = 1
-
+                        up = True
                 if y + 1 < helpers.ROOM_HEIGHT:
                     if self.bg[y + 1][x].action == action:
-                        down = 1
-
+                        down = True
                 if x + 1 < helpers.ROOM_WIDTH:
                     if self.bg[y][x + 1].action == action:
-                        right = 1
-
+                        right = True
                 if x - 1 >= 0:
                     if self.bg[y][x - 1].action == action:
-                        left = 1
+                        left = True
+
+                if y - 1 >= 0 and x + 1 < helpers.ROOM_WIDTH:
+                    if self.bg[y - 1][x + 1].action == action:
+                        upright = True
+                if y + 1 < helpers.ROOM_HEIGHT and x + 1 < helpers.ROOM_WIDTH:
+                    if self.bg[y + 1][x + 1].action == action:
+                        downright = True
+                if y + 1 < helpers.ROOM_HEIGHT and x + 1 >= 0:
+                    if self.bg[y + 1][x - 1].action == action:
+                        downleft = True
+                if  y - 1 >= 0 and x - 1 >= 0:
+                    if self.bg[y - 1][x - 1].action == action:
+                        upleft = True
 
                 if y == 0:
-                    up = 1
+                    up = True
+                    upright = True
+                    upleft = True
                 elif y == helpers.ROOM_HEIGHT - 1:
-                    down = 1
+                    down = True
+                    downright = True
+                    downleft = True
 
                 if x == helpers.ROOM_WIDTH - 1:
-                    right = 1
+                    right = True
+                    upright = True
+                    downright = True
                 elif x == 0:
-                    left = 1
+                    left = True
+                    upleft = True
+                    downleft = True
 
-                frame = 8 * up + 4 * right + 2 * down + left
+                frame = 0
+                if left and down and not up and not right:
+                    frame = 1
+                if right and down and not up and not left:
+                    frame = 2
+                if up and left and not right and not down:
+                    frame = 3
+                if up and right and not left and not down:
+                    frame = 4
+                if up and down and left and right:
+                    if upright and upleft and downright and downleft:
+                        frame = 9
+                    elif upright and upleft and downright and not downleft:
+                        frame = 5
+                    elif upright and upleft and downleft and not downright:
+                        frame = 6
+                    elif upright and downright and downleft and not upleft:
+                        frame = 7
+                    elif upleft and downright and downleft and not upright:
+                        frame = 8
+
                 self.bg[y][x].show_frame(action, frame)
 
     def update(self):
