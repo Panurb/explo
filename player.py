@@ -698,9 +698,12 @@ class Player(creature.Creature):
 
             x = self.x
             y = self.y
+            if not self.crouched:
+                y -= helpers.SCALE
             angle = 0
             if up:
-                x += 1.25 * helpers.SCALE
+                if self.direction is gameobject.Direction.left:
+                    x += 0.1 * helpers.SCALE
                 angle = 270
             else:
                 if self.direction is gameobject.Direction.left:
@@ -729,15 +732,12 @@ class Player(creature.Creature):
                 dist = 120
                 size = 2
 
-            b = bullet.Bullet(self, x, y, BULLET_SPEED, angle + spread, grav,
-                              dist, size)
+            b = bullet.Bullet(self, x, y, BULLET_SPEED, angle + spread, grav, dist, size)
             self.bullets.append(b)
             if self.weapon_mods[WeaponMod.triple]:
-                b = bullet.Bullet(self, x, y, BULLET_SPEED,
-                                  angle + 22.5 + spread, grav, dist, size)
+                b = bullet.Bullet(self, x, y, BULLET_SPEED, angle + 22.5 + spread, grav, dist, size)
                 self.bullets.append(b)
-                b = bullet.Bullet(self, x, y, BULLET_SPEED,
-                                  angle - 22.5 + spread, grav, dist, size)
+                b = bullet.Bullet(self, x, y, BULLET_SPEED, angle - 22.5 + spread, grav, dist, size)
                 self.bullets.append(b)
 
             if not self.weapon_mods[WeaponMod.rapid]:
@@ -751,16 +751,13 @@ class Player(creature.Creature):
             pass
         elif keys[pygame.K_DOWN]:
             if self.abilities[Ability.gravity]:
-                self.weapon_mods[WeaponMod.gravity] = not self.weapon_mods[
-                    WeaponMod.gravity]
+                self.weapon_mods[WeaponMod.gravity] = not self.weapon_mods[WeaponMod.gravity]
         elif keys[pygame.K_RIGHT]:
             if self.abilities[Ability.full_auto]:
-                self.weapon_mods[WeaponMod.rapid] = not self.weapon_mods[
-                    WeaponMod.rapid]
+                self.weapon_mods[WeaponMod.rapid] = not self.weapon_mods[WeaponMod.rapid]
         elif keys[pygame.K_LEFT]:
             if self.abilities[Ability.spread]:
-                self.weapon_mods[WeaponMod.triple] = not self.weapon_mods[
-                    WeaponMod.triple]
+                self.weapon_mods[WeaponMod.triple] = not self.weapon_mods[WeaponMod.triple]
 
     def crouch(self):
         if self.ground_collision and not self.crouched and not self.submerged:

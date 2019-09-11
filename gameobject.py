@@ -37,7 +37,7 @@ COLLISION_MATRIX = [[False, False, True, True, False, True, True, True, True, Fa
 #
 #           p   b   e   w   d   c   s   b   f   e
 # player    0   0   0   0   0   0   1   0   0   0
-# bullets   0   0   0  0.5  0   0   0   0   1   0
+# bullets   0   0  0.5 0.5  0  0.5  0   0   1   0
 # enemies   0   0   0  0.5  0   0   1   1   0   0
 # walls     0   0   0   1   0   0   0   1   0   0
 # debris    0   0   0   0   0   0   0   0   0   0
@@ -48,7 +48,7 @@ COLLISION_MATRIX = [[False, False, True, True, False, True, True, True, True, Fa
 # ebullets 0.5  0   0  0.5  0   0   0   0  0.5  0
 
 BOUNCE_MATRIX = [[0, 0, 0, 0, 0, 0, 1, 0, 0, 0],
-                 [0, 0, 0, 0.5, 0, 0, 0, 0, 1, 0],
+                 [0, 0, 0.5, 0.5, 0, 0.5, 0, 0, 1, 0],
                  [0, 0, 0, 0.5, 0, 0, 1, 1, 0, 0],
                  [0, 0, 0, 1, 0, 0, 0, 0, 0, 0],
                  [0, 0, 0, 0, 0, 0, 1, 0, 0, 0],

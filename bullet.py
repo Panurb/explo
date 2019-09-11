@@ -82,6 +82,7 @@ class Bullet(gameobject.PhysicsObject):
         if self.alive:
             self.add_particle(0, 0, 1, 2, particle_type, vertical)
             self.add_particle(0, 0, 1, 2, particle_type, vertical)
+            self.add_particle(0, 0, 1, 2, particle_type, vertical)
             self.alive = False
             self.parent.sounds.add('hit')
 

@@ -39,6 +39,7 @@ SIZES = {
     'spike': (8, 8),
     'spring': (8, 16),
     'title': (136, 32),
+    'tree': (8, 8),
     'tutorial': (8, 8),
     'wall': (8, 8),
     'water': (8, 8)
@@ -210,6 +211,9 @@ ACTIONS = {
     ],
     'title': [
         ['idle', 1]
+    ],
+    'tree': [
+        ['idle', 16]
     ],
     'tutorial': [
         ['idle', 1]
