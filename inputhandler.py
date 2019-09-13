@@ -16,8 +16,9 @@ class InputHandler:
 
         self.controller = None
 
-        if pygame.joystick.get_count() > 0:
-            self.controller = Controller(0)
+        for i in range(pygame.joystick.get_count()):
+            if 'Xbox 360' in pygame.joystick.Joystick(i).get_name():
+                self.controller = Controller(i)
 
     def update(self):
         for key in self.keys_pressed:

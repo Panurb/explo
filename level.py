@@ -233,7 +233,6 @@ class Room:
         self.powerups = list()
         self.water = list()
         self.dynamic_objects = list()
-        self.cannons = list()
         self.end = None
         self.music = None
         self.boss = None
@@ -377,8 +376,6 @@ class Room:
             p.update(self)
         for d in self.dynamic_objects:
             d.update(self)
-        for c in self.cannons:
-            c.update(self)
         for w in self.water:
             w.update(self)
         if self.boss:
@@ -399,8 +396,6 @@ class Room:
             e.reset()
         for d in self.dynamic_objects:
             d.reset()
-        for c in self.cannons:
-            c.reset()
         if self.boss:
             self.boss.reset()
 
@@ -427,8 +422,6 @@ class Room:
             p.draw(screen, img_hand)
         for d in self.dynamic_objects:
             d.draw(screen, img_hand)
-        for c in self.cannons:
-            c.draw(screen, img_hand)
         if self.end:
             self.end.draw(screen, img_hand)
         if self.boss:

@@ -258,7 +258,8 @@ class Cannon(Wall):
         self.cooldown = 60
         self.timer = 0
         self.sounds = set()
-        self.alive = False
+        # purk hack
+        self.alive = True
 
         self.angles = []
 
@@ -287,8 +288,8 @@ class Cannon(Wall):
                 self.bullets.remove(b)
 
         if self.timer == 0:
-            dx = (7, 0, -7, 0)
-            dy = (0, 7, 0, -7)
+            dx = (8, 1, -6, 1)
+            dy = (1, 8, 1, -6)
             for i in self.angles:
                 angle = i * 90
                 x = self.x + dx[i] * helpers.SCALE
