@@ -963,8 +963,8 @@ MMMMMMMMMM MMMMM
 MMMMMMMMM M MMM     
 MMMMMMMMMMMMMM      
      ********       
-                C   
-                    
+               2C   
+               1    
 MMMMMMMMMMMMMWWWWWWW
 
 (3, -6)
@@ -1123,7 +1123,7 @@ WWW#    WWWWW     WW
 (7, -1)
 IIIIII              
 II                  
-I                   
+                    
                  h  
                    I
                IIIII

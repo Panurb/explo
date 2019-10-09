@@ -72,6 +72,8 @@ class Level:
                         char = 'M'
                     elif w.path == 'ice':
                         char = 'I'
+                    elif w.path == 'tree':
+                        char = 'T'
                     tilemap[w.y // helpers.TILE_SIZE][w.x // helpers.TILE_SIZE] = char
             for l in room.ladders:
                 tilemap[l.y // helpers.TILE_SIZE][l.x // helpers.TILE_SIZE] = '#'
@@ -396,7 +398,7 @@ class Room:
             e.reset()
         for d in self.dynamic_objects:
             d.reset()
-        if self.boss:
+        if self.boss and self.boss.alive:
             self.boss.reset()
 
     def draw(self, screen, img_hand):
@@ -489,6 +491,8 @@ class Room:
             self.walls[tile_y][tile_x] = tile.Wall(x, y, 'metal')
         elif char == 'I':
             self.walls[tile_y][tile_x] = tile.Wall(x, y, 'ice')
+        elif char == 'T':
+            self.walls[tile_y][tile_x] = tile.Wall(x, y, 'tree')
         elif char == 'P':
             self.dynamic_objects.append(platform.Platform(x, y))
         elif char == 'V':

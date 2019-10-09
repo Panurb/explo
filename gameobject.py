@@ -175,8 +175,7 @@ class GameObject:
 
 
 class PhysicsObject(GameObject):
-    def __init__(self, x, y, width, height, dx, dy, sprite_paths,
-                 group=CollisionGroup.none):
+    def __init__(self, x, y, width, height, dx, dy, sprite_paths, group=CollisionGroup.none):
         super().__init__(x, y, width, height, sprite_paths, group)
         self.base_dx = 0
         self.base_dy = 0
@@ -208,7 +207,7 @@ class PhysicsObject(GameObject):
             if type(c.obj) is not platform.Platform:
                 self.base_dx = 0
                 self.base_dy = 0
-            elif c.direction is not collision.Direction.up:
+            elif type(self) is not platform.Platform and c.direction is not collision.Direction.up:
                 self.base_dx = c.obj.dx
                 self.base_dy = c.obj.dy
                 break
@@ -333,12 +332,15 @@ class PhysicsObject(GameObject):
         self.y = self.spawn_y
         self.dx = 0
         self.dy = 0
+        self.base_dx = 0
+        self.base_dy = 0
+        self.collider.x = self.x
+        self.collider.y = self.y
 
 
 class Debris(PhysicsObject):
     def __init__(self, x, y, dx, dy, part, path):
-        super().__init__(x, y, 4 * helpers.SCALE, 4 * helpers.SCALE, 0, 0,
-                         path, CollisionGroup.debris)
+        super().__init__(x, y, 4 * helpers.SCALE, 4 * helpers.SCALE, 0, 0, path, CollisionGroup.debris)
 
         self.dx = dx
         self.dy = dy

@@ -32,6 +32,8 @@ class Enemy(creature.Creature):
         self.health = self.max_health
         if self.direction == gameobject.Direction.left:
             self.flip()
+        for s in self.sprites:
+            s.play('idle')
 
     def die(self):
         self.sounds.add('squish')

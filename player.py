@@ -608,7 +608,7 @@ class Player(creature.Creature):
                     else:
                         sprite_body.play_once('jump', 1)
             else:
-                if self.ground_collision and not self.submerged:
+                if self.ground_collision:
                     if self.crouched:
                         if self.cooldown > 0:
                             sprite_body.play('gun_crouch_attack')
@@ -632,7 +632,9 @@ class Player(creature.Creature):
                         if sprite_body.dir is animatedsprite.Direction.right:
                             sprite_body.flip()
                 else:
-                    if self.cooldown > 0:
+                    if self.looking_up:
+                        sprite_body.play('gun_up')
+                    elif self.cooldown > 0:
                         sprite_body.play('gun_attack')
                     else:
                         if self.dy < 0:

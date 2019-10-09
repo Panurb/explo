@@ -184,6 +184,7 @@ class GameLoop:
             elif self.state is State.level_creation:
                 self.state = State.editor_select
             elif self.state is State.editor_play:
+                self.level.room(self.editor.room_x, self.editor.room_y).reset()
                 self.level.room(self.level.player.room_x, self.level.player.room_y).reset()
                 self.state = State.editor
             elif self.state is State.credits:
