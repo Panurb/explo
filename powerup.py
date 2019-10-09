@@ -24,8 +24,7 @@ TEXTS = {
 
 class Powerup(gameobject.GameObject):
     def __init__(self, x, y, ability):
-        super().__init__(x, y, 8 * helpers.SCALE, 8 * helpers.SCALE,
-                         ['powerup'])
+        super().__init__(x, y, 8 * helpers.SCALE, 8 * helpers.SCALE, ['powerup'])
 
         self.collider.x = x
         self.collider.y = y
@@ -37,6 +36,9 @@ class Powerup(gameobject.GameObject):
             self.text = TEXTS[self.ability]
         except KeyError:
             self.text = ''
+
+        for s in self.sprites:
+            s.play('idle')
 
     def update(self, room):
         self.animate()
@@ -52,7 +54,7 @@ class Powerup(gameobject.GameObject):
 
     def animate(self):
         for s in self.sprites:
-            s.play('idle')
+            s.animate()
 
     def draw(self, screen, img_hand):
         if self.visible:

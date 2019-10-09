@@ -963,8 +963,8 @@ MMMMMMMMMM MMMMM
 MMMMMMMMM M MMM     
 MMMMMMMMMMMMMM      
      ********       
-               2C   
-               1    
+                C   
+                    
 MMMMMMMMMMMMMWWWWWWW
 
 (3, -6)
@@ -1986,4 +1986,21 @@ MMMMMM k
 MMMMMM     MMM      
 MMMMMM    MMMMM     
 MMMMMMMMMMMMMMMMMMMM
+
+(0, 5)
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+--------------------
+____________________
 
