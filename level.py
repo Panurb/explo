@@ -1,4 +1,4 @@
-import platform
+import pltform
 import pygame
 import animatedsprite
 import enemy
@@ -137,12 +137,12 @@ class Level:
                 # TODO: separate lists for all of these
                 if type(d) is tile.Destroyable:
                     tilemap[d.y // helpers.TILE_SIZE][d.x // helpers.TILE_SIZE] = 'D'
-                elif type(d) is platform.Platform:
+                elif type(d) is pltform.Platform:
                     if d.vertical:
                         tilemap[d.y // helpers.TILE_SIZE][d.x // helpers.TILE_SIZE] = 'V'
                     else:
                         tilemap[d.y // helpers.TILE_SIZE][d.x // helpers.TILE_SIZE] = 'P'
-                elif type(d) is platform.FallingPlatform:
+                elif type(d) is pltform.FallingPlatform:
                     tilemap[d.y // helpers.TILE_SIZE][d.x // helpers.TILE_SIZE] = 'F'
                 elif type(d) is tile.Spring:
                     tilemap[d.y // helpers.TILE_SIZE][d.x // helpers.TILE_SIZE] = 'Z'
@@ -494,11 +494,11 @@ class Room:
         elif char == 'T':
             self.walls[tile_y][tile_x] = tile.Wall(x, y, 'tree')
         elif char == 'P':
-            self.dynamic_objects.append(platform.Platform(x, y))
+            self.dynamic_objects.append(pltform.Platform(x, y))
         elif char == 'V':
-            self.dynamic_objects.append(platform.Platform(x, y, True))
+            self.dynamic_objects.append(pltform.Platform(x, y, True))
         elif char == 'F':
-            self.dynamic_objects.append(platform.FallingPlatform(x, y))
+            self.dynamic_objects.append(pltform.FallingPlatform(x, y))
         elif char == '#':
             self.ladders.append(tile.Ladder(x, y))
         elif char == '~':

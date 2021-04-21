@@ -1,0 +1,255 @@
+(0, -6)
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+         3          
+       TTTTT      II
+  C    T   T      TT
+       T   T   IIITT
+TTTT   T   T   TTTTT
+TTTTTTTTTTTTTTTTTTTT
+
+(0, 0)
+                    
+  TTT               
+  TTT               
+  TTT               
+ TTTTT              
+ TTTTT              
+ TTTTT             T
+TTTTTTT            T
+TTTTTTT           TT
+TTTTTTT        T  TT
+   T    C  T   T   T
+   T       T   TG   
+GGGGGGGGGGGGGGGGGGGG
+GGGGGGGGGGGGGGGGGGGG
+GGGGGGGGGGGGGGGGGGGG
+
+(3, 0)
+          #T        
+           T        
+           T        
+           T        
+           T        
+          #T        
+          #T        
+          #T        
+          #T        
+          #T        
+        GGGGGGG     
+     GGGGGGGGGG     
+~~~GGGGGGGGGGGGGGG~~
+===GGGGGGGGGGGGGGG==
+==GGGGGGGGGGGGGGGG==
+
+(-1, -6)
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+TTTTTTTTTTTTTTTTTTTT
+TTTTTTTTTTTTTTTTTTTT
+
+(3, -1)
+          #T        
+          #T        
+          #T        
+          #T        
+          #T        
+          TTTTTTTT  
+         TTTTTTTTTT 
+     T   TTTTTTTTTT 
+          TTTTTTTTT 
+ TT       #T        
+ TT       #T        
+   TTTT   #T        
+  TTTTTT  #T        
+  TTTTTT  #T        
+          #T        
+
+(3, -3)
+TTTTTTTT  #T        
+TTTTTTTT  #T        
+TTTTTTT   #T        
+TTTTTTT   #T        
+TTTTTTP    T        
+TTTTTT    #T        
+TTTTTT    #T        
+TTTTT     #T        
+TTTTT     #T        
+TTTTT P    T        
+TTTTT     #T        
+TTT       #T        
+          #T        
+          #T        
+          #T        
+
+(1, 0)
+                    
+                    
+                    
+                    
+                    
+                    
+TTTT                
+TTTT    TTT     TTT 
+TTTTT   TTT    TTTTT
+TTTTT          TTTT 
+TTTT                
+ T                  
+GGGGGG~~~~~~~~~~~~~~
+GGGGG===============
+GGG=================
+
+(3, -5)
+TTTTTTTT   T        
+TTTTTTTT  *T        
+TTTTTTTT  *T        
+TTTTTTTT   T        
+TTTTTTTT   T        
+TTTTTTTT*  T        
+TTTTTTTT*  T        
+TTTTTTTT   T        
+TTTTTTTT   T        
+TTTTTTTT   T        
+TTTTTTTT  *T        
+TTTTTTTT  *T        
+TTTTTTTT   T        
+TTTTTTTT   T        
+TTTTTTTT   T        
+
+(1, -6)
+  TTTTTTTTTTT   TTTT
+   TTTTTTTT      TTT
+    TTTTT         TT
+    TTTTT         TT
+                   T
+                   T
+                    
+      I             
+         I       III
+ III             TTT
+ITTT        I    TTT
+TTTT             TTT
+TTTT             TTT
+TTTT*************TTT
+TTTTTTTTTTTTTTTTTTTT
+
+(-1, 0)
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+GGGGGGGGGGGGGGGGGGGG
+GGGGGGGGGGGGGGGGGGGG
+GGGGGGGGGGGGGGGGGGGG
+
+(3, -2)
+          #T        
+          #T        
+          #T        
+          #T        
+          #T        
+       #  #T        
+       #  *T        
+       #  *T        
+       #  #T        
+          #T        
+          #T        
+          #T        
+          #T        
+          #T        
+          #T        
+
+(2, 0)
+                    
+                    
+                    
+                    
+                    
+                    
+  C                 
+                    
+TTTTT               
+         T        T 
+         T   T    T 
+         T   T    T 
+~~~~~~~~~T~~~T~~~~T~
+=========T===T====T=
+=========T===T====T=
+
+(3, -4)
+TTTTTTTT   T        
+TTTTTTTI   T        
+TTTTTTTI   I        
+TTTT P     I        
+TTTTTTTI   I        
+TTTTTTTI   I        
+TT         T        
+TT         T        
+TT         T        
+TTT        T        
+TTT   C   #T        
+TTT 2     #T        
+TTTTTTTT  #T        
+TTTTTTTT  #T        
+TTTTTTTT  #T        
+
+(3, -6)
+           I        
+           I        
+           I        
+           I        
+           I        
+           I        
+           I        
+           I        
+II c   c   I        
+TTIIIIII   T        
+TTTTTTTT   T        
+TTTTTTTT   T        
+TTTTTTTT   T        
+TTTTTTTT   T        
+TTTTTTTT   T        
+
+(2, -6)
+TT   II      I      
+TT   II      I      
+T    II      I      
+T    II II   I      
+T    II  I  II      
+     II  I   I      
+     III II  I   C  
+         II         
+II        P     TTTI
+TT              TTTT
+TT              TTTT
+TT              TTTT
+TT              TTTT
+TT**************TTTT
+TTTTTTTTTTTTTTTTTTTT
+

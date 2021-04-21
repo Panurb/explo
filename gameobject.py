@@ -6,7 +6,7 @@ import pygame
 import animatedsprite
 import collision
 import helpers
-import platform
+import pltform
 
 # COLLISION MATRIX
 #
@@ -204,10 +204,10 @@ class PhysicsObject(GameObject):
         self.apply_gravity()
 
         for c in self.collisions:
-            if type(c.obj) is not platform.Platform:
+            if type(c.obj) is not pltform.Platform:
                 self.base_dx = 0
                 self.base_dy = 0
-            elif type(self) is not platform.Platform and c.direction is not collision.Direction.up:
+            elif type(self) is not pltform.Platform and c.direction is not collision.Direction.up:
                 self.base_dx = c.obj.dx
                 self.base_dy = c.obj.dy
                 break

@@ -1,0 +1,272 @@
+(0, 1)
+M#MMMMMMMMMMMMMMMMMM
+*#                  
+*#                  
+*#                  
+*#               *  
+*#               M  
+*#*          *      
+*#*          M      
+*#*   *      *      
+*#* *MMM*          C
+*#* *               
+*#* *             MM
+*#  *             MM
+*#  *      Z      MM
+*MMM**************MM
+
+(0, 0)
+                    
+      M   M         
+       M M       m  
+        M           
+      M   M         
+                    
+    M       M       
+ E   M     M        
+      MMMMM         
+                    
+                    
+M#M                 
+M#M C               
+M#M   *   *  * *    
+M#MMMMMMMMMMMMMMMMMM
+
+(7, 0)
+                   M
+                 l M
+     C             M
+                   M
+  #MMMMMMMMMM*  *MMM
+  #M               M
+  #M               M
+  #M               M
+  #M               M
+  #MMM* *MMMMMMMMMMM
+MMMM               M
+MMMM               M
+MMMM               M
+MMMMMMMMMMMMMM* *MMM
+MMMMMMMMMMMMMM   MMM
+
+(7, 1)
+MMMMMMMMMMMMMM   MMM
+        MMMMMM   MMM
+       *MMMMMM   MMM
+       *MMMMMM   MMM
+       *MMMMMM   MMM
+        MMMMMM   MMM
+MMMMM   MMMMMM** MMM
+MMMMM*  MMMMMM   MMM
+MMMMM*  MMMMMM   MMM
+MMMMM            MMM
+MMMMM 2          MMM
+MMMMMMMM         MMM
+MMMMMMMMM        MMM
+MMMMMMMMM        MMM
+MMMMMMMMMMMMMMMMMMMM
+
+(3, 0)
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+MMMMMMMMMMMMMMMMMMMM
+                    
+   *       *        
+   *       *     *  
+       *      *     
+MIIIIIIIIIIIIIIIIIIM
+
+(6, 1)
+MMMMMMMMMMMM*       
+       ****M*       
+          *M*       
+           M*       
+           M    C   
+           M        
+           M   MMMMM
+       *   *   MMMMM
+       M       MMMMM
+       M       MMMMM
+MMM    M       MMMMM
+MMM    M       MMMMM
+MMM    M       MMMMM
+MMM****M   ****MMMMM
+MMMMMMMMMMMMMMMMMMMM
+
+(3, 1)
+MMMMMMMMMMMMMMMMMMMM
+ M               M  
+ M               M  
+ M               M  
+ M               M  
+ *               *  
+                    
+                    
+    ***  *  ***     
+ *       *       *  
+MM    P          MMM
+MM               MMM
+MM               MMM
+MM***************MMM
+MMMMMMMMMMMMMMMMMMMM
+
+(6, 0)
+                    
+     M   MMM M      
+     M   M M M    k 
+     M   M M M      
+     MMM MMM MMM    
+                    
+                    
+                    
+                    
+        * *         
+MMMMMMMMMMMMMMMMMMMM
+MMMMMMMMMMMMMMMMMMMM
+MMMMMMMMMMMMMMMMMMMM
+MMMMMMMMMMMMMMMMMMMM
+MMMMMMMMMMMMMMMMMMMM
+
+(2, 1)
+MMMMMMMMMMMMMMMMM   
+MMMMMMM*     **MMM  
+   MMMM       *MMM  
+   MMMM        MMM  
+   MMMM  *     MMM  
+   MMM   MM*   MM   
+    M    MM    MM   
+    M    M*    M    
+M   *    M   MM     
+M       MM   MM     
+MM      MM  *MM   MM
+MM      MM        MM
+MM      MM      C MM
+MM**  **MM*       MM
+MMMMMMMMMMMMMMMMMMMM
+
+(2, 0)
+                    
+   MMM  MMM MMM  M  
+   M  M  M  M    M  
+   M  M  M  MMM  M  
+   M  M  M  M    M  
+   M  M  M  M       
+   MMM  MMM MMM  M  
+                    
+             MMMMM  
+MMMMMMMMMMMMM  *  MM
+     *    *         
+                    
+                    
+  *     *     *     
+MMMMMMMMMMMMMMMMMMMM
+
+(5, 0)
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                 MMM
+            *    MMM
+ M    M    III   MMM
+*M****M****MMM***MMM
+MMMMMMMMMMMMMMMMMMMM
+
+(5, 1)
+MMMMMMMMMMMMMMMMMMMM
+*****    ****       
+                    
+                    
+                    
+     M    IM        
+          IM        
+          IM        
+          IM        
+          IM        
+                 MMM
+                 MMM
+MM               MMM
+MM***************MMM
+MMMMMMMMMMMMMMMMMMMM
+
+(1, 0)
+                   M
+                   M
+                   M
+                   M
+                   M
+                   M
+                   M
+                   M
+                   M
+                   M
+                    
+                    
+    *   *  * *   C  
+    M   M  M M      
+MMMMMMMMMMMMMMMMMMMM
+
+(4, 1)
+MMMMMMMMMMMMMMMMMMMM
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+    *        *   C  
+      *  *          
+MM     P        MMM 
+MM              MMM 
+MM              MMMM
+MM**************MMMM
+MMMMMMMMMMMMMMMMMMMM
+
+(1, 1)
+MMMMMMMMMMMMMMMMMMMM
+MMMMMMMMMMMMMMMMMMMM
+                    
+                    
+                    
+                    
+                 C  
+                    
+                MMMM
+                MMMM
+                MMMM
+MMM * *         MMMM
+MMM * ** *      MMMM
+MMM**Z**Z***Z***MMMM
+MMMMMMMMMMMMMMMMMMMM
+
+(4, 0)
+                    
+                    
+               m    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+   C           M    
+               M    
+  MMM     M    M    
+  MMM*****M****M****
+MMMMMMMMMMMMMMMMMMMM
+
