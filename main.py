@@ -37,6 +37,10 @@ class Main:
             self.clock.tick(self.fps)
 
 
-if __name__ == '__main__':
+def main():
     main_window = Main(helpers.SCREEN_WIDTH, helpers.SCREEN_HEIGHT)
     main_window.main_loop()
+
+
+if __name__ == '__main__':
+    main()

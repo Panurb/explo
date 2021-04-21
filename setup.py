@@ -30,7 +30,7 @@ def find_data_files(source, target, patterns):
 # Example:
 setup(
     name="EXPLO",
-    version="1.0",
+    version="1.1",
     description="Game",
     author="Panu Keskinen",
     options={'py2exe': {'bundle_files': 1, 'compressed': True}},

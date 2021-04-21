@@ -494,9 +494,8 @@ class Player(creature.Creature):
             self.add_gib(0, 0, 0, -2.5, path, 'head')
             self.add_gib(-0.5, 2, -1.25, -2.5, path, 'arm')
             self.add_gib(0.5, 2, 1.25, -2.5, path, 'arm')
-            if not self.crouched:
-                self.add_gib(-0.5, 4, -0.5, -1.25, path, 'leg')
-                self.add_gib(0.5, 4, 0.5, -1.25, path, 'leg')
+            self.add_gib(-0.5, 4, -0.5, -1.25, path, 'leg')
+            self.add_gib(0.5, 4, 0.5, -1.25, path, 'leg')
 
             self.sounds.add('squish')
         self.txtbox.set_string('YOU DIED\\PRESS R')
