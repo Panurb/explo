@@ -241,12 +241,13 @@ class OptionsMenu(Menu):
         super().__init__(gameloop.State.options)
         self.bg_sprite = animatedsprite.AnimatedSprite('image')
         self.bg_sprite.play('menu')
-        self.button = FullscreenButton(0, 2)
+        self.button = None
         self.sliders = []
         if helpers.WEB:
             self.sliders.append(Slider(0, 5, SliderType.music))
             self.sliders.append(Slider(0, 8, SliderType.sound))
         else:
+            self.button = FullscreenButton(0, 2)
             self.sliders.append(Slider(0, 5, SliderType.resolution))
             self.sliders.append(Slider(0, 8, SliderType.music))
             self.sliders.append(Slider(0, 11, SliderType.sound))
@@ -256,7 +257,8 @@ class OptionsMenu(Menu):
         self.bg_sprite.draw(screen, img_hand)
         super().draw(screen, img_hand)
 
-        self.button.draw(screen, img_hand)
+        if self.button:
+            self.button.draw(screen, img_hand)
 
         for s in self.sliders:
             s.draw(screen, img_hand)
@@ -264,7 +266,8 @@ class OptionsMenu(Menu):
     def input(self, hands):
         input_hand, snd_hand, img_hand = hands
 
-        self.button.input(input_hand, img_hand, self.sliders[0].val + helpers.SCALE)
+        if self.button:
+            self.button.input(input_hand, img_hand, self.sliders[0].val + helpers.SCALE)
 
         for s in self.sliders:
             s.input(input_hand, snd_hand, img_hand)

@@ -103,16 +103,21 @@ class GameLoop:
             self.state = self.level_creation_menu.input(self.input_hand)
             self.level_creation_menu.draw(self.screen, self.img_hand)
         elif self.state is State.play:
+            level_created = False
             if self.level is None:
                 pygame.mixer.music.stop()
                 self.level = level.Level(self.level_select_menu.level_name)
+                level_created = True
 
             pygame.mixer.music.unpause()
 
             last_room = (self.level.player.room_x, self.level.player.room_y)
 
             self.level.update(self.input_hand)
-            self.level.play_sounds(self.snd_hand)
+
+            # Don't play sound on the first frame to prevent sound bug in browser.
+            if not level_created:
+                self.level.play_sounds(self.snd_hand)
 
             if self.level.player.level_over:
                 self.state = State.level_end
