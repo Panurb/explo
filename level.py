@@ -448,8 +448,6 @@ class Room:
             w.debug_draw(screen)
         for d in self.dynamic_objects:
             d.debug_draw(screen)
-        for c in self.cannons:
-            c.debug_draw(screen)
 
     def play_sounds(self, snd_hand):
         sounds = set()

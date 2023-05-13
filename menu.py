@@ -57,9 +57,12 @@ class MainMenu(Menu):
     def __init__(self):
         super().__init__(gameloop.State.menu)
         self.add_button(0, 7, ButtonType.levels, 'PLAY')
-        self.add_button(0, 9, ButtonType.editor)
-        self.add_button(0, 11, ButtonType.options)
-        self.add_button(-7, 13, ButtonType.quit)
+        if helpers.WEB:
+            self.add_button(0, 9, ButtonType.options)
+        else:
+            self.add_button(0, 9, ButtonType.editor)
+            self.add_button(0, 11, ButtonType.options)
+            self.add_button(-7, 13, ButtonType.quit)
         self.add_button(7, 13, ButtonType.credits)
 
         self.bg_sprite = animatedsprite.AnimatedSprite('image')
@@ -239,9 +242,14 @@ class OptionsMenu(Menu):
         self.bg_sprite = animatedsprite.AnimatedSprite('image')
         self.bg_sprite.play('menu')
         self.button = FullscreenButton(0, 2)
-        self.sliders = [Slider(0, 5, SliderType.resolution),
-                        Slider(0, 8, SliderType.music),
-                        Slider(0, 11, SliderType.sound)]
+        self.sliders = []
+        if helpers.WEB:
+            self.sliders.append(Slider(0, 5, SliderType.music))
+            self.sliders.append(Slider(0, 8, SliderType.sound))
+        else:
+            self.sliders.append(Slider(0, 5, SliderType.resolution))
+            self.sliders.append(Slider(0, 8, SliderType.music))
+            self.sliders.append(Slider(0, 11, SliderType.sound))
         self.add_button(-7, 13, ButtonType.menu, 'BACK')
 
     def draw(self, screen, img_hand):
@@ -418,7 +426,10 @@ class Credits(Menu):
         self.bg_sprite.play('menu')
 
         text1 = 'PROGRAMMING\\ART\\MUSIC\\\\PANU KESKINEN'
-        text2 = 'MADE WITH\\\\PYTHON 3    PYGAME    PY2EXE\\PYCHARM    GIMP    BFXR\\ABLETON LIVE LITE'
+        if helpers.WEB:
+            text2 = 'MADE WITH\\\\PYTHON 3    PYGAME-CE    PYGBAG\\PYCHARM    GIMP    BFXR\\ABLETON LIVE LITE'
+        else:
+            text2 = 'MADE WITH\\\\PYTHON 3    PYGAME    PY2EXE\\PYCHARM    GIMP    BFXR\\ABLETON LIVE LITE'
         self.text1 = textbox.Textbox(text1, 0.5 * helpers.SCREEN_WIDTH, helpers.TILE_SIZE)
         self.text2 = textbox.Textbox(text2, 0.5 * helpers.SCREEN_WIDTH, 7 * helpers.TILE_SIZE)
 

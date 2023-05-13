@@ -1,0 +1,7 @@
+pygame-ce==2.2.1
+
+# To build exe
+py2exe
+
+# To build web version
+pygbag==0.7.1
